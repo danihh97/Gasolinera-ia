@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gasolinera IA</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #222;
+    }
+
+    .app {
+      max-width: 500px;
+      margin: auto;
+      padding: 30px 20px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 14px;
+      box-sizing: border-box;
+      border-radius: 10px;
+      border: 1px solid #ddd;
+      font-size: 16px;
+    }
+
+    button {
+      margin-top: 20px;
+      background: #111;
+      color: white;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .result {
+      margin-top: 25px;
+      padding: 15px;
+      background: #f0f0f0;
+      border-radius: 10px;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+
+    <h1>⛽ Gasolinera IA</h1>
+
+    <p class="subtitle">
+      Encuentra el combustible más barato cerca de ti
+    </p>
+
+    <div class="card">
+
+      <label for="postal">Código postal</label>
+      <input
+        id="postal"
+        type="text"
+        placeholder="Ejemplo: 35010"
+        maxlength="5"
+      >
+
+      <label for="fuel">Combustible</label>
+
+      <select id="fuel">
+        <option>Gasolina 95</option>
+        <option>Gasolina 98</option>
+        <option>Diésel</option>
+      </select>
+
+      <label for="radius">Radio de búsqueda</label>
+
+      <select id="radius">
+        <option>5 km</option>
+        <option>10 km</option>
+        <option>20 km</option>
+      </select>
+
+      <button onclick="buscar()">
+        🔎 Buscar gasolina barata
+      </button>
+
+      <div id="result" class="result">
+        Introduce tu código postal para comenzar.
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    function buscar() {
+
+      const postal = document.getElementById("postal").value;
+      const fuel = document.getElementById("fuel").value;
+
+      const result = document.getElementById("result");
+
+      if (postal.length !== 5) {
+        result.style.display = "block";
+        result.innerHTML = "⚠️ Introduce un código postal válido.";
+        return;
+      }
+
+      result.style.display = "block";
+
+      result.innerHTML =
+        "🔎 Buscando " + fuel +
+        " cerca del código postal " + postal + "...";
+    }
+  </script>
+
+</body>
+</html>
