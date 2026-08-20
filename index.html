@@ -44,7 +44,9 @@
       font-weight: bold;
     }
 
-    input, select, button {
+    input,
+    select,
+    button {
       width: 100%;
       padding: 14px;
       box-sizing: border-box;
@@ -59,6 +61,7 @@
       color: white;
       border: none;
       font-weight: bold;
+      cursor: pointer;
     }
 
     button:disabled {
@@ -107,6 +110,11 @@
       text-align: center;
       padding: 20px;
     }
+
+    .error {
+      color: #b00020;
+      font-weight: bold;
+    }
   </style>
 </head>
 
@@ -127,6 +135,7 @@
     <input
       id="postal"
       type="text"
+      inputmode="numeric"
       placeholder="Ejemplo: 35010"
       maxlength="5"
     >
@@ -139,7 +148,7 @@
       <option value="diesel">Diésel</option>
     </select>
 
-    <label for="radius">Radio</label>
+    <label for="radius">Radio de búsqueda</label>
 
     <select id="radius">
       <option value="5">5 km</option>
@@ -161,129 +170,280 @@
 
 async function buscar() {
 
-  const postal = document.getElementById("postal").value.trim();
-  const fuel = document.getElementById("fuel").value;
-  const button = document.getElementById("searchButton");
-  const result = document.getElementById("result");
+  const postal = document
+    .getElementById("postal")
+    .value
+    .trim();
+
+  const fuel = document
+    .getElementById("fuel")
+    .value;
+
+  const button =
+    document.getElementById("searchButton");
+
+  const result =
+    document.getElementById("result");
+
+  /*
+   * Comprobamos el código postal
+   */
 
   if (!/^\d{5}$/.test(postal)) {
-    result.innerHTML =
-      "<div class='station'>⚠️ Introduce un código postal válido.</div>";
+
+    result.innerHTML = `
+      <div class="station error">
+        ⚠️ Introduce un código postal válido.
+      </div>
+    `;
+
     return;
   }
 
+  /*
+   * Desactivamos el botón mientras buscamos
+   */
+
   button.disabled = true;
 
-  result.innerHTML =
-    "<div class='loading'>⏳ Buscando las gasolineras más baratas...</div>";
+  result.innerHTML = `
+    <div class="station loading">
+      ⏳ Buscando gasolineras...
+    </div>
+  `;
 
   try {
 
-    const response = await fetch("/api/gasolineras");
+    /*
+     * Pedimos los datos a nuestra API
+     */
+
+    const response =
+      await fetch("/api/gasolineras");
 
     if (!response.ok) {
-      throw new Error("Error obteniendo los datos");
+      throw new Error(
+        "No se pudieron obtener los datos"
+      );
     }
 
-    const estaciones = await response.json();
+    /*
+     * La API devuelve:
+     * {
+     *   fecha: ...,
+     *   estaciones: [...]
+     * }
+     */
 
-    let campoPrecio;
+    const datos =
+      await response.json();
+
+    const estaciones =
+      datos.estaciones || [];
+
+    /*
+     * Elegimos el campo de precio
+     */
+
+    let campoPrecio = "";
 
     if (fuel === "95") {
-      campoPrecio = "Precio_x0020_Gasolina_x0020_95_x0020_E5";
+      campoPrecio = "Precio Gasolina 95 E5";
     }
 
     if (fuel === "98") {
-      campoPrecio = "Precio_x0020_Gasolina_x0020_98_x0020_E5";
+      campoPrecio = "Precio Gasolina 98 E5";
     }
 
     if (fuel === "diesel") {
-      campoPrecio = "Precio_x0020_Gasoleo_x0020_A";
+      campoPrecio = "Precio Gasoleo A";
     }
 
+    /*
+     * Filtramos por código postal
+     */
+
     const resultados = estaciones
+
       .filter(estacion => {
-        return estacion["C.P."] === postal;
+
+        return String(
+          estacion["C.P."]
+        ).trim() === postal;
+
       })
+
       .map(estacion => {
 
-        const precioTexto = estacion[campoPrecio];
+        const precioTexto =
+          estacion[campoPrecio];
 
-        if (!precioTexto) return null;
+        if (!precioTexto) {
+          return null;
+        }
 
-        const precio = parseFloat(
-          precioTexto.replace(",", ".")
-        );
+        const precio =
+          parseFloat(
+            String(precioTexto)
+              .replace(",", ".")
+          );
 
-        if (isNaN(precio)) return null;
+        if (isNaN(precio)) {
+          return null;
+        }
 
         return {
-          nombre: estacion["Rótulo"],
-          direccion: estacion["Dirección"],
-          localidad: estacion["Localidad"],
+
+          nombre:
+            estacion["Rótulo"] ||
+            "Gasolinera",
+
+          direccion:
+            estacion["Dirección"] || "",
+
+          localidad:
+            estacion["Localidad"] || "",
+
           precio: precio,
-          lat: estacion["Latitud"],
-          lon: estacion["Longitud_x0020__x0028_WGS84_x0029_"]
+
+          lat:
+            estacion["Latitud"] || "",
+
+          lon:
+            estacion[
+              "Longitud (WGS84)"
+            ] || ""
+
         };
 
       })
+
       .filter(Boolean)
-      .sort((a, b) => a.precio - b.precio);
+
+      .sort(
+        (a, b) =>
+          a.precio - b.precio
+      );
+
+    /*
+     * Si no encontramos ninguna
+     */
 
     if (resultados.length === 0) {
 
-      result.innerHTML =
-        "<div class='station'>❌ No hemos encontrado estaciones con ese combustible en ese código postal.</div>";
+      result.innerHTML = `
+        <div class="station">
+
+          ❌ No hemos encontrado
+          gasolineras con ese combustible
+          en el código postal ${postal}.
+
+        </div>
+      `;
 
       return;
     }
 
-    result.innerHTML = resultados
-      .slice(0, 10)
-      .map((estacion, index) => {
+    /*
+     * Mostramos las 10 más baratas
+     */
 
-        const mapa =
-          "https://www.google.com/maps/search/?api=1&query=" +
-          encodeURIComponent(
-            estacion.lat + "," + estacion.lon
-          );
+    result.innerHTML =
+      resultados
+        .slice(0, 10)
+        .map((estacion, index) => {
 
-        return `
-          <div class="station">
+          let mapa = "#";
 
-            <div class="price">
-              ${index === 0 ? "🥇 " : ""}
-              ${estacion.precio.toFixed(3)} €/L
+          if (
+            estacion.lat &&
+            estacion.lon
+          ) {
+
+            mapa =
+              "https://www.google.com/maps/search/?api=1&query=" +
+              encodeURIComponent(
+                estacion.lat +
+                "," +
+                estacion.lon
+              );
+
+          }
+
+          return `
+
+            <div class="station">
+
+              <div class="price">
+
+                ${
+                  index === 0
+                    ? "🥇 "
+                    : ""
+                }
+
+                ${estacion.precio.toFixed(3)}
+                €/L
+
+              </div>
+
+              <div class="name">
+
+                ${estacion.nombre}
+
+              </div>
+
+              <div class="info">
+
+                📍 ${estacion.direccion}
+
+              </div>
+
+              <div class="info">
+
+                ${estacion.localidad}
+
+              </div>
+
+              ${
+                mapa !== "#"
+                  ? `
+                    <a
+                      class="map"
+                      href="${mapa}"
+                      target="_blank"
+                    >
+                      🗺️ Cómo llegar
+                    </a>
+                  `
+                  : ""
+              }
+
             </div>
 
-            <div class="name">
-              ${estacion.nombre || "Gasolinera"}
-            </div>
+          `;
 
-            <div class="info">
-              📍 ${estacion.direccion || ""}
-            </div>
-
-            <div class="info">
-              ${estacion.localidad || ""}
-            </div>
-
-            <a class="map"
-               href="${mapa}"
-               target="_blank">
-              🗺️ Cómo llegar
-            </a>
-
-          </div>
-        `;
-
-      })
-      .join("");
+        })
+        .join("");
 
   } catch (error) {
 
-    result.innerHTML =
-      "<div class='station'>❌ Ha ocurrido un error al obtener los precios. Inténtalo de nuevo.</div>";
+    console.error(error);
+
+    result.innerHTML = `
+
+      <div class="station error">
+
+        ❌ Ha ocurrido un error
+        al obtener los precios.
+
+        <br><br>
+
+        Inténtalo de nuevo.
+
+      </div>
+
+    `;
 
   } finally {
 
