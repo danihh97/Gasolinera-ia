@@ -2,79 +2,69 @@ export default async function handler(req, res) {
   try {
     const provincia = req.query.provincia || "3505";
     const producto = req.query.producto || "1";
-    const codigoPostal = req.query.cp || "";
+    const cp = req.query.cp || "";
 
     const url =
-      "https://energia.serviciosmin.gob.es/ServiciosRestCarburantes/PreciosCarburantes/EstacionesTerrestres/FiltroProvinciaProducto/" +
-      provincia +
-      "/" +
-      producto;
+      `https://energia.serviciosmin.gob.es/ServiciosRestCarburantes/PreciosCarburantes/EstacionesTerrestres/FiltroProvinciaProducto/${provincia}/${producto}`;
 
-    const response = await fetch(url, {
-      headers: {
-        Accept: "application/json"
-      }
-    });
+    const response = await fetch(url);
 
     if (!response.ok) {
-      throw new Error("Error consultando la API oficial");
+      const texto = await response.text();
+
+      return res.status(500).json({
+        error: "La API oficial ha rechazado la consulta",
+        estado: response.status,
+        detalle: texto
+      });
     }
 
     const data = await response.json();
 
     let estaciones = data.ListaEESSPrecio || [];
 
-    // Filtrar por código postal si se ha introducido
-    if (codigoPostal) {
+    if (cp) {
       estaciones = estaciones.filter(estacion =>
-        String(estacion["C.P."] || "").trim() === codigoPostal
+        String(estacion["C.P."] || "").trim() === cp
       );
     }
 
-    // Convertir precios y ordenar de más barato a más caro
     estaciones = estaciones
       .map(estacion => {
 
-        const precioTexto =
-          estacion["PrecioProducto"] ||
-          estacion["Precio_x0020_Gasolina_x0020_95_x0020_E5"] ||
-          "";
-
         const precio = parseFloat(
-          String(precioTexto).replace(",", ".")
+          String(estacion["PrecioProducto"] || "")
+            .replace(",", ".")
         );
 
         return {
-          id: estacion["IDEESS"] || "",
           nombre: estacion["Rótulo"] || "Gasolinera",
           direccion: estacion["Dirección"] || "",
           codigoPostal: estacion["C.P."] || "",
           localidad: estacion["Localidad"] || "",
           municipio: estacion["Municipio"] || "",
           provincia: estacion["Provincia"] || "",
-          precio: isNaN(precio) ? null : precio,
+          precio: precio,
           latitud: estacion["Latitud"] || "",
           longitud:
             estacion["Longitud_x0020__x0028_WGS84_x0029_"] || "",
           horario: estacion["Horario"] || "",
-          remision: estacion["Remisión"] || ""
+          fecha: data.Fecha || ""
         };
       })
-      .filter(estacion => estacion.precio !== null)
+      .filter(estacion => !isNaN(estacion.precio))
       .sort((a, b) => a.precio - b.precio);
 
     return res.status(200).json({
       fecha: data.Fecha || "",
       total: estaciones.length,
-      estaciones: estaciones
+      estaciones
     });
 
   } catch (error) {
 
-    console.error(error);
-
     return res.status(500).json({
-      error: "No se pudieron obtener los precios",
+      error: "Error conectando con la API oficial",
       detalle: error.message
     });
   }
