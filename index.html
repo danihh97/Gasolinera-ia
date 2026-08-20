@@ -14,14 +14,14 @@
     }
 
     .app {
-      max-width: 500px;
+      max-width: 600px;
       margin: auto;
       padding: 30px 20px;
     }
 
     h1 {
       text-align: center;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .subtitle {
@@ -59,88 +59,241 @@
       color: white;
       border: none;
       font-weight: bold;
-      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.6;
     }
 
     .result {
       margin-top: 25px;
-      padding: 15px;
-      background: #f0f0f0;
-      border-radius: 10px;
-      display: none;
+    }
+
+    .station {
+      background: white;
+      padding: 18px;
+      margin-top: 12px;
+      border-radius: 12px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    }
+
+    .price {
+      font-size: 25px;
+      font-weight: bold;
+    }
+
+    .name {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 6px;
+    }
+
+    .info {
+      color: #666;
+      margin-top: 6px;
+    }
+
+    .map {
+      display: inline-block;
+      margin-top: 12px;
+      text-decoration: none;
+      background: #eee;
+      color: #222;
+      padding: 9px 12px;
+      border-radius: 8px;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 20px;
     }
   </style>
 </head>
 
 <body>
 
-  <div class="app">
+<div class="app">
 
-    <h1>⛽ Gasolinera IA</h1>
+  <h1>⛽ Gasolinera IA</h1>
 
-    <p class="subtitle">
-      Encuentra el combustible más barato cerca de ti
-    </p>
+  <p class="subtitle">
+    Encuentra el combustible más barato cerca de ti
+  </p>
 
-    <div class="card">
+  <div class="card">
 
-      <label for="postal">Código postal</label>
-      <input
-        id="postal"
-        type="text"
-        placeholder="Ejemplo: 35010"
-        maxlength="5"
-      >
+    <label for="postal">Código postal</label>
 
-      <label for="fuel">Combustible</label>
+    <input
+      id="postal"
+      type="text"
+      placeholder="Ejemplo: 35010"
+      maxlength="5"
+    >
 
-      <select id="fuel">
-        <option>Gasolina 95</option>
-        <option>Gasolina 98</option>
-        <option>Diésel</option>
-      </select>
+    <label for="fuel">Combustible</label>
 
-      <label for="radius">Radio de búsqueda</label>
+    <select id="fuel">
+      <option value="95">Gasolina 95</option>
+      <option value="98">Gasolina 98</option>
+      <option value="diesel">Diésel</option>
+    </select>
 
-      <select id="radius">
-        <option>5 km</option>
-        <option>10 km</option>
-        <option>20 km</option>
-      </select>
+    <label for="radius">Radio</label>
 
-      <button onclick="buscar()">
-        🔎 Buscar gasolina barata
-      </button>
+    <select id="radius">
+      <option value="5">5 km</option>
+      <option value="10">10 km</option>
+      <option value="20">20 km</option>
+    </select>
 
-      <div id="result" class="result">
-        Introduce tu código postal para comenzar.
-      </div>
-
-    </div>
+    <button id="searchButton" onclick="buscar()">
+      🔎 Buscar gasolina barata
+    </button>
 
   </div>
 
-  <script>
-    function buscar() {
+  <div id="result" class="result"></div>
 
-      const postal = document.getElementById("postal").value;
-      const fuel = document.getElementById("fuel").value;
+</div>
 
-      const result = document.getElementById("result");
+<script>
 
-      if (postal.length !== 5) {
-        result.style.display = "block";
-        result.innerHTML = "⚠️ Introduce un código postal válido.";
-        return;
-      }
+async function buscar() {
 
-      result.style.display = "block";
+  const postal = document.getElementById("postal").value.trim();
+  const fuel = document.getElementById("fuel").value;
+  const button = document.getElementById("searchButton");
+  const result = document.getElementById("result");
+
+  if (!/^\d{5}$/.test(postal)) {
+    result.innerHTML =
+      "<div class='station'>⚠️ Introduce un código postal válido.</div>";
+    return;
+  }
+
+  button.disabled = true;
+
+  result.innerHTML =
+    "<div class='loading'>⏳ Buscando las gasolineras más baratas...</div>";
+
+  try {
+
+    const response = await fetch("/api/gasolineras");
+
+    if (!response.ok) {
+      throw new Error("Error obteniendo los datos");
+    }
+
+    const estaciones = await response.json();
+
+    let campoPrecio;
+
+    if (fuel === "95") {
+      campoPrecio = "Precio_x0020_Gasolina_x0020_95_x0020_E5";
+    }
+
+    if (fuel === "98") {
+      campoPrecio = "Precio_x0020_Gasolina_x0020_98_x0020_E5";
+    }
+
+    if (fuel === "diesel") {
+      campoPrecio = "Precio_x0020_Gasoleo_x0020_A";
+    }
+
+    const resultados = estaciones
+      .filter(estacion => {
+        return estacion["C.P."] === postal;
+      })
+      .map(estacion => {
+
+        const precioTexto = estacion[campoPrecio];
+
+        if (!precioTexto) return null;
+
+        const precio = parseFloat(
+          precioTexto.replace(",", ".")
+        );
+
+        if (isNaN(precio)) return null;
+
+        return {
+          nombre: estacion["Rótulo"],
+          direccion: estacion["Dirección"],
+          localidad: estacion["Localidad"],
+          precio: precio,
+          lat: estacion["Latitud"],
+          lon: estacion["Longitud_x0020__x0028_WGS84_x0029_"]
+        };
+
+      })
+      .filter(Boolean)
+      .sort((a, b) => a.precio - b.precio);
+
+    if (resultados.length === 0) {
 
       result.innerHTML =
-        "🔎 Buscando " + fuel +
-        " cerca del código postal " + postal + "...";
+        "<div class='station'>❌ No hemos encontrado estaciones con ese combustible en ese código postal.</div>";
+
+      return;
     }
-  </script>
+
+    result.innerHTML = resultados
+      .slice(0, 10)
+      .map((estacion, index) => {
+
+        const mapa =
+          "https://www.google.com/maps/search/?api=1&query=" +
+          encodeURIComponent(
+            estacion.lat + "," + estacion.lon
+          );
+
+        return `
+          <div class="station">
+
+            <div class="price">
+              ${index === 0 ? "🥇 " : ""}
+              ${estacion.precio.toFixed(3)} €/L
+            </div>
+
+            <div class="name">
+              ${estacion.nombre || "Gasolinera"}
+            </div>
+
+            <div class="info">
+              📍 ${estacion.direccion || ""}
+            </div>
+
+            <div class="info">
+              ${estacion.localidad || ""}
+            </div>
+
+            <a class="map"
+               href="${mapa}"
+               target="_blank">
+              🗺️ Cómo llegar
+            </a>
+
+          </div>
+        `;
+
+      })
+      .join("");
+
+  } catch (error) {
+
+    result.innerHTML =
+      "<div class='station'>❌ Ha ocurrido un error al obtener los precios. Inténtalo de nuevo.</div>";
+
+  } finally {
+
+    button.disabled = false;
+
+  }
+
+}
+
+</script>
 
 </body>
 </html>
