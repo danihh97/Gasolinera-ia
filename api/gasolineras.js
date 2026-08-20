@@ -1,16 +1,22 @@
 export default async function handler(req, res) {
   try {
-    const response = await fetch(
-      "https://energia.serviciosmin.gob.es/ServiciosRestCarburantes/PreciosCarburantes/EstacionesTerrestres/",
-      {
-        headers: {
-          Accept: "application/json"
-        }
+    const provincia = "3505";
+    const producto = "1";
+
+    const url =
+      "https://energia.serviciosmin.gob.es/ServiciosRestCarburantes/PreciosCarburantes/EstacionesTerrestres/FiltroProvinciaProducto/" +
+      provincia +
+      "/" +
+      producto;
+
+    const response = await fetch(url, {
+      headers: {
+        Accept: "application/json"
       }
-    );
+    });
 
     if (!response.ok) {
-      throw new Error("API oficial no disponible");
+      throw new Error("Error consultando la API oficial");
     }
 
     const data = await response.json();
@@ -21,8 +27,10 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
+    console.error(error);
+
     return res.status(500).json({
-      error: error.message
+      error: "No se pudieron obtener los precios"
     });
   }
 }
