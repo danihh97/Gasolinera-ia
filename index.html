@@ -160,74 +160,82 @@
       box-shadow: 0 6px 20px rgba(23,32,51,.05);
     }
 
-    /* TARJETAS MÁS BARATA / MÁS CERCANA */
+    /* TARJETA DESTACADA */
 
-    .top-cards {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 14px;
+    .best-card {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #10251a, #163d22);
+      color: white;
+      border-radius: 23px;
+      padding: 22px;
       margin-bottom: 14px;
+      box-shadow: 0 12px 30px rgba(16,37,26,.18);
     }
 
-    .top-card {
-      background: rgba(255,255,255,.97);
-      border: 1px solid #e7ebee;
-      border-radius: 22px;
-      padding: 18px 20px;
-      box-shadow: 0 7px 22px rgba(23,32,51,.07);
+    .best-card::after {
+      content: "";
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      right: -55px;
+      top: -55px;
+      border-radius: 50%;
+      background: rgba(116,229,29,.16);
     }
 
-    .top-card-head {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 14px;
-    }
-
-    .top-card-label {
-      font-size: 15px;
-      font-weight: 900;
-      letter-spacing: .6px;
-      color: #687385;
-      text-transform: uppercase;
-      line-height: 1.15;
-    }
-
-    .top-card-price {
-      white-space: nowrap;
-      font-size: 31px;
-      line-height: 1;
-      font-weight: 900;
-      color: #172033;
-    }
-
-    .top-card-price span {
-      font-size: 14px;
-      color: #7b8594;
-      font-weight: 700;
-    }
-
-    .top-card-name {
-      margin-top: 12px;
-      font-size: 18px;
-      line-height: 1.2;
-      font-weight: 900;
-      color: #172033;
-      text-transform: uppercase;
-    }
-
-    .top-card-distance {
-      margin-top: 8px;
-      font-size: 15px;
-      line-height: 1.2;
-      color: #287c2e;
-      font-weight: 800;
-    }
-
-    .top-card-note {
-      margin-top: 7px;
+    .best-label {
+      position: relative;
+      z-index: 1;
       font-size: 12px;
-      color: #8993a3;
+      font-weight: 800;
+      letter-spacing: .8px;
+      color: #a9e979;
+      text-transform: uppercase;
+    }
+
+    .best-price {
+      position: relative;
+      z-index: 1;
+      font-size: 42px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin-top: 5px;
+    }
+
+    .best-name {
+      position: relative;
+      z-index: 1;
+      font-size: 18px;
+      font-weight: 800;
+      margin-top: 4px;
+    }
+
+    .best-location {
+      position: relative;
+      z-index: 1;
+      margin-top: 6px;
+      font-size: 14px;
+      color: #c7d5cb;
+    }
+
+    .best-distance {
+      position: relative;
+      z-index: 1;
+      margin-top: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #a9e979;
+    }
+
+    .saving {
+      position: relative;
+      z-index: 1;
+      margin-top: 16px;
+      padding-top: 13px;
+      border-top: 1px solid rgba(255,255,255,.13);
+      font-size: 13px;
+      color: #d8eadb;
     }
 
     /* RESUMEN */
@@ -294,6 +302,97 @@
       font-weight: 600;
     }
 
+    .price-wrap {
+      text-align: right;
+    }
+
+    .price.good {
+      color: #2f9e44;
+    }
+
+    .price.medium {
+      color: #d99a00;
+    }
+
+    .price.bad {
+      color: #d64545;
+    }
+
+    .price-badge {
+      display: inline-block;
+      margin-top: 6px;
+      padding: 4px 7px;
+      border-radius: 999px;
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .2px;
+      white-space: nowrap;
+    }
+
+    .price-badge.good {
+      background: #e8f7df;
+      color: #287c2e;
+    }
+
+    .price-badge.bad {
+      background: #fff0f0;
+      color: #c62828;
+    }
+
+    .price-badge.medium {
+      background: #fff7db;
+      color: #9a6b00;
+    }
+
+    .option-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .option-card {
+      background: rgba(255,255,255,.96);
+      border: 1px solid #edf0f2;
+      border-radius: 17px;
+      padding: 14px;
+      box-shadow: 0 5px 18px rgba(23,32,51,.045);
+    }
+
+    .option-label {
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .4px;
+      color: #687385;
+      text-transform: uppercase;
+    }
+
+    .option-price {
+      margin-top: 6px;
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .option-name {
+      margin-top: 5px;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.25;
+    }
+
+    .option-distance {
+      margin-top: 5px;
+      font-size: 11px;
+      color: #287c2e;
+      font-weight: 800;
+    }
+
+    @media (max-width: 520px) {
+      .option-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .station-info {
       margin-top: 9px;
       color: #707b8d;
@@ -329,18 +428,6 @@
     }
 
     @media (max-width: 420px) {
-
-      .top-card-price {
-        font-size: 27px;
-      }
-
-      .top-card-name {
-        font-size: 16px;
-      }
-
-      .top-card-label {
-        font-size: 13px;
-      }
 
       .brand-logo {
         width: 130px;
@@ -459,11 +546,11 @@
       <select id="fuel">
 
         <option value="95">
-          Gasolina 95
+          Gasolina 95 E5
         </option>
 
         <option value="98">
-          Gasolina 98
+          Gasolina 98 E5
         </option>
 
         <option value="diesel">
@@ -567,7 +654,10 @@ function usarUbicacion() {
 
 
       status.textContent =
-        "Ubicación obtenida correctamente.";
+        "Ubicación obtenida. Buscando gasolineras...";
+
+      // Buscar automáticamente al obtener la ubicación.
+      buscar();
 
     },
 
@@ -811,24 +901,21 @@ async function buscar() {
 
 
     /* =========================
-       MÁS BARATA
+       RANKING PRECIO + DISTANCIA
     ========================= */
 
+    const estacionesConPrecio =
+      estaciones.filter(
+        estacion =>
+          typeof estacion.precio === "number"
+      );
+
     const mejorPrecio =
-      [...estaciones]
-        .filter(
-          estacion =>
-            typeof estacion.precio === "number"
-        )
+      [...estacionesConPrecio]
         .sort(
           (a, b) =>
             a.precio - b.precio
         )[0];
-
-
-    /* =========================
-       MÁS CERCANA
-    ========================= */
 
     const masCercana =
       ubicacionUsuario
@@ -844,6 +931,35 @@ async function buscar() {
             )[0]
         : null;
 
+    /*
+      "Más barata cerca" se mantiene como cálculo interno para la
+      mejor opción; la tarjeta pública muestra la más barata de todas.
+    */
+
+    const diezMasCercanas =
+      ubicacionUsuario
+        ? [...estaciones]
+            .filter(
+              estacion =>
+                estacion.distancia !== null &&
+                typeof estacion.distancia === "number" &&
+                typeof estacion.precio === "number"
+            )
+            .sort(
+              (a, b) =>
+                a.distancia - b.distancia
+            )
+            .slice(0, 10)
+        : [];
+
+    const masBarataCerca =
+      diezMasCercanas.length
+        ? [...diezMasCercanas]
+            .sort(
+              (a, b) =>
+                a.precio - b.precio
+            )[0]
+        : mejorPrecio;
 
     const ahorroPorLitro =
       precioMedio -
@@ -854,74 +970,102 @@ async function buscar() {
        TARJETAS SUPERIORES
     ========================= */
 
-    results.innerHTML = `
-      <div class="top-cards">
+    if (
+      ubicacionUsuario &&
+      masCercana
+    ) {
 
-        ${
-          ubicacionUsuario && masCercana
-            ? `
-              <div class="top-card">
+      results.innerHTML = `
 
-                <div class="top-card-head">
+        <div class="option-grid">
 
-                  <div class="top-card-label">
-                    📍 MÁS CERCANA
-                  </div>
+          <div class="option-card">
 
-                  <div class="top-card-price">
-                    ${masCercana.precio.toFixed(3)}
-                    <span>€/L</span>
-                  </div>
-
-                </div>
-
-                <div class="top-card-name">
-                  ${escapeHtml(masCercana.nombre)}
-                </div>
-
-                <div class="top-card-distance">
-                  🚗 ${formatearDistancia(masCercana.distancia)}
-                </div>
-
-              </div>
-            `
-            : ""
-        }
-
-        <div class="top-card">
-
-          <div class="top-card-head">
-
-            <div class="top-card-label">
+            <div class="option-label">
               💰 MÁS BARATA
             </div>
 
-            <div class="top-card-price">
-              ${mejorPrecio.precio.toFixed(3)}
-              <span>€/L</span>
+            <div class="option-price">
+              ${mejorPrecio.precio.toFixed(3)} €/L
+            </div>
+
+            <div class="option-name">
+              ${escapeHtml(mejorPrecio.nombre)}
+            </div>
+
+            <div class="option-distance">
+              ${
+                mejorPrecio.distancia !== null
+                  ? `🚗 ${formatearDistancia(mejorPrecio.distancia)}`
+                  : ""
+              }
             </div>
 
           </div>
 
-          <div class="top-card-name">
-            ${escapeHtml(mejorPrecio.nombre)}
-          </div>
 
-          ${
-            mejorPrecio.distancia !== null &&
-            typeof mejorPrecio.distancia === "number"
-              ? `
-                <div class="top-card-distance">
-                  🚗 ${formatearDistancia(mejorPrecio.distancia)}
-                </div>
-              `
-              : ""
-          }
+          <div class="option-card">
+
+            <div class="option-label">
+              📍 MÁS CERCANA
+            </div>
+
+            <div class="option-price">
+              ${masCercana.precio.toFixed(3)} €/L
+            </div>
+
+            <div class="option-name">
+              ${escapeHtml(masCercana.nombre)}
+            </div>
+
+            <div class="option-distance">
+              🚗 ${formatearDistancia(masCercana.distancia)}
+            </div>
+
+          </div>
 
         </div>
 
-      </div>
-    `;
+      `;
+
+    } else {
+
+      results.innerHTML = `
+
+        <div class="best-card">
+
+          <div class="best-label">
+            🏆 MEJOR PRECIO
+          </div>
+
+          <div class="best-price">
+            ${mejorPrecio.precio.toFixed(3)} €/L
+          </div>
+
+          <div class="best-name">
+            ${escapeHtml(mejorPrecio.nombre)}
+          </div>
+
+          <div class="best-location">
+            📍 ${escapeHtml(mejorPrecio.localidad)}
+          </div>
+
+          <div class="saving">
+
+            ${
+              ahorroPorLitro > 0
+                ? `Está ${ahorroPorLitro.toFixed(3)} €/L por debajo del precio medio.`
+                : `Es el precio más bajo encontrado.`
+            }
+
+          </div>
+
+        </div>
+
+      `;
+
+    }
+
 
     /* =========================
        RESUMEN
@@ -963,7 +1107,7 @@ async function buscar() {
 
               ?
 
-              "📍 Ordenadas por distancia"
+              "📍 Ordenadas por cercanía"
 
               :
 
@@ -981,6 +1125,41 @@ async function buscar() {
     /* =========================
        LISTA DE GASOLINERAS
     ========================= */
+
+    /*
+      Colores de precio:
+      25% más baratos = verde
+      50% intermedios = amarillo
+      25% más caros = rojo
+    */
+
+    const preciosOrdenados =
+      [...estacionesConPrecio]
+        .map(estacion => estacion.precio)
+        .sort((a, b) => a - b);
+
+    const indiceVerde =
+      Math.max(
+        0,
+        Math.ceil(preciosOrdenados.length * 0.25) - 1
+      );
+
+    const indiceRojo =
+      Math.min(
+        preciosOrdenados.length - 1,
+        Math.floor(preciosOrdenados.length * 0.75)
+      );
+
+    const umbralVerde =
+      preciosOrdenados.length
+        ? preciosOrdenados[indiceVerde]
+        : null;
+
+    const umbralRojo =
+      preciosOrdenados.length
+        ? preciosOrdenados[indiceRojo]
+        : null;
+
 
     estaciones.forEach(
       (estacion, index) => {
@@ -1025,43 +1204,30 @@ async function buscar() {
 
         let posicion;
 
-
         if (ubicacionUsuario) {
 
           posicion =
             index === 0
-
-              ?
-
-              "📍 MÁS CERCANA"
-
-              :
-
-              "#" +
-              (index + 1);
+              ? "📍 MÁS CERCANA"
+              : "#" + (index + 1);
 
         } else {
 
           if (index === 0) {
 
-            posicion =
-              "🥇 MÁS BARATA";
+            posicion = "🥇 MÁS BARATA";
 
           } else if (index === 1) {
 
-            posicion =
-              "🥈 SEGUNDA MÁS BARATA";
+            posicion = "🥈 SEGUNDA MÁS BARATA";
 
           } else if (index === 2) {
 
-            posicion =
-              "🥉 TERCERA MÁS BARATA";
+            posicion = "🥉 TERCERA MÁS BARATA";
 
           } else {
 
-            posicion =
-              "#" +
-              (index + 1);
+            posicion = "#" + (index + 1);
 
           }
 
@@ -1096,17 +1262,61 @@ async function buscar() {
               </div>
 
 
-              <div class="price">
+              <div class="price-wrap">
 
-                ${
-                  estacion.precio.toFixed(3)
-                }
+                <div class="price ${
+                  umbralVerde !== null &&
+                  estacion.precio <= umbralVerde
+                    ? "good"
+                    : (
+                      umbralRojo !== null &&
+                      estacion.precio >= umbralRojo
+                        ? "bad"
+                        : "medium"
+                    )
+                }">
 
-                <span class="price-unit">
+                  ${
+                    estacion.precio.toFixed(3)
+                  }
 
-                  €/L
+                  <span class="price-unit">
 
-                </span>
+                    €/L
+
+                  </span>
+
+                </div>
+
+                <div>
+
+                  ${
+                    mejorPrecio &&
+                    estacion.precio === mejorPrecio.precio
+                      ?
+                      `
+                        <span class="price-badge good">
+                          💰 MÁS BARATA
+                        </span>
+                      `
+                      :
+                      ""
+                  }
+
+                  ${
+                    preciosOrdenados.length > 1 &&
+                    estacion.precio === preciosOrdenados[preciosOrdenados.length - 1]
+                      ?
+                      `
+                        <span class="price-badge bad">
+                          💸 MÁS CARA
+                        </span>
+                      `
+                      :
+                      ""
+                  }
+
+                </div>
 
               </div>
 
