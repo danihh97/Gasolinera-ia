@@ -1,9 +1,6 @@
 export default async function handler(req, res) {
   try {
-    // 35 = Las Palmas
-    // Si no se indica provincia, usamos Las Palmas
     const provincia = String(req.query.provincia || "35").padStart(2, "0");
-
     const producto = req.query.producto || "95";
 
     const response = await fetch(
@@ -15,19 +12,21 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
-
     const estaciones = data.ListaEESSPrecio || [];
 
+    // Campos oficiales de precios
     let campoPrecio;
 
     if (producto === "95") {
       campoPrecio = "Precio Gasolina 95 E5";
-    } else if (producto === "98") {
+    }
+
+    if (producto === "98") {
       campoPrecio = "Precio Gasolina 98 E5";
-    } else if (producto === "diesel") {
+    }
+
+    if (producto === "diesel") {
       campoPrecio = "Precio Gasoleo A";
-    } else {
-      campoPrecio = "Precio Gasolina 95 E5";
     }
 
     const resultados = estaciones
@@ -36,9 +35,10 @@ export default async function handler(req, res) {
       })
       .map(estacion => {
 
+        const precioTexto = estacion[campoPrecio];
+
         const precio = parseFloat(
-          String(estacion[campoPrecio] || "")
-            .replace(",", ".")
+          String(precioTexto || "").replace(",", ".")
         );
 
         if (isNaN(precio)) {
