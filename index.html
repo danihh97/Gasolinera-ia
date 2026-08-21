@@ -160,82 +160,74 @@
       box-shadow: 0 6px 20px rgba(23,32,51,.05);
     }
 
-    /* TARJETA DESTACADA */
+    /* TARJETAS MÁS BARATA / MÁS CERCANA */
 
-    .best-card {
-      position: relative;
-      overflow: hidden;
-      background: linear-gradient(135deg, #10251a, #163d22);
-      color: white;
-      border-radius: 23px;
-      padding: 22px;
+    .top-cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
       margin-bottom: 14px;
-      box-shadow: 0 12px 30px rgba(16,37,26,.18);
     }
 
-    .best-card::after {
-      content: "";
-      position: absolute;
-      width: 150px;
-      height: 150px;
-      right: -55px;
-      top: -55px;
-      border-radius: 50%;
-      background: rgba(116,229,29,.16);
+    .top-card {
+      background: rgba(255,255,255,.97);
+      border: 1px solid #e7ebee;
+      border-radius: 22px;
+      padding: 18px 20px;
+      box-shadow: 0 7px 22px rgba(23,32,51,.07);
     }
 
-    .best-label {
-      position: relative;
-      z-index: 1;
-      font-size: 12px;
-      font-weight: 800;
-      letter-spacing: .8px;
-      color: #a9e979;
+    .top-card-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .top-card-label {
+      font-size: 15px;
+      font-weight: 900;
+      letter-spacing: .6px;
+      color: #687385;
+      text-transform: uppercase;
+      line-height: 1.15;
+    }
+
+    .top-card-price {
+      white-space: nowrap;
+      font-size: 31px;
+      line-height: 1;
+      font-weight: 900;
+      color: #172033;
+    }
+
+    .top-card-price span {
+      font-size: 14px;
+      color: #7b8594;
+      font-weight: 700;
+    }
+
+    .top-card-name {
+      margin-top: 12px;
+      font-size: 18px;
+      line-height: 1.2;
+      font-weight: 900;
+      color: #172033;
       text-transform: uppercase;
     }
 
-    .best-price {
-      position: relative;
-      z-index: 1;
-      font-size: 42px;
-      font-weight: 900;
-      letter-spacing: -1px;
-      margin-top: 5px;
-    }
-
-    .best-name {
-      position: relative;
-      z-index: 1;
-      font-size: 18px;
-      font-weight: 800;
-      margin-top: 4px;
-    }
-
-    .best-location {
-      position: relative;
-      z-index: 1;
-      margin-top: 6px;
-      font-size: 14px;
-      color: #c7d5cb;
-    }
-
-    .best-distance {
-      position: relative;
-      z-index: 1;
+    .top-card-distance {
       margin-top: 8px;
-      font-size: 14px;
-      font-weight: 700;
-      color: #a9e979;
+      font-size: 15px;
+      line-height: 1.2;
+      color: #287c2e;
+      font-weight: 800;
     }
 
-    .saving {
-      position: relative;
-      z-index: 1;
-      margin-top: 16px;
-      padding-top: 13px;
-      border-top: 1px solid rgba(255,255,255,.13);
-      font-size: 13px;
-      color: #d8eadb;
+    .top-card-note {
+      margin-top: 7px;
+      font-size: 12px;
+      color: #8993a3;
     }
 
     /* RESUMEN */
@@ -337,6 +329,18 @@
     }
 
     @media (max-width: 420px) {
+
+      .top-card-price {
+        font-size: 27px;
+      }
+
+      .top-card-name {
+        font-size: 16px;
+      }
+
+      .top-card-label {
+        font-size: 13px;
+      }
 
       .brand-logo {
         width: 130px;
@@ -563,9 +567,7 @@ function usarUbicacion() {
 
 
       status.textContent =
-        "Ubicación obtenida. Buscando gasolineras...";
-
-      buscar();
+        "Ubicación obtenida correctamente.";
 
     },
 
@@ -852,83 +854,73 @@ async function buscar() {
        TARJETAS SUPERIORES
     ========================= */
 
-    const distanciaMasCercana =
-      masCercana &&
-      typeof masCercana.distancia === "number"
-        ? formatearDistancia(masCercana.distancia)
-        : "";
-
     results.innerHTML = `
+      <div class="top-cards">
 
-      <div class="simple-top-cards">
+        ${
+          ubicacionUsuario && masCercana
+            ? `
+              <div class="top-card">
 
-        <div class="simple-card">
+                <div class="top-card-head">
 
-          <div class="simple-card-head">
+                  <div class="top-card-label">
+                    📍 MÁS CERCANA
+                  </div>
 
-            <div class="simple-card-label">
+                  <div class="top-card-price">
+                    ${masCercana.precio.toFixed(3)}
+                    <span>€/L</span>
+                  </div>
+
+                </div>
+
+                <div class="top-card-name">
+                  ${escapeHtml(masCercana.nombre)}
+                </div>
+
+                <div class="top-card-distance">
+                  🚗 ${formatearDistancia(masCercana.distancia)}
+                </div>
+
+              </div>
+            `
+            : ""
+        }
+
+        <div class="top-card">
+
+          <div class="top-card-head">
+
+            <div class="top-card-label">
               💰 MÁS BARATA
             </div>
 
-            <div class="simple-card-price">
-              ${mejorPrecio.precio.toFixed(3)} <small>€/L</small>
+            <div class="top-card-price">
+              ${mejorPrecio.precio.toFixed(3)}
+              <span>€/L</span>
             </div>
 
           </div>
 
-          <div class="simple-card-name">
+          <div class="top-card-name">
             ${escapeHtml(mejorPrecio.nombre)}
           </div>
 
           ${
             mejorPrecio.distancia !== null &&
             typeof mejorPrecio.distancia === "number"
-              ?
-              `
-                <div class="simple-card-distance">
+              ? `
+                <div class="top-card-distance">
                   🚗 ${formatearDistancia(mejorPrecio.distancia)}
                 </div>
               `
-              :
-              ""
+              : ""
           }
 
         </div>
 
-        ${
-          ubicacionUsuario && masCercana
-            ?
-            `
-              <div class="simple-card">
-
-                <div class="simple-card-head">
-
-                  <div class="simple-card-label">
-                    📍 MÁS CERCANA
-                  </div>
-
-                  <div class="simple-card-price">
-                    ${masCercana.precio.toFixed(3)} <small>€/L</small>
-                  </div>
-
-                </div>
-
-                <div class="simple-card-name">
-                  ${escapeHtml(masCercana.nombre)}
-                </div>
-
-                <div class="simple-card-distance">
-                  🚗 ${formatearDistancia(masCercana.distancia)}
-                </div>
-
-              </div>
-            `
-            :
-            ""
-        }
-
       </div>
-
     `;
 
     /* =========================
