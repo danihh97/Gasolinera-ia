@@ -115,6 +115,36 @@
       opacity: .6;
     }
 
+    /* UBICACIÓN */
+
+    .location-button {
+      width: 100%;
+      height: 50px;
+      margin-top: 10px;
+      border: 1px solid #dce2e7;
+      border-radius: 14px;
+      background: #f5f8f3;
+      color: #287c2e;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .location-button:active {
+      transform: scale(.985);
+    }
+
+    .location-button:disabled {
+      opacity: .6;
+    }
+
+    .location-status {
+      margin-top: 10px;
+      text-align: center;
+      color: #687385;
+      font-size: 13px;
+    }
+
     /* RESULTADOS */
 
     .results {
@@ -187,6 +217,15 @@
       margin-top: 6px;
       font-size: 14px;
       color: #c7d5cb;
+    }
+
+    .best-distance {
+      position: relative;
+      z-index: 1;
+      margin-top: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #a9e979;
     }
 
     .saving {
@@ -270,6 +309,13 @@
       line-height: 1.5;
     }
 
+    .distance {
+      margin-top: 8px;
+      color: #287c2e;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
     .map-button {
       display: inline-block;
       margin-top: 14px;
@@ -309,6 +355,7 @@
         font-size: 21px;
       }
     }
+
   </style>
 
 </head>
@@ -433,6 +480,21 @@
       🔎 Buscar gasolineras
     </button>
 
+
+    <button
+      id="locationButton"
+      class="location-button"
+      onclick="usarUbicacion()"
+    >
+      📍 Cerca de mí
+    </button>
+
+
+    <div
+      id="locationStatus"
+      class="location-status"
+    ></div>
+
   </div>
 
 
@@ -445,6 +507,103 @@
 
 
 <script>
+
+let ubicacionUsuario = null;
+
+
+/* =========================
+   OBTENER UBICACIÓN
+========================= */
+
+function usarUbicacion() {
+
+  const button =
+    document.getElementById("locationButton");
+
+  const status =
+    document.getElementById("locationStatus");
+
+
+  if (!navigator.geolocation) {
+
+    status.textContent =
+      "❌ Tu dispositivo no permite obtener la ubicación.";
+
+    return;
+  }
+
+
+  button.disabled = true;
+
+  button.textContent =
+    "📍 Obteniendo ubicación...";
+
+  status.textContent =
+    "Permite el acceso a tu ubicación.";
+
+
+  navigator.geolocation.getCurrentPosition(
+
+    function(position) {
+
+      ubicacionUsuario = {
+
+        lat:
+          position.coords.latitude,
+
+        lon:
+          position.coords.longitude
+
+      };
+
+
+      button.disabled = false;
+
+      button.textContent =
+        "✅ Ubicación activada";
+
+
+      status.textContent =
+        "Ahora pulsa «Buscar gasolineras».";
+
+    },
+
+
+    function(error) {
+
+      console.error(error);
+
+      ubicacionUsuario = null;
+
+      button.disabled = false;
+
+      button.textContent =
+        "📍 Cerca de mí";
+
+
+      status.textContent =
+        "❌ No se pudo obtener tu ubicación.";
+
+    },
+
+    {
+
+      enableHighAccuracy: true,
+
+      timeout: 10000,
+
+      maximumAge: 60000
+
+    }
+
+  );
+
+}
+
+
+/* =========================
+   BUSCAR GASOLINERAS
+========================= */
 
 async function buscar() {
 
@@ -468,9 +627,13 @@ async function buscar() {
 
 
   results.innerHTML = `
+
     <div class="loading">
+
       Buscando los mejores precios...
+
     </div>
+
   `;
 
 
@@ -495,24 +658,30 @@ async function buscar() {
     if (!response.ok) {
 
       throw new Error(
+
         data.error ||
         "Error obteniendo los precios"
+
       );
 
     }
 
 
-    const estaciones =
+    let estaciones =
       data.estaciones || [];
 
 
     if (estaciones.length === 0) {
 
       results.innerHTML = `
+
         <div class="error">
+
           ❌ No encontramos gasolineras
           para esta provincia y combustible.
+
         </div>
+
       `;
 
       return;
@@ -520,10 +689,112 @@ async function buscar() {
     }
 
 
-    const precios =
-      estaciones.map(
-        estacion => estacion.precio
+    /*
+      Si tenemos ubicación,
+      calculamos la distancia.
+    */
+
+    if (ubicacionUsuario) {
+
+      estaciones =
+        estaciones.map(
+          estacion => {
+
+            const lat =
+              parseFloat(estacion.latitud);
+
+            const lon =
+              parseFloat(estacion.longitud);
+
+
+            if (
+              isNaN(lat) ||
+              isNaN(lon)
+            ) {
+
+              return {
+
+                ...estacion,
+
+                distancia: null
+
+              };
+
+            }
+
+
+            return {
+
+              ...estacion,
+
+              distancia:
+                calcularDistancia(
+                  ubicacionUsuario.lat,
+                  ubicacionUsuario.lon,
+                  lat,
+                  lon
+                )
+
+            };
+
+          }
+        );
+
+
+      /*
+        Las estaciones con distancia
+        conocida aparecen primero.
+      */
+
+      estaciones.sort(
+        (a, b) => {
+
+          if (
+            a.distancia === null
+          ) return 1;
+
+          if (
+            b.distancia === null
+          ) return -1;
+
+          return (
+            a.distancia -
+            b.distancia
+          );
+
+        }
       );
+
+    } else {
+
+      /*
+        Sin ubicación:
+        mantenemos el orden
+        de precio más barato.
+      */
+
+      estaciones.sort(
+        (a, b) =>
+          a.precio - b.precio
+      );
+
+    }
+
+
+    /*
+      Calculamos precio medio
+    */
+
+    const precios =
+      estaciones
+        .map(
+          estacion =>
+            estacion.precio
+        )
+        .filter(
+          precio =>
+            typeof precio === "number"
+        );
 
 
     const precioMedio =
@@ -533,12 +804,31 @@ async function buscar() {
       ) / precios.length;
 
 
-    const mejor =
+    /*
+      Mejor precio
+      cuando no usamos ubicación
+    */
+
+    const mejorPrecio =
+      [...estaciones]
+        .sort(
+          (a, b) =>
+            a.precio - b.precio
+        )[0];
+
+
+    /*
+      Primera gasolinera
+      cuando usamos ubicación
+    */
+
+    const primera =
       estaciones[0];
 
 
     const ahorroPorLitro =
-      precioMedio - mejor.precio;
+      precioMedio -
+      mejorPrecio.precio;
 
 
     results.innerHTML = `
@@ -546,28 +836,101 @@ async function buscar() {
       <div class="best-card">
 
         <div class="best-label">
-          🏆 Mejor precio encontrado
+
+          ${
+            ubicacionUsuario
+              ? "📍 MÁS CERCANA"
+              : "🏆 MEJOR PRECIO"
+          }
+
         </div>
+
 
         <div class="best-price">
-          ${mejor.precio.toFixed(3)} €/L
+
+          ${
+            primera.precio.toFixed(3)
+          }
+
+          €/L
+
         </div>
+
 
         <div class="best-name">
-          ${escapeHtml(mejor.nombre)}
+
+          ${
+            escapeHtml(
+              primera.nombre
+            )
+          }
+
         </div>
+
 
         <div class="best-location">
-          📍 ${escapeHtml(mejor.localidad)}
+
+          📍 ${
+            escapeHtml(
+              primera.localidad
+            )
+          }
+
         </div>
 
+
+        ${
+          ubicacionUsuario &&
+          primera.distancia !== null
+
+          ?
+
+          `
+
+            <div class="best-distance">
+
+              🚗 ${
+                formatearDistancia(
+                  primera.distancia
+                )
+              }
+
+            </div>
+
+          `
+
+          :
+
+          ""
+
+        }
+
+
         <div class="saving">
+
           ${
-            ahorroPorLitro > 0
-              ? `Está ${ahorroPorLitro.toFixed(3)}
-                 €/L por debajo del precio medio`
-              : `Es el precio más bajo encontrado`
+            ubicacionUsuario
+
+              ?
+
+              `La gasolinera más cercana a ti`
+
+              :
+
+              ahorroPorLitro > 0
+
+                ?
+
+                `Está ${
+                  ahorroPorLitro.toFixed(3)
+                } €/L por debajo del precio medio`
+
+                :
+
+                `Es el precio más bajo encontrado`
+
           }
+
         </div>
 
       </div>
@@ -576,19 +939,37 @@ async function buscar() {
       <div class="summary">
 
         <div class="summary-main">
-          ⛽ ${estaciones.length}
+
+          ⛽ ${
+            estaciones.length
+          }
           gasolineras encontradas
+
         </div>
+
 
         <div class="summary-info">
 
           Precio medio:
-          ${precioMedio.toFixed(3)} €/L
+          ${
+            precioMedio.toFixed(3)
+          } €/L
 
           <br>
 
           🕐 Actualizado:
-          ${data.fecha || "No disponible"}
+          ${
+            data.fecha ||
+            "No disponible"
+          }
+
+          <br>
+
+          ${
+            ubicacionUsuario
+              ? "📍 Ordenadas por distancia"
+              : "💰 Ordenadas por precio"
+          }
 
         </div>
 
@@ -597,6 +978,10 @@ async function buscar() {
     `;
 
 
+    /*
+      Dibujamos las gasolineras
+    */
+
     estaciones.forEach(
       (estacion, index) => {
 
@@ -604,16 +989,21 @@ async function buscar() {
 
 
         if (
+
           estacion.latitud &&
           estacion.longitud
+
         ) {
 
           mapa =
             "https://www.google.com/maps/search/?api=1&query=" +
+
             encodeURIComponent(
+
               estacion.latitud +
               "," +
               estacion.longitud
+
             );
 
         }
@@ -621,14 +1011,38 @@ async function buscar() {
 
         let posicion;
 
-        if (index === 0) {
-          posicion = "🥇 MÁS BARATA";
-        } else if (index === 1) {
-          posicion = "🥈 SEGUNDA MÁS BARATA";
-        } else if (index === 2) {
-          posicion = "🥉 TERCERA MÁS BARATA";
+
+        if (ubicacionUsuario) {
+
+          posicion =
+            index === 0
+              ? "📍 MÁS CERCANA"
+              : "#" + (index + 1);
+
         } else {
-          posicion = "#" + (index + 1);
+
+          if (index === 0) {
+
+            posicion =
+              "🥇 MÁS BARATA";
+
+          } else if (index === 1) {
+
+            posicion =
+              "🥈 SEGUNDA MÁS BARATA";
+
+          } else if (index === 2) {
+
+            posicion =
+              "🥉 TERCERA MÁS BARATA";
+
+          } else {
+
+            posicion =
+              "#" + (index + 1);
+
+          }
+
         }
 
 
@@ -641,11 +1055,20 @@ async function buscar() {
               <div>
 
                 <div class="position">
+
                   ${posicion}
+
                 </div>
 
+
                 <div class="station-name">
-                  ${escapeHtml(estacion.nombre)}
+
+                  ${
+                    escapeHtml(
+                      estacion.nombre
+                    )
+                  }
+
                 </div>
 
               </div>
@@ -653,10 +1076,14 @@ async function buscar() {
 
               <div class="price">
 
-                ${estacion.precio.toFixed(3)}
+                ${
+                  estacion.precio.toFixed(3)
+                }
 
                 <span class="price-unit">
+
                   €/L
+
                 </span>
 
               </div>
@@ -666,27 +1093,79 @@ async function buscar() {
 
             <div class="station-info">
 
-              📍 ${escapeHtml(estacion.direccion)}
+              📍 ${
+                escapeHtml(
+                  estacion.direccion
+                )
+              }
 
               <br>
 
-              ${escapeHtml(estacion.localidad)}
+              ${
+                escapeHtml(
+                  estacion.localidad
+                )
+              }
 
             </div>
 
 
             ${
+              ubicacionUsuario &&
+              estacion.distancia !== null
+
+              ?
+
+              `
+
+                <div class="distance">
+
+                  🚗 ${
+                    formatearDistancia(
+                      estacion.distancia
+                    )
+                  }
+
+                </div>
+
+              `
+
+              :
+
+              ""
+
+            }
+
+
+            ${
               mapa !== "#"
-                ? `
-                  <a
-                    class="map-button"
-                    href="${mapa}"
-                    target="_blank"
-                  >
-                    🗺️ Cómo llegar
-                  </a>
-                `
-                : ""
+
+              ?
+
+              `
+
+                <a
+
+                  class="map-button"
+
+                  href="${mapa}"
+
+                  target="_blank"
+
+                  rel="noopener noreferrer"
+
+                >
+
+                  🗺️ Cómo llegar
+
+                </a>
+
+              `
+
+              :
+
+              ""
+
             }
 
           </div>
@@ -694,12 +1173,14 @@ async function buscar() {
         `;
 
       }
+
     );
 
 
   } catch (error) {
 
     console.error(error);
+
 
     results.innerHTML = `
 
@@ -710,7 +1191,11 @@ async function buscar() {
 
         <br><br>
 
-        ${escapeHtml(error.message)}
+        ${
+          escapeHtml(
+            error.message
+          )
+        }
 
       </div>
 
@@ -728,14 +1213,138 @@ async function buscar() {
 }
 
 
+/* =========================
+   CALCULAR DISTANCIA
+========================= */
+
+function calcularDistancia(
+  lat1,
+  lon1,
+  lat2,
+  lon2
+) {
+
+  const R =
+    6371;
+
+
+  const dLat =
+    gradosARadianes(
+      lat2 - lat1
+    );
+
+
+  const dLon =
+    gradosARadianes(
+      lon2 - lon1
+    );
+
+
+  const a =
+
+    Math.sin(dLat / 2) *
+    Math.sin(dLat / 2)
+
+    +
+
+    Math.cos(
+      gradosARadianes(lat1)
+    ) *
+
+    Math.cos(
+      gradosARadianes(lat2)
+    ) *
+
+    Math.sin(dLon / 2) *
+    Math.sin(dLon / 2);
+
+
+  const c =
+    2 *
+    Math.atan2(
+      Math.sqrt(a),
+      Math.sqrt(1 - a)
+    );
+
+
+  return R * c;
+
+}
+
+
+function gradosARadianes(grados) {
+
+  return grados *
+    Math.PI /
+    180;
+
+}
+
+
+/* =========================
+   FORMATEAR DISTANCIA
+========================= */
+
+function formatearDistancia(
+  distancia
+) {
+
+  if (
+    distancia < 1
+  ) {
+
+    return (
+      Math.round(
+        distancia * 1000
+      ) +
+      " m"
+    );
+
+  }
+
+
+  return (
+    distancia.toFixed(1) +
+    " km"
+  );
+
+}
+
+
+/* =========================
+   SEGURIDAD HTML
+========================= */
+
 function escapeHtml(text) {
 
-  return String(text || "")
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+  return String(
+    text || ""
+  )
+
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+
+    .replace(
+      /</g,
+      "&lt;"
+    )
+
+    .replace(
+      />/g,
+      "&gt;"
+    )
+
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+
+    .replace(
+      /'/g,
+      "&#039;"
+    );
 
 }
 
