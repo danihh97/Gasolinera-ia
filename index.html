@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>Gasolinera IA</title>
+  <title>AhorraFuel</title>
 
   <style>
     * {
@@ -16,56 +16,52 @@
       margin: 0;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
         Roboto, Arial, sans-serif;
-      background: #f5f7fa;
       color: #172033;
+      background:
+        radial-gradient(circle at 50% -10%, #dfffc0 0%, transparent 38%),
+        linear-gradient(180deg, #f7faf5 0%, #eef2f4 100%);
+      min-height: 100vh;
     }
 
     .app {
       width: 100%;
       max-width: 680px;
       margin: auto;
-      padding: 18px 16px 50px;
+      padding: 18px 15px 60px;
     }
 
-    /* CABECERA */
+    /* LOGO */
 
-    .header {
+    .brand {
       text-align: center;
-      padding: 14px 0 22px;
+      margin-bottom: 18px;
     }
 
-    .logo {
-      width: 64px;
-      height: 64px;
-      margin: auto;
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 32px;
-      background: #111827;
-      box-shadow: 0 8px 22px rgba(17,24,39,.18);
+    .brand-logo {
+      width: 150px;
+      height: 150px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto 5px;
+      filter: drop-shadow(0 8px 15px rgba(0,0,0,.12));
     }
 
-    h1 {
-      margin: 12px 0 5px;
-      font-size: 30px;
-      letter-spacing: -0.7px;
-    }
-
-    .subtitle {
-      color: #7a8496;
-      font-size: 15px;
+    .tagline {
+      font-size: 14px;
+      font-weight: 700;
+      color: #687385;
+      letter-spacing: .5px;
     }
 
     /* BUSCADOR */
 
     .search-card {
-      background: white;
-      border-radius: 22px;
-      padding: 20px;
-      box-shadow: 0 8px 30px rgba(30,41,59,.07);
-      border: 1px solid #edf0f4;
+      background: rgba(255,255,255,.94);
+      border: 1px solid rgba(255,255,255,.8);
+      border-radius: 24px;
+      padding: 21px;
+      box-shadow: 0 12px 35px rgba(23,32,51,.08);
+      backdrop-filter: blur(10px);
     }
 
     .field {
@@ -74,49 +70,49 @@
 
     label {
       display: block;
-      font-size: 13px;
-      font-weight: 700;
       margin-bottom: 7px;
-      color: #4b5563;
+      font-size: 12px;
+      font-weight: 800;
+      color: #667085;
+      letter-spacing: .7px;
     }
 
     select {
       width: 100%;
-      height: 50px;
+      height: 52px;
       padding: 0 14px;
-      border: 1px solid #dfe3e8;
-      border-radius: 13px;
-      background: #fafbfc;
+      border: 1px solid #dce2e7;
+      border-radius: 14px;
+      background: #f9fafb;
       color: #172033;
       font-size: 16px;
       outline: none;
     }
 
     select:focus {
-      border-color: #111827;
+      border-color: #63c51d;
+      box-shadow: 0 0 0 3px rgba(99,197,29,.12);
     }
 
     .search-button {
       width: 100%;
-      height: 52px;
-      margin-top: 3px;
+      height: 54px;
       border: 0;
-      border-radius: 14px;
-      background: #111827;
+      border-radius: 15px;
+      background: linear-gradient(135deg, #73d51d, #31a83d);
       color: white;
       font-size: 16px;
-      font-weight: 700;
+      font-weight: 800;
+      box-shadow: 0 8px 18px rgba(49,168,61,.22);
       cursor: pointer;
-      transition: transform .15s, opacity .15s;
     }
 
     .search-button:active {
-      transform: scale(.98);
+      transform: scale(.985);
     }
 
     .search-button:disabled {
-      opacity: .55;
-      cursor: wait;
+      opacity: .6;
     }
 
     /* RESULTADOS */
@@ -127,141 +123,163 @@
 
     .loading {
       background: white;
-      padding: 28px 20px;
-      text-align: center;
       border-radius: 18px;
-      color: #6b7280;
+      padding: 28px;
+      text-align: center;
+      color: #697386;
+      box-shadow: 0 6px 20px rgba(23,32,51,.05);
     }
 
     /* MEJOR PRECIO */
 
     .best-card {
-      background: #111827;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(135deg, #10251a, #163d22);
       color: white;
-      border-radius: 22px;
+      border-radius: 23px;
       padding: 22px;
       margin-bottom: 14px;
-      box-shadow: 0 10px 30px rgba(17,24,39,.18);
+      box-shadow: 0 12px 30px rgba(16,37,26,.18);
+    }
+
+    .best-card::after {
+      content: "";
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      right: -55px;
+      top: -55px;
+      border-radius: 50%;
+      background: rgba(116,229,29,.16);
     }
 
     .best-label {
+      position: relative;
+      z-index: 1;
       font-size: 12px;
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: .8px;
-      opacity: .7;
+      color: #a9e979;
       text-transform: uppercase;
     }
 
     .best-price {
-      font-size: 40px;
-      font-weight: 800;
+      position: relative;
+      z-index: 1;
+      font-size: 42px;
+      font-weight: 900;
       letter-spacing: -1px;
-      margin-top: 6px;
-    }
-
-    .best-name {
-      font-size: 18px;
-      font-weight: 700;
       margin-top: 5px;
     }
 
+    .best-name {
+      position: relative;
+      z-index: 1;
+      font-size: 18px;
+      font-weight: 800;
+      margin-top: 4px;
+    }
+
     .best-location {
+      position: relative;
+      z-index: 1;
       margin-top: 6px;
       font-size: 14px;
-      opacity: .7;
+      color: #c7d5cb;
     }
 
     .saving {
-      margin-top: 17px;
-      padding-top: 14px;
-      border-top: 1px solid rgba(255,255,255,.14);
+      position: relative;
+      z-index: 1;
+      margin-top: 16px;
+      padding-top: 13px;
+      border-top: 1px solid rgba(255,255,255,.13);
       font-size: 13px;
-      opacity: .85;
+      color: #d8eadb;
     }
 
     /* RESUMEN */
 
     .summary {
-      background: white;
+      background: rgba(255,255,255,.94);
       border-radius: 18px;
       padding: 16px;
       margin-bottom: 14px;
-      border: 1px solid #edf0f4;
+      box-shadow: 0 5px 18px rgba(23,32,51,.05);
     }
 
     .summary-main {
       font-size: 16px;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .summary-info {
-      color: #7a8496;
-      font-size: 13px;
       margin-top: 8px;
+      color: #788294;
+      font-size: 13px;
+      line-height: 1.6;
     }
 
-    /* GASOLINERAS */
+    /* GASOLINERA */
 
     .station {
-      background: white;
-      border-radius: 18px;
+      background: rgba(255,255,255,.96);
+      border: 1px solid #edf0f2;
+      border-radius: 19px;
       padding: 18px;
       margin-bottom: 11px;
-      border: 1px solid #edf0f4;
-      box-shadow: 0 4px 16px rgba(30,41,59,.04);
+      box-shadow: 0 5px 18px rgba(23,32,51,.045);
     }
 
     .station-top {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
       gap: 12px;
     }
 
     .position {
-      font-size: 12px;
-      font-weight: 700;
-      color: #8a94a6;
+      color: #8993a3;
+      font-size: 11px;
+      font-weight: 800;
       margin-bottom: 5px;
     }
 
     .station-name {
       font-size: 17px;
-      font-weight: 700;
+      font-weight: 800;
       line-height: 1.25;
     }
 
     .price {
       white-space: nowrap;
       font-size: 24px;
-      font-weight: 800;
+      font-weight: 900;
     }
 
     .price-unit {
-      font-size: 12px;
-      font-weight: 500;
-      color: #8a94a6;
+      font-size: 11px;
+      color: #8993a3;
+      font-weight: 600;
     }
 
     .station-info {
       margin-top: 9px;
-      color: #6b7280;
+      color: #707b8d;
       font-size: 13px;
-      line-height: 1.4;
+      line-height: 1.5;
     }
 
     .map-button {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      display: inline-block;
       margin-top: 14px;
-      padding: 9px 12px;
+      padding: 9px 13px;
       border-radius: 10px;
-      background: #f1f3f6;
-      color: #172033;
+      background: #eef8e9;
+      color: #287c2e;
       text-decoration: none;
       font-size: 13px;
-      font-weight: 700;
+      font-weight: 800;
     }
 
     .error {
@@ -269,13 +287,14 @@
       color: #b42318;
       padding: 20px;
       border-radius: 18px;
-      border: 1px solid #f0d6d3;
+      box-shadow: 0 5px 18px rgba(23,32,51,.05);
     }
 
     @media (max-width: 420px) {
 
-      h1 {
-        font-size: 27px;
+      .brand-logo {
+        width: 130px;
+        height: 130px;
       }
 
       .best-price {
@@ -289,9 +308,7 @@
       .price {
         font-size: 21px;
       }
-
     }
-
   </style>
 
 </head>
@@ -300,18 +317,16 @@
 
 <div class="app">
 
-  <div class="header">
+  <div class="brand">
 
-    <div class="logo">
-      ⛽
-    </div>
+    <img
+      class="brand-logo"
+      src="/IMG_6106.png"
+      alt="AhorraFuel"
+    >
 
-    <h1>
-      Gasolinera IA
-    </h1>
-
-    <div class="subtitle">
-      Encuentra el mejor precio para repostar
+    <div class="tagline">
+      ENCUENTRA · COMPARA · AHORRA
     </div>
 
   </div>
@@ -322,7 +337,7 @@
     <div class="field">
 
       <label for="province">
-        PROVINCIA
+        📍 PROVINCIA
       </label>
 
       <select id="province">
@@ -388,7 +403,7 @@
     <div class="field">
 
       <label for="fuel">
-        COMBUSTIBLE
+        ⛽ COMBUSTIBLE
       </label>
 
       <select id="fuel">
@@ -547,14 +562,12 @@ async function buscar() {
         </div>
 
         <div class="saving">
-
           ${
             ahorroPorLitro > 0
               ? `Está ${ahorroPorLitro.toFixed(3)}
                  €/L por debajo del precio medio`
               : `Es el precio más bajo encontrado`
           }
-
         </div>
 
       </div>
@@ -563,10 +576,8 @@ async function buscar() {
       <div class="summary">
 
         <div class="summary-main">
-
           ⛽ ${estaciones.length}
           gasolineras encontradas
-
         </div>
 
         <div class="summary-info">
@@ -610,27 +621,14 @@ async function buscar() {
 
         let posicion;
 
-
         if (index === 0) {
-
-          posicion =
-            "🥇 MÁS BARATA";
-
+          posicion = "🥇 MÁS BARATA";
         } else if (index === 1) {
-
-          posicion =
-            "🥈 SEGUNDA MÁS BARATA";
-
+          posicion = "🥈 SEGUNDA MÁS BARATA";
         } else if (index === 2) {
-
-          posicion =
-            "🥉 TERCERA MÁS BARATA";
-
+          posicion = "🥉 TERCERA MÁS BARATA";
         } else {
-
-          posicion =
-            "#" + (index + 1);
-
+          posicion = "#" + (index + 1);
         }
 
 
@@ -647,11 +645,7 @@ async function buscar() {
                 </div>
 
                 <div class="station-name">
-
-                  ${escapeHtml(
-                    estacion.nombre
-                  )}
-
+                  ${escapeHtml(estacion.nombre)}
                 </div>
 
               </div>
@@ -672,15 +666,11 @@ async function buscar() {
 
             <div class="station-info">
 
-              📍 ${escapeHtml(
-                estacion.direccion
-              )}
+              📍 ${escapeHtml(estacion.direccion)}
 
               <br>
 
-              ${escapeHtml(
-                estacion.localidad
-              )}
+              ${escapeHtml(estacion.localidad)}
 
             </div>
 
@@ -711,7 +701,6 @@ async function buscar() {
 
     console.error(error);
 
-
     results.innerHTML = `
 
       <div class="error">
@@ -721,9 +710,7 @@ async function buscar() {
 
         <br><br>
 
-        ${escapeHtml(
-          error.message
-        )}
+        ${escapeHtml(error.message)}
 
       </div>
 
