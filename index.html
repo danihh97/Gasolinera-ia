@@ -1229,6 +1229,18 @@ async function buscar() {
                 <option value="custom">Personalizado</option>
               </select>
 
+              <input
+                id="litrosPersonalizados"
+                type="number"
+                min="1"
+                max="200"
+                step="1"
+                value="40"
+                placeholder="Litros"
+                style="display:none;margin-top:7px;"
+                oninput="actualizarCalculoMejorOpcion()"
+              />
+
             </div>
 
             <div class="trip-field">
@@ -1431,16 +1443,44 @@ async function buscar() {
       const litrosSelect =
         document.getElementById("litrosRepostaje");
 
+      const litrosPersonalizados =
+        document.getElementById("litrosPersonalizados");
+
       const consumoInput =
         document.getElementById("consumoCoche");
 
-      if (!litrosSelect || !consumoInput) {
+      const resultado =
+        document.getElementById("mejorOpcionCalculo");
+
+      if (
+        !litrosSelect ||
+        !consumoInput ||
+        !resultado
+      ) {
         return;
       }
 
-      let litros =
+      if (litrosSelect.value === "custom") {
+
+        if (litrosPersonalizados) {
+          litrosPersonalizados.style.display = "block";
+        }
+
+      } else {
+
+        if (litrosPersonalizados) {
+          litrosPersonalizados.style.display = "none";
+        }
+
+      }
+
+      const litros =
         litrosSelect.value === "custom"
-          ? 40
+          ? Number(
+              litrosPersonalizados
+                ? litrosPersonalizados.value
+                : 0
+            )
           : Number(litrosSelect.value);
 
       const consumo =
@@ -1452,6 +1492,13 @@ async function buscar() {
         !Number.isFinite(consumo) ||
         consumo <= 0
       ) {
+
+        resultado.className =
+          "trip-result bad";
+
+        resultado.innerHTML =
+          "Introduce una cantidad de litros y un consumo válidos.";
+
         return;
       }
 
@@ -1465,29 +1512,46 @@ async function buscar() {
         !referencia ||
         !mejorOpcionReal
       ) {
+        resultado.className =
+          "trip-result bad";
+
+        resultado.innerHTML =
+          "No hay suficientes datos para calcular el ahorro.";
+
         return;
       }
 
-      const ahorro =
-        calcularAhorroReal(
-          mejorOpcionReal,
-          referencia
+      const costeReferenciaCombustible =
+        litros *
+        referencia.precio;
+
+      const costeMejorCombustible =
+        litros *
+        mejorOpcionReal.precio;
+
+      const costeViajeReferencia =
+        calcularCosteDesplazamiento(
+          referencia.distancia,
+          referencia.precio
         );
 
-      const costeViaje =
+      const costeViajeMejor =
         calcularCosteDesplazamiento(
           mejorOpcionReal.distancia,
           mejorOpcionReal.precio
         );
 
-      const resultado =
-        document.getElementById(
-          "mejorOpcionCalculo"
-        );
+      const costeTotalReferencia =
+        costeReferenciaCombustible +
+        costeViajeReferencia;
 
-      if (!resultado) {
-        return;
-      }
+      const costeTotalMejor =
+        costeMejorCombustible +
+        costeViajeMejor;
+
+      const ahorro =
+        costeTotalReferencia -
+        costeTotalMejor;
 
       if (
         mejorOpcionReal === referencia ||
@@ -1498,9 +1562,12 @@ async function buscar() {
           "trip-result bad";
 
         resultado.innerHTML =
-          `📍 No compensa desplazarte hasta esa gasolinera. ` +
-          `El desplazamiento estimado cuesta aproximadamente ` +
-          `${costeViaje.toFixed(2)} €.`;
+          `📍 No compensa desplazarte. ` +
+          `Repostar ${litros.toFixed(0)} L allí ` +
+          `costaría aproximadamente ` +
+          `<strong>${costeTotalMejor.toFixed(2)} €</strong>. ` +
+          `En la más cercana serían ` +
+          `<strong>${costeTotalReferencia.toFixed(2)} €</strong>.`;
 
       } else {
 
@@ -1508,13 +1575,17 @@ async function buscar() {
           "trip-result good";
 
         resultado.innerHTML =
-          `💚 Te compensa ir: podrías ahorrar aproximadamente ` +
-          `${ahorro.toFixed(2)} € frente a repostar en la más cercana. ` +
-          `Desplazamiento estimado: ${costeViaje.toFixed(2)} €.`;
+          `💚 Te compensa ir. ` +
+          `Para ${litros.toFixed(0)} L, el coste total estimado sería ` +
+          `<strong>${costeTotalMejor.toFixed(2)} €</strong> ` +
+          `frente a <strong>${costeTotalReferencia.toFixed(2)} €</strong> ` +
+          `en la más cercana. ` +
+          `Ahorras aproximadamente <strong>${ahorro.toFixed(2)} €</strong>.`;
 
       }
 
     }
+
 
     /* =========================
        LISTA DE GASOLINERAS
@@ -2000,3 +2071,4 @@ function escapeHtml(
 </body>
 
 </html>
+<script>actualizarCalculoMejorOpcion();</script>
