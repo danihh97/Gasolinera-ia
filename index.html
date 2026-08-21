@@ -344,6 +344,68 @@
       color: #9a6b00;
     }
 
+
+    .trip-settings {
+      margin: 0 0 14px;
+      padding: 14px;
+      background: rgba(255,255,255,.96);
+      border: 1px solid #edf0f2;
+      border-radius: 17px;
+      box-shadow: 0 5px 18px rgba(23,32,51,.045);
+    }
+
+    .trip-title {
+      font-size: 13px;
+      font-weight: 900;
+      margin-bottom: 10px;
+    }
+
+    .trip-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .trip-field label {
+      display: block;
+      font-size: 10px;
+      font-weight: 900;
+      color: #687385;
+      margin-bottom: 5px;
+    }
+
+    .trip-field select,
+    .trip-field input {
+      width: 100%;
+      box-sizing: border-box;
+      border: 1px solid #dfe4ea;
+      border-radius: 11px;
+      padding: 9px 10px;
+      font: inherit;
+      background: #fff;
+    }
+
+    .trip-result {
+      margin-top: 9px;
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 700;
+    }
+
+    .trip-result.good {
+      color: #287c2e;
+    }
+
+    .trip-result.bad {
+      color: #c62828;
+    }
+
+    @media (max-width: 520px) {
+      .trip-fields {
+        grid-template-columns: 1fr;
+      }
+    }
+
     .option-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -599,6 +661,9 @@
 <script>
 
 let ubicacionUsuario = null;
+
+let litrosRepostaje = 40;
+let consumoCoche = 6.5;
 
 
 /* =========================
@@ -1031,6 +1096,92 @@ async function buscar() {
       precioMedio -
       mejorPrecio.precio;
 
+    function calcularCosteDesplazamiento(
+      distanciaKm,
+      precioLitro
+    ) {
+      if (
+        typeof distanciaKm !== "number" ||
+        typeof precioLitro !== "number"
+      ) {
+        return 0;
+      }
+
+      const distanciaIdaVuelta =
+        distanciaKm * 2;
+
+      const litrosViaje =
+        distanciaIdaVuelta *
+        consumoCoche /
+        100;
+
+      return litrosViaje * precioLitro;
+    }
+
+    function calcularAhorroReal(
+      estacion,
+      referencia
+    ) {
+      if (!estacion || !referencia) {
+        return 0;
+      }
+
+      const costeEstacion =
+        litrosRepostaje *
+        estacion.precio;
+
+      const costeReferencia =
+        litrosRepostaje *
+        referencia.precio;
+
+      const costeViajeEstacion =
+        calcularCosteDesplazamiento(
+          estacion.distancia,
+          estacion.precio
+        );
+
+      const costeViajeReferencia =
+        calcularCosteDesplazamiento(
+          referencia.distancia,
+          referencia.precio
+        );
+
+      return (
+        costeReferencia +
+        costeViajeReferencia -
+        costeEstacion -
+        costeViajeEstacion
+      );
+    }
+
+    const referenciaMasCercana =
+      masCercana || estaciones[0];
+
+    let mejorOpcionReal =
+      mejorOpcion;
+
+    if (
+      ubicacionUsuario &&
+      referenciaMasCercana &&
+      diezMasCercanas.length
+    ) {
+      mejorOpcionReal =
+        [...diezMasCercanas]
+          .map(estacion => ({
+            estacion,
+            ahorro:
+              calcularAhorroReal(
+                estacion,
+                referenciaMasCercana
+              )
+          }))
+          .sort(
+            (a, b) =>
+              b.ahorro - a.ahorro
+          )[0].estacion;
+    }
+
+
 
     /* =========================
        TARJETAS SUPERIORES
@@ -1041,7 +1192,72 @@ async function buscar() {
       masCercana
     ) {
 
+      const ahorroReal =
+        referenciaMasCercana &&
+        mejorOpcionReal
+          ? calcularAhorroReal(
+              mejorOpcionReal,
+              referenciaMasCercana
+            )
+          : 0;
+
       results.innerHTML = `
+
+        <div class="trip-settings">
+
+          <div class="trip-title">
+            ⭐ Calcula si realmente te compensa
+          </div>
+
+          <div class="trip-fields">
+
+            <div class="trip-field">
+
+              <label for="litrosRepostaje">
+                ⛽ Litros a repostar
+              </label>
+
+              <select
+                id="litrosRepostaje"
+                onchange="actualizarCalculoMejorOpcion()"
+              >
+                <option value="20">20 L</option>
+                <option value="30">30 L</option>
+                <option value="40" selected>40 L</option>
+                <option value="50">50 L</option>
+                <option value="60">60 L</option>
+                <option value="custom">Personalizado</option>
+              </select>
+
+            </div>
+
+            <div class="trip-field">
+
+              <label for="consumoCoche">
+                🚗 Consumo del coche
+              </label>
+
+              <input
+                id="consumoCoche"
+                type="number"
+                min="1"
+                max="30"
+                step="0.1"
+                value="6.5"
+                onchange="actualizarCalculoMejorOpcion()"
+              >
+
+              <div style="font-size:10px;color:#8993a3;margin-top:4px;">
+                L/100 km
+              </div>
+
+            </div>
+
+          </div>
+
+          <div id="mejorOpcionCalculo"></div>
+
+        </div>
 
         <div class="option-grid">
 
@@ -1052,15 +1268,15 @@ async function buscar() {
             </div>
 
             <div class="option-price">
-              ${mejorOpcion.precio.toFixed(3)} €/L
+              ${mejorOpcionReal.precio.toFixed(3)} €/L
             </div>
 
             <div class="option-name">
-              ${escapeHtml(mejorOpcion.nombre)}
+              ${escapeHtml(mejorOpcionReal.nombre)}
             </div>
 
             <div class="option-distance">
-              🚗 ${formatearDistancia(mejorOpcion.distancia)}
+              🚗 ${formatearDistancia(mejorOpcionReal.distancia)}
             </div>
 
           </div>
@@ -1208,6 +1424,97 @@ async function buscar() {
 
     `;
 
+
+
+    function actualizarCalculoMejorOpcion() {
+
+      const litrosSelect =
+        document.getElementById("litrosRepostaje");
+
+      const consumoInput =
+        document.getElementById("consumoCoche");
+
+      if (!litrosSelect || !consumoInput) {
+        return;
+      }
+
+      let litros =
+        litrosSelect.value === "custom"
+          ? 40
+          : Number(litrosSelect.value);
+
+      const consumo =
+        Number(consumoInput.value);
+
+      if (
+        !Number.isFinite(litros) ||
+        litros <= 0 ||
+        !Number.isFinite(consumo) ||
+        consumo <= 0
+      ) {
+        return;
+      }
+
+      litrosRepostaje = litros;
+      consumoCoche = consumo;
+
+      const referencia =
+        masCercana || estaciones[0];
+
+      if (
+        !referencia ||
+        !mejorOpcionReal
+      ) {
+        return;
+      }
+
+      const ahorro =
+        calcularAhorroReal(
+          mejorOpcionReal,
+          referencia
+        );
+
+      const costeViaje =
+        calcularCosteDesplazamiento(
+          mejorOpcionReal.distancia,
+          mejorOpcionReal.precio
+        );
+
+      const resultado =
+        document.getElementById(
+          "mejorOpcionCalculo"
+        );
+
+      if (!resultado) {
+        return;
+      }
+
+      if (
+        mejorOpcionReal === referencia ||
+        ahorro <= 0
+      ) {
+
+        resultado.className =
+          "trip-result bad";
+
+        resultado.innerHTML =
+          `📍 No compensa desplazarte hasta esa gasolinera. ` +
+          `El desplazamiento estimado cuesta aproximadamente ` +
+          `${costeViaje.toFixed(2)} €.`;
+
+      } else {
+
+        resultado.className =
+          "trip-result good";
+
+        resultado.innerHTML =
+          `💚 Te compensa ir: podrías ahorrar aproximadamente ` +
+          `${ahorro.toFixed(2)} € frente a repostar en la más cercana. ` +
+          `Desplazamiento estimado: ${costeViaje.toFixed(2)} €.`;
+
+      }
+
+    }
 
     /* =========================
        LISTA DE GASOLINERAS
