@@ -16,55 +16,62 @@
       margin: 0;
       font-family: Arial, sans-serif;
       background: #f3f4f6;
-      color: #111;
+      color: #111827;
     }
 
     .app {
       max-width: 650px;
       margin: auto;
-      padding: 25px 16px 50px;
+      padding: 20px 15px 50px;
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 38px;
+      margin-top: 10px;
     }
 
     h1 {
       text-align: center;
-      margin: 10px 0 5px;
-      font-size: 32px;
+      margin: 5px 0;
+      font-size: 30px;
     }
 
     .subtitle {
       text-align: center;
-      color: #666;
-      margin-bottom: 25px;
+      color: #6b7280;
+      margin-bottom: 22px;
     }
 
     .card {
       background: white;
       padding: 20px;
-      border-radius: 18px;
+      border-radius: 20px;
       box-shadow: 0 4px 18px rgba(0,0,0,.08);
     }
 
     label {
       display: block;
       font-weight: bold;
-      margin: 15px 0 7px;
+      margin: 14px 0 7px;
     }
 
     select,
     button {
       width: 100%;
       padding: 14px;
-      border-radius: 11px;
-      border: 1px solid #ddd;
+      border-radius: 12px;
+      border: 1px solid #d1d5db;
       font-size: 16px;
     }
 
     button {
       margin-top: 20px;
       border: 0;
-      background: #111;
+      background: #111827;
       color: white;
       font-weight: bold;
+      cursor: pointer;
     }
 
     button:disabled {
@@ -75,51 +82,86 @@
       margin-top: 20px;
     }
 
+    .best {
+      background: white;
+      padding: 20px;
+      border-radius: 20px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 18px rgba(0,0,0,.08);
+      text-align: center;
+    }
+
+    .best-title {
+      font-size: 15px;
+      font-weight: bold;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    .best-price {
+      font-size: 38px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .best-name {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .saving {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #166534;
+    }
+
     .summary {
       background: white;
       padding: 15px;
-      border-radius: 14px;
+      border-radius: 15px;
       margin-bottom: 12px;
     }
 
     .station {
       background: white;
       padding: 18px;
-      border-radius: 15px;
+      border-radius: 17px;
       margin-bottom: 12px;
       box-shadow: 0 3px 12px rgba(0,0,0,.07);
     }
 
     .position {
       font-size: 14px;
-      color: #777;
+      color: #6b7280;
       margin-bottom: 5px;
+      font-weight: bold;
     }
 
     .price {
-      font-size: 28px;
+      font-size: 27px;
       font-weight: bold;
     }
 
     .name {
-      font-size: 19px;
+      font-size: 18px;
       font-weight: bold;
       margin-top: 7px;
     }
 
     .info {
-      color: #666;
+      color: #6b7280;
       margin-top: 6px;
     }
 
     .map {
       display: inline-block;
       margin-top: 14px;
-      padding: 10px 13px;
-      background: #eee;
-      color: #111;
+      padding: 10px 14px;
+      background: #f3f4f6;
+      color: #111827;
       text-decoration: none;
-      border-radius: 9px;
+      border-radius: 10px;
+      font-weight: bold;
     }
 
     .loading {
@@ -133,7 +175,7 @@
       background: white;
       padding: 20px;
       border-radius: 15px;
-      color: #b00020;
+      color: #b91c1c;
     }
   </style>
 
@@ -143,16 +185,18 @@
 
 <div class="app">
 
-  <h1>⛽ Gasolinera IA</h1>
+  <div class="logo">⛽</div>
+
+  <h1>Gasolinera IA</h1>
 
   <div class="subtitle">
-    Encuentra las gasolineras más baratas
+    Encuentra dónde repostar más barato
   </div>
 
   <div class="card">
 
     <label for="province">
-      Provincia
+      📍 Provincia
     </label>
 
     <select id="province">
@@ -212,9 +256,8 @@
 
     </select>
 
-
     <label for="fuel">
-      Combustible
+      ⛽ Combustible
     </label>
 
     <select id="fuel">
@@ -233,7 +276,6 @@
 
     </select>
 
-
     <button
       id="searchButton"
       onclick="buscar()"
@@ -243,14 +285,12 @@
 
   </div>
 
-
   <div
     id="results"
     class="results"
   ></div>
 
 </div>
-
 
 <script>
 
@@ -268,15 +308,13 @@ async function buscar() {
   const results =
     document.getElementById("results");
 
-
   button.disabled = true;
 
   results.innerHTML = `
     <div class="loading">
-      ⏳ Buscando gasolineras...
+      ⏳ Buscando precios...
     </div>
   `;
-
 
   try {
 
@@ -287,28 +325,21 @@ async function buscar() {
       "&producto=" +
       encodeURIComponent(producto);
 
-
     const response =
       await fetch(url);
-
 
     const data =
       await response.json();
 
-
     if (!response.ok) {
-
       throw new Error(
         data.error ||
         "Error obteniendo los precios"
       );
-
     }
-
 
     const estaciones =
       data.estaciones || [];
-
 
     if (estaciones.length === 0) {
 
@@ -320,11 +351,52 @@ async function buscar() {
       `;
 
       return;
-
     }
 
+    const precios =
+      estaciones.map(e => e.precio);
+
+    const precioMedio =
+      precios.reduce(
+        (a, b) => a + b,
+        0
+      ) / precios.length;
+
+    const mejor =
+      estaciones[0];
+
+    const ahorroPorLitro =
+      precioMedio - mejor.precio;
 
     results.innerHTML = `
+
+      <div class="best">
+
+        <div class="best-title">
+          🏆 MEJOR PRECIO
+        </div>
+
+        <div class="best-price">
+          ${mejor.precio.toFixed(3)} €/L
+        </div>
+
+        <div class="best-name">
+          ${escapeHtml(mejor.nombre)}
+        </div>
+
+        <div class="info">
+          📍 ${escapeHtml(mejor.localidad)}
+        </div>
+
+        <div class="saving">
+          ${ahorroPorLitro > 0
+            ? `Está ${ahorroPorLitro.toFixed(3)} €/L
+               por debajo de la media`
+            : `Es el precio más bajo encontrado`
+          }
+        </div>
+
+      </div>
 
       <div class="summary">
 
@@ -335,24 +407,24 @@ async function buscar() {
 
         <br><br>
 
-        🥇 Ordenadas de más barata
-        a más cara
+        📊 Precio medio:
+        <strong>
+          ${precioMedio.toFixed(3)} €/L
+        </strong>
 
         <br><br>
 
-        🕐 Datos actualizados:
+        🕐 Actualizado:
         ${data.fecha || "No disponible"}
 
       </div>
 
     `;
 
-
     estaciones.forEach(
       (estacion, index) => {
 
         let mapa = "#";
-
 
         if (
           estacion.latitud &&
@@ -366,9 +438,7 @@ async function buscar() {
               "," +
               estacion.longitud
             );
-
         }
-
 
         results.innerHTML += `
 
@@ -379,46 +449,30 @@ async function buscar() {
               ${
                 index === 0
                   ? "🥇 MÁS BARATA"
-                  : "#" + (index + 1)
+                  : index === 1
+                    ? "🥈 SEGUNDA MÁS BARATA"
+                    : index === 2
+                      ? "🥉 TERCERA MÁS BARATA"
+                      : "#" + (index + 1)
               }
 
             </div>
 
-
             <div class="price">
-
-              ${estacion.precio.toFixed(3)}
-              €/L
-
+              ${estacion.precio.toFixed(3)} €/L
             </div>
-
 
             <div class="name">
-
-              ${escapeHtml(
-                estacion.nombre
-              )}
-
+              ${escapeHtml(estacion.nombre)}
             </div>
-
 
             <div class="info">
-
-              📍 ${escapeHtml(
-                estacion.direccion
-              )}
-
+              📍 ${escapeHtml(estacion.direccion)}
             </div>
-
 
             <div class="info">
-
-              ${escapeHtml(
-                estacion.localidad
-              )}
-
+              ${escapeHtml(estacion.localidad)}
             </div>
-
 
             ${
               mapa !== "#"
@@ -437,10 +491,8 @@ async function buscar() {
           </div>
 
         `;
-
       }
     );
-
 
   } catch (error) {
 
@@ -455,9 +507,7 @@ async function buscar() {
 
         <br><br>
 
-        ${escapeHtml(
-          error.message
-        )}
+        ${escapeHtml(error.message)}
 
       </div>
 
@@ -466,11 +516,8 @@ async function buscar() {
   } finally {
 
     button.disabled = false;
-
   }
-
 }
-
 
 function escapeHtml(text) {
 
