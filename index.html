@@ -30,8 +30,6 @@
       padding: 18px 15px 60px;
     }
 
-    /* LOGO */
-
     .brand {
       text-align: center;
       margin-bottom: 18px;
@@ -52,8 +50,6 @@
       color: #687385;
       letter-spacing: .5px;
     }
-
-    /* BUSCADOR */
 
     .search-card {
       background: rgba(255,255,255,.94);
@@ -115,8 +111,6 @@
       opacity: .6;
     }
 
-    /* UBICACIÓN */
-
     .location-button {
       width: 100%;
       height: 50px;
@@ -145,8 +139,6 @@
       font-size: 13px;
     }
 
-    /* RESULTADOS */
-
     .results {
       margin-top: 20px;
     }
@@ -159,8 +151,6 @@
       color: #697386;
       box-shadow: 0 6px 20px rgba(23,32,51,.05);
     }
-
-    /* MEJOR PRECIO */
 
     .best-card {
       position: relative;
@@ -238,8 +228,6 @@
       color: #d8eadb;
     }
 
-    /* RESUMEN */
-
     .summary {
       background: rgba(255,255,255,.94);
       border-radius: 18px;
@@ -259,8 +247,6 @@
       font-size: 13px;
       line-height: 1.6;
     }
-
-    /* GASOLINERA */
 
     .station {
       background: rgba(255,255,255,.96);
@@ -355,7 +341,6 @@
         font-size: 21px;
       }
     }
-
   </style>
 
 </head>
@@ -564,7 +549,7 @@ function usarUbicacion() {
 
 
       status.textContent =
-        "Ahora pulsa «Buscar gasolineras».";
+        "Ubicación obtenida correctamente.";
 
     },
 
@@ -690,8 +675,7 @@ async function buscar() {
 
 
     /*
-      Si tenemos ubicación,
-      calculamos la distancia.
+      CALCULAR DISTANCIAS
     */
 
     if (ubicacionUsuario) {
@@ -700,11 +684,28 @@ async function buscar() {
         estaciones.map(
           estacion => {
 
+            /*
+              IMPORTANTE:
+              La API puede devolver
+              coordenadas con coma decimal.
+            */
+
             const lat =
-              parseFloat(estacion.latitud);
+              parseFloat(
+                String(
+                  estacion.latitud || ""
+                )
+                .replace(",", ".")
+              );
+
 
             const lon =
-              parseFloat(estacion.longitud);
+              parseFloat(
+                String(
+                  estacion.longitud || ""
+                )
+                .replace(",", ".")
+              );
 
 
             if (
@@ -742,8 +743,7 @@ async function buscar() {
 
 
       /*
-        Las estaciones con distancia
-        conocida aparecen primero.
+        Ordenar por distancia
       */
 
       estaciones.sort(
@@ -769,8 +769,7 @@ async function buscar() {
 
       /*
         Sin ubicación:
-        mantenemos el orden
-        de precio más barato.
+        ordenar por precio
       */
 
       estaciones.sort(
@@ -782,7 +781,7 @@ async function buscar() {
 
 
     /*
-      Calculamos precio medio
+      PRECIO MEDIO
     */
 
     const precios =
@@ -805,8 +804,7 @@ async function buscar() {
 
 
     /*
-      Mejor precio
-      cuando no usamos ubicación
+      GASOLINERA MÁS BARATA
     */
 
     const mejorPrecio =
@@ -818,8 +816,7 @@ async function buscar() {
 
 
     /*
-      Primera gasolinera
-      cuando usamos ubicación
+      PRIMERA SEGÚN EL MODO
     */
 
     const primera =
@@ -830,6 +827,10 @@ async function buscar() {
       precioMedio -
       mejorPrecio.precio;
 
+
+    /*
+      CABECERA DE RESULTADOS
+    */
 
     results.innerHTML = `
 
@@ -913,7 +914,7 @@ async function buscar() {
 
               ?
 
-              `La gasolinera más cercana a ti`
+              `Gasolinera más cercana a tu ubicación`
 
               :
 
@@ -979,7 +980,7 @@ async function buscar() {
 
 
     /*
-      Dibujamos las gasolineras
+      MOSTRAR GASOLINERAS
     */
 
     estaciones.forEach(
@@ -995,14 +996,26 @@ async function buscar() {
 
         ) {
 
+          const latMapa =
+            String(
+              estacion.latitud
+            ).replace(",", ".");
+
+
+          const lonMapa =
+            String(
+              estacion.longitud
+            ).replace(",", ".");
+
+
           mapa =
             "https://www.google.com/maps/search/?api=1&query=" +
 
             encodeURIComponent(
 
-              estacion.latitud +
+              latMapa +
               "," +
-              estacion.longitud
+              lonMapa
 
             );
 
@@ -1272,7 +1285,9 @@ function calcularDistancia(
 }
 
 
-function gradosARadianes(grados) {
+function gradosARadianes(
+  grados
+) {
 
   return grados *
     Math.PI /
@@ -1315,7 +1330,9 @@ function formatearDistancia(
    SEGURIDAD HTML
 ========================= */
 
-function escapeHtml(text) {
+function escapeHtml(
+  text
+) {
 
   return String(
     text || ""
