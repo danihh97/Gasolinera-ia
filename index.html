@@ -2,18 +2,12 @@
 <html lang="es">
 
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Gasolinera IA</title>
 
   <style>
-
     * {
       box-sizing: border-box;
     }
@@ -43,7 +37,7 @@
       margin-bottom: 25px;
     }
 
-    .search-card {
+    .card {
       background: white;
       padding: 20px;
       border-radius: 18px;
@@ -56,7 +50,6 @@
       margin: 15px 0 7px;
     }
 
-    input,
     select,
     button {
       width: 100%;
@@ -143,7 +136,6 @@
       border-radius: 15px;
       color: #b00020;
     }
-
   </style>
 
 </head>
@@ -155,10 +147,10 @@
   <h1>⛽ Gasolinera IA</h1>
 
   <div class="subtitle">
-    Encuentra el combustible más barato
+    Encuentra las gasolineras más baratas
   </div>
 
-  <div class="search-card">
+  <div class="card">
 
     <label for="province">
       Provincia
@@ -171,18 +163,6 @@
       </option>
 
     </select>
-
-    <label for="postal">
-      Código postal
-    </label>
-
-    <input
-      id="postal"
-      type="text"
-      inputmode="numeric"
-      maxlength="5"
-      placeholder="Ejemplo: 35010"
-    >
 
     <label for="fuel">
       Combustible
@@ -208,7 +188,7 @@
       id="searchButton"
       onclick="buscar()"
     >
-      🔎 Buscar gasolinera
+      🔎 Buscar gasolineras
     </button>
 
   </div>
@@ -220,15 +200,13 @@
 
 </div>
 
+
 <script>
 
 async function buscar() {
 
   const provincia =
     document.getElementById("province").value;
-
-  const postal =
-    document.getElementById("postal").value.trim();
 
   const producto =
     document.getElementById("fuel").value;
@@ -239,24 +217,15 @@ async function buscar() {
   const results =
     document.getElementById("results");
 
-  if (!/^\d{5}$/.test(postal)) {
-
-    results.innerHTML = `
-      <div class="error">
-        ⚠️ Introduce un código postal válido.
-      </div>
-    `;
-
-    return;
-  }
 
   button.disabled = true;
 
   results.innerHTML = `
     <div class="loading">
-      ⏳ Buscando las gasolineras más baratas...
+      ⏳ Buscando gasolineras...
     </div>
   `;
+
 
   try {
 
@@ -265,42 +234,46 @@ async function buscar() {
       "?provincia=" +
       encodeURIComponent(provincia) +
       "&producto=" +
-      encodeURIComponent(producto) +
-      "&cp=" +
-      encodeURIComponent(postal);
+      encodeURIComponent(producto);
+
 
     const response =
       await fetch(url);
 
+
     const data =
       await response.json();
 
+
     if (!response.ok) {
+
       throw new Error(
-        data.error || "Error en la búsqueda"
+        data.error ||
+        "Error obteniendo los precios"
       );
+
     }
+
 
     const estaciones =
       data.estaciones || [];
+
 
     if (estaciones.length === 0) {
 
       results.innerHTML = `
         <div class="error">
 
-          ❌ No encontramos gasolineras
-          para ese código postal.
-
-          <br><br>
-
-          Prueba con otro código postal.
+          ❌ No se encontraron
+          gasolineras.
 
         </div>
       `;
 
       return;
+
     }
+
 
     results.innerHTML = `
 
@@ -311,19 +284,26 @@ async function buscar() {
           gasolineras encontradas
         </strong>
 
-        <br>
+        <br><br>
 
         🥇 Ordenadas de más barata
         a más cara
+
+        <br><br>
+
+        🕐 Datos actualizados:
+        ${data.fecha || "No disponible"}
 
       </div>
 
     `;
 
+
     estaciones.forEach(
       (estacion, index) => {
 
         let mapa = "#";
+
 
         if (
           estacion.latitud &&
@@ -340,6 +320,7 @@ async function buscar() {
 
         }
 
+
         results.innerHTML += `
 
           <div class="station">
@@ -354,12 +335,14 @@ async function buscar() {
 
             </div>
 
+
             <div class="price">
 
               ${estacion.precio.toFixed(3)}
               €/L
 
             </div>
+
 
             <div class="name">
 
@@ -369,6 +352,7 @@ async function buscar() {
 
             </div>
 
+
             <div class="info">
 
               📍 ${escapeHtml(
@@ -377,20 +361,15 @@ async function buscar() {
 
             </div>
 
+
             <div class="info">
 
               ${escapeHtml(
-                estacion.codigoPostal
-              )}
-
-              ${escapeHtml(
                 estacion.localidad
-                  ? " · " +
-                    estacion.localidad
-                  : ""
               )}
 
             </div>
+
 
             ${
               mapa !== "#"
@@ -412,6 +391,7 @@ async function buscar() {
 
       }
     );
+
 
   } catch (error) {
 
@@ -442,11 +422,6 @@ async function buscar() {
 
 }
 
-
-/*
- * Evita que datos externos puedan
- * interpretar HTML dentro de la página.
- */
 
 function escapeHtml(text) {
 
