@@ -864,12 +864,16 @@ async function buscar() {
 
         <div class="simple-card">
 
-          <div class="simple-card-label">
-            💰 MÁS BARATA
-          </div>
+          <div class="simple-card-head">
 
-          <div class="simple-card-price">
-            ${mejorPrecio.precio.toFixed(3)} €/L
+            <div class="simple-card-label">
+              💰 MÁS BARATA
+            </div>
+
+            <div class="simple-card-price">
+              ${mejorPrecio.precio.toFixed(3)} <small>€/L</small>
+            </div>
+
           </div>
 
           <div class="simple-card-name">
@@ -897,12 +901,16 @@ async function buscar() {
             `
               <div class="simple-card">
 
-                <div class="simple-card-label">
-                  📍 MÁS CERCANA
-                </div>
+                <div class="simple-card-head">
 
-                <div class="simple-card-price">
-                  ${masCercana.precio.toFixed(3)} €/L
+                  <div class="simple-card-label">
+                    📍 MÁS CERCANA
+                  </div>
+
+                  <div class="simple-card-price">
+                    ${masCercana.precio.toFixed(3)} <small>€/L</small>
+                  </div>
+
                 </div>
 
                 <div class="simple-card-name">
@@ -910,7 +918,7 @@ async function buscar() {
                 </div>
 
                 <div class="simple-card-distance">
-                  🚗 ${distanciaMasCercana}
+                  🚗 ${formatearDistancia(masCercana.distancia)}
                 </div>
 
               </div>
