@@ -115,7 +115,7 @@
       opacity: .6;
     }
 
-    /* UBICACIÃN */
+    /* UBICACI&#xD3;N */
 
     .location-button {
       width: 100%;
@@ -399,7 +399,7 @@
     >
 
     <div class="tagline">
-      ENCUENTRA Â· COMPARA Â· AHORRA
+      ENCUENTRA &#xB7; COMPARA &#xB7; AHORRA
     </div>
 
   </div>
@@ -410,40 +410,40 @@
     <div class="field">
 
       <label for="province">
-        ð PROVINCIA
+        &#x1F4CD; PROVINCIA
       </label>
 
       <select id="province">
 
-        <option value="01">Ãlava</option>
+        <option value="01">&#xC1;lava</option>
         <option value="02">Albacete</option>
         <option value="03">Alicante</option>
-        <option value="04">AlmerÃ­a</option>
-        <option value="05">Ãvila</option>
+        <option value="04">Almer&#xED;a</option>
+        <option value="05">&#xC1;vila</option>
         <option value="06">Badajoz</option>
         <option value="07">Baleares</option>
         <option value="08">Barcelona</option>
         <option value="09">Burgos</option>
-        <option value="10">CÃ¡ceres</option>
-        <option value="11">CÃ¡diz</option>
-        <option value="12">CastellÃ³n</option>
+        <option value="10">C&#xE1;ceres</option>
+        <option value="11">C&#xE1;diz</option>
+        <option value="12">Castell&#xF3;n</option>
         <option value="13">Ciudad Real</option>
-        <option value="14">CÃ³rdoba</option>
-        <option value="15">A CoruÃ±a</option>
+        <option value="14">C&#xF3;rdoba</option>
+        <option value="15">A Coru&#xF1;a</option>
         <option value="16">Cuenca</option>
         <option value="17">Girona</option>
         <option value="18">Granada</option>
         <option value="19">Guadalajara</option>
-        <option value="20">GuipÃºzcoa</option>
+        <option value="20">Guip&#xFA;zcoa</option>
         <option value="21">Huelva</option>
         <option value="22">Huesca</option>
-        <option value="23">JaÃ©n</option>
-        <option value="24">LeÃ³n</option>
+        <option value="23">Ja&#xE9;n</option>
+        <option value="24">Le&#xF3;n</option>
         <option value="25">Lleida</option>
         <option value="26">La Rioja</option>
         <option value="27">Lugo</option>
         <option value="28">Madrid</option>
-        <option value="29">MÃ¡laga</option>
+        <option value="29">M&#xE1;laga</option>
         <option value="30">Murcia</option>
         <option value="31">Navarra</option>
         <option value="32">Ourense</option>
@@ -476,7 +476,7 @@
     <div class="field">
 
       <label for="fuel">
-        â½ COMBUSTIBLE
+        &#x26FD; COMBUSTIBLE
       </label>
 
       <select id="fuel">
@@ -490,7 +490,7 @@
         </option>
 
         <option value="diesel">
-          DiÃ©sel
+          Di&#xE9;sel
         </option>
 
       </select>
@@ -503,7 +503,7 @@
       class="search-button"
       onclick="buscar()"
     >
-      ð Buscar gasolineras
+      &#x1F50E; Buscar gasolineras
     </button>
 
 
@@ -512,7 +512,7 @@
       class="location-button"
       onclick="usarUbicacion()"
     >
-      ð Cerca de mÃ­
+      &#x1F4CD; Cerca de m&#xED;
     </button>
 
 
@@ -538,7 +538,7 @@ let ubicacionUsuario = null;
 
 
 /* =========================
-   OBTENER UBICACIÃN
+   OBTENER UBICACI\u00D3N
 ========================= */
 
 function usarUbicacion() {
@@ -553,7 +553,7 @@ function usarUbicacion() {
   if (!navigator.geolocation) {
 
     status.textContent =
-      "â Tu dispositivo no permite obtener la ubicaciÃ³n.";
+      "\u274C Tu dispositivo no permite obtener la ubicaci\u00F3n.";
 
     return;
   }
@@ -562,10 +562,10 @@ function usarUbicacion() {
   button.disabled = true;
 
   button.textContent =
-    "ð Obteniendo ubicaciÃ³n...";
+    "\u{1F4CD} Obteniendo ubicaci\u00F3n...";
 
   status.textContent =
-    "Permite el acceso a tu ubicaciÃ³n.";
+    "Permite el acceso a tu ubicaci\u00F3n.";
 
 
   navigator.geolocation.getCurrentPosition(
@@ -586,11 +586,11 @@ function usarUbicacion() {
       button.disabled = false;
 
       button.textContent =
-        "â UbicaciÃ³n activada";
+        "\u2705 Ubicaci\u00F3n activada";
 
 
       status.textContent =
-        "UbicaciÃ³n obtenida correctamente.";
+        "Ubicaci\u00F3n obtenida correctamente.";
 
     },
 
@@ -604,11 +604,11 @@ function usarUbicacion() {
       button.disabled = false;
 
       button.textContent =
-        "ð Cerca de mÃ­";
+        "\u{1F4CD} Cerca de m\u00ED";
 
 
       status.textContent =
-        "â No se pudo obtener tu ubicaciÃ³n.";
+        "\u274C No se pudo obtener tu ubicaci\u00F3n.";
 
     },
 
@@ -649,7 +649,7 @@ async function buscar() {
   button.disabled = true;
 
   button.textContent =
-    "â³ Buscando...";
+    "\u23F3 Buscando...";
 
 
   results.innerHTML = `
@@ -703,7 +703,7 @@ async function buscar() {
 
         <div class="error">
 
-          â No encontramos gasolineras
+          \u274C No encontramos gasolineras
           para esta provincia y combustible.
 
         </div>
@@ -834,7 +834,7 @@ async function buscar() {
 
 
     /* =========================
-       MÃS BARATA
+       M\u00C1S BARATA
     ========================= */
 
     const mejorPrecio =
@@ -861,7 +861,7 @@ async function buscar() {
 
 
     /* =========================
-       MÃS CERCANA
+       M\u00C1S CERCANA
     ========================= */
 
     const masCercana =
@@ -895,13 +895,13 @@ async function buscar() {
 
       results.innerHTML = `
 
-        <!-- MÃS CERCANA -->
+        <!-- M\u00C1S CERCANA -->
 
         <div class="best-card">
 
           <div class="best-label">
 
-            ð MÃS CERCANA
+            \u{1F4CD} M\u00C1S CERCANA
 
           </div>
 
@@ -912,7 +912,7 @@ async function buscar() {
               masCercana.precio.toFixed(3)
             }
 
-            â¬/L
+            \u20AC/L
 
           </div>
 
@@ -930,7 +930,7 @@ async function buscar() {
 
           <div class="best-location">
 
-            ð ${
+            \u{1F4CD} ${
               escapeHtml(
                 masCercana.localidad
               )
@@ -941,7 +941,7 @@ async function buscar() {
 
           <div class="best-distance">
 
-            ð ${
+            \u{1F697} ${
               formatearDistancia(
                 masCercana.distancia
               )
@@ -952,20 +952,20 @@ async function buscar() {
 
           <div class="saving">
 
-            La gasolinera mÃ¡s cercana a tu ubicaciÃ³n.
+            La gasolinera m\u00E1s cercana a tu ubicaci\u00F3n.
 
           </div>
 
         </div>
 
 
-        <!-- MÃS BARATA -->
+        <!-- M\u00C1S BARATA -->
 
         <div class="best-card">
 
           <div class="best-label">
 
-            ð° MÃS BARATA
+            \u{1F4B0} M\u00C1S BARATA
 
           </div>
 
@@ -976,7 +976,7 @@ async function buscar() {
               mejorPrecio.precio.toFixed(3)
             }
 
-            â¬/L
+            \u20AC/L
 
           </div>
 
@@ -994,7 +994,7 @@ async function buscar() {
 
           <div class="best-location">
 
-            ð ${
+            \u{1F4CD} ${
               escapeHtml(
                 mejorPrecio.localidad
               )
@@ -1012,7 +1012,7 @@ async function buscar() {
 
                 <div class="best-distance">
 
-                  ð ${
+                  \u{1F697} ${
                     formatearDistancia(
                       mejorPrecio.distancia
                     )
@@ -1031,7 +1031,7 @@ async function buscar() {
 
           <div class="saving">
 
-            Es el precio mÃ¡s bajo encontrado.
+            Es el precio m\u00E1s bajo encontrado.
 
           </div>
 
@@ -1049,7 +1049,7 @@ async function buscar() {
 
           <div class="best-label">
 
-            ð MEJOR PRECIO
+            \u{1F3C6} MEJOR PRECIO
 
           </div>
 
@@ -1060,7 +1060,7 @@ async function buscar() {
               mejorPrecio.precio.toFixed(3)
             }
 
-            â¬/L
+            \u20AC/L
 
           </div>
 
@@ -1078,7 +1078,7 @@ async function buscar() {
 
           <div class="best-location">
 
-            ð ${
+            \u{1F4CD} ${
               escapeHtml(
                 mejorPrecio.localidad
               )
@@ -1094,13 +1094,13 @@ async function buscar() {
 
                 ?
 
-                `EstÃ¡ ${
+                `Est\u00E1 ${
                   ahorroPorLitro.toFixed(3)
-                } â¬/L por debajo del precio medio.`
+                } \u20AC/L por debajo del precio medio.`
 
                 :
 
-                `Es el precio mÃ¡s bajo encontrado.`
+                `Es el precio m\u00E1s bajo encontrado.`
 
             }
 
@@ -1123,7 +1123,7 @@ async function buscar() {
 
         <div class="summary-main">
 
-          â½ ${
+          \u26FD ${
             estaciones.length
           }
           gasolineras encontradas
@@ -1136,11 +1136,11 @@ async function buscar() {
           Precio medio:
           ${
             precioMedio.toFixed(3)
-          } â¬/L
+          } \u20AC/L
 
           <br>
 
-          ð Actualizado:
+          \u{1F550} Actualizado:
           ${
             data.fecha ||
             "No disponible"
@@ -1153,11 +1153,11 @@ async function buscar() {
 
               ?
 
-              "ð Ordenadas por distancia"
+              "\u{1F4CD} Ordenadas por distancia"
 
               :
 
-              "ð° Ordenadas por precio"
+              "\u{1F4B0} Ordenadas por precio"
 
           }
 
@@ -1223,7 +1223,7 @@ async function buscar() {
 
               ?
 
-              "ð MÃS CERCANA"
+              "\u{1F4CD} M\u00C1S CERCANA"
 
               :
 
@@ -1235,17 +1235,17 @@ async function buscar() {
           if (index === 0) {
 
             posicion =
-              "ð¥ MÃS BARATA";
+              "\u{1F947} M\u00C1S BARATA";
 
           } else if (index === 1) {
 
             posicion =
-              "ð¥ SEGUNDA MÃS BARATA";
+              "\u{1F948} SEGUNDA M\u00C1S BARATA";
 
           } else if (index === 2) {
 
             posicion =
-              "ð¥ TERCERA MÃS BARATA";
+              "\u{1F949} TERCERA M\u00C1S BARATA";
 
           } else {
 
@@ -1295,7 +1295,7 @@ async function buscar() {
 
                   <span class="price-unit">
 
-                    â¬/L
+                    \u20AC/L
 
                   </span>
 
@@ -1309,7 +1309,7 @@ async function buscar() {
                       ?
                       `
                         <span class="price-badge cheapest">
-                          ð° MÃS BARATA
+                          \u{1F4B0} M\u00C1S BARATA
                         </span>
                       `
                       :
@@ -1322,7 +1322,7 @@ async function buscar() {
                       ?
                       `
                         <span class="price-badge expensive">
-                          ð¸ MÃS CARA
+                          \u{1F4B8} M\u00C1S CARA
                         </span>
                       `
                       :
@@ -1337,7 +1337,7 @@ async function buscar() {
 
             <div class="station-info">
 
-              ð ${
+              \u{1F4CD} ${
                 escapeHtml(
                   estacion.direccion
                 )
@@ -1364,7 +1364,7 @@ async function buscar() {
 
                 <div class="distance">
 
-                  ð ${
+                  \u{1F697} ${
                     formatearDistancia(
                       estacion.distancia
                     )
@@ -1400,7 +1400,7 @@ async function buscar() {
 
                 >
 
-                  ðºï¸ CÃ³mo llegar
+                  \u{1F5FA}\uFE0F C\u00F3mo llegar
 
                 </a>
 
@@ -1430,8 +1430,8 @@ async function buscar() {
 
       <div class="error">
 
-        â No se ha podido realizar
-        la bÃºsqueda.
+        \u274C No se ha podido realizar
+        la b\u00FAsqueda.
 
         <br><br>
 
@@ -1450,7 +1450,7 @@ async function buscar() {
     button.disabled = false;
 
     button.textContent =
-      "ð Buscar gasolineras";
+      "\u{1F50E} Buscar gasolineras";
 
   }
 
