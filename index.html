@@ -932,9 +932,8 @@ async function buscar() {
         : null;
 
     /*
-      "Más barata cerca":
-      tomamos las 10 gasolineras más cercanas
-      y dentro de ellas elegimos la de menor precio.
+      "Más barata cerca" se mantiene como cálculo interno para la
+      mejor opción; la tarjeta pública muestra la más barata de todas.
     */
 
     const diezMasCercanas =
@@ -1070,19 +1069,23 @@ async function buscar() {
           <div class="option-card">
 
             <div class="option-label">
-              💰 MÁS BARATA CERCA
+              💰 MÁS BARATA
             </div>
 
             <div class="option-price">
-              ${masBarataCerca.precio.toFixed(3)} €/L
+              ${mejorPrecio.precio.toFixed(3)} €/L
             </div>
 
             <div class="option-name">
-              ${escapeHtml(masBarataCerca.nombre)}
+              ${escapeHtml(mejorPrecio.nombre)}
             </div>
 
             <div class="option-distance">
-              🚗 ${formatearDistancia(masBarataCerca.distancia)}
+              ${
+                mejorPrecio.distancia !== null
+                  ? `🚗 ${formatearDistancia(mejorPrecio.distancia)}`
+                  : ""
+              }
             </div>
 
           </div>
