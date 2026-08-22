@@ -736,7 +736,7 @@ function usarUbicacion() {
 
 
       status.textContent =
-        "Ubicación obtenida. Buscando gasolineras...";
+        "Ubicación obtenida. Buscando gasolineras en un radio de 30 km...";
 
       // Buscar automáticamente al obtener la ubicación.
       buscar();
@@ -953,6 +953,26 @@ async function buscar() {
         }
       );
 
+
+      /* Radio máximo de "Cerca de mí": 30 km */
+      estaciones = estaciones.filter(
+        estacion =>
+          estacion.distancia !== null &&
+          typeof estacion.distancia === "number" &&
+          estacion.distancia <= 30
+      );
+
+      if (estaciones.length === 0) {
+        results.innerHTML = `
+          <div class="error">
+            📍 No encontramos gasolineras en un radio de 30 km de tu ubicación.
+          </div>
+        `;
+        button.disabled = false;
+        button.textContent = "🔎 Buscar gasolineras";
+        return;
+      }
+
     } else {
 
       /* Ordenar por precio */
@@ -1021,7 +1041,7 @@ async function buscar() {
 
     /*
       "Más barata cerca" se mantiene como cálculo interno para la
-      mejor opción; la tarjeta pública muestra la más barata de todas.
+      ; la tarjeta pública muestra la más barata de todas.
     */
 
     const diezMasCercanas =
@@ -1050,7 +1070,7 @@ async function buscar() {
         : mejorPrecio;
 
     /*
-      "Mejor opción":
+      "":
       equilibrio entre precio y distancia dentro
       de las 10 más cercanas.
       Se normalizan ambos factores para que
@@ -1136,7 +1156,7 @@ async function buscar() {
           <div class="option-card">
 
             <div class="option-label">
-              ⭐ MEJOR OPCIÓN
+              ⭐ 
             </div>
 
             <div class="option-price">
@@ -1419,9 +1439,7 @@ async function buscar() {
 
                 <div class="position">
 
-                  ${posicion}
-
-                </div>
+                  ${posicion}</div>
 
 
                 <div class="station-name">
