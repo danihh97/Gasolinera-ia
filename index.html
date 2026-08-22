@@ -593,11 +593,11 @@
       <select id="fuel">
 
         <option value="95">
-          Gasolina 95 E5
+          Gasolina 95
         </option>
 
         <option value="98">
-          Gasolina 98 E5
+          Gasolina 98
         </option>
 
         <option value="diesel">
@@ -953,8 +953,8 @@ async function buscar() {
         }
       );
 
-
       /* Radio máximo de "Cerca de mí": 30 km */
+
       estaciones = estaciones.filter(
         estacion =>
           estacion.distancia !== null &&
@@ -963,14 +963,23 @@ async function buscar() {
       );
 
       if (estaciones.length === 0) {
+
         results.innerHTML = `
+
           <div class="error">
-            📍 No encontramos gasolineras en un radio de 30 km de tu ubicación.
+
+            📍 No encontramos gasolineras
+            en un radio de 30 km de tu ubicación.
+
           </div>
+
         `;
+
         button.disabled = false;
-        button.textContent = "🔎 Buscar gasolineras";
+        button.textContent = "🔎 Buscar";
+
         return;
+
       }
 
     } else {
@@ -1009,6 +1018,138 @@ async function buscar() {
 
 
     /* =========================
+       RANKING PRECIO + DISTANCIA
+    ========================= */
+
+    const estacionesConPrecio =
+      estaciones.filter(
+        estacion =>
+          typeof estacion.precio === "number"
+      );
+
+    const mejorPrecio =
+      [...estacionesConPrecio]
+        .sort(
+          (a, b) =>
+            a.precio - b.precio
+        )[0];
+
+    const masCercana =
+      ubicacionUsuario
+        ? [...estaciones]
+            .filter(
+              estacion =>
+                estacion.distancia !== null &&
+                typeof estacion.distancia === "number"
+            )
+            .sort(
+              (a, b) =>
+                a.distancia - b.distancia
+            )[0]
+        : null;
+
+    /*
+      "Más barata cerca" se mantiene como cálculo interno para la
+      mejor opción; la tarjeta pública muestra la más barata de todas.
+    */
+
+    const diezMasCercanas =
+      ubicacionUsuario
+        ? [...estaciones]
+            .filter(
+              estacion =>
+                estacion.distancia !== null &&
+                typeof estacion.distancia === "number" &&
+                typeof estacion.precio === "number"
+            )
+            .sort(
+              (a, b) =>
+                a.distancia - b.distancia
+            )
+            .slice(0, 10)
+        : [];
+
+    const masBarataCerca =
+      diezMasCercanas.length
+        ? [...diezMasCercanas]
+            .sort(
+              (a, b) =>
+                a.precio - b.precio
+            )[0]
+        : mejorPrecio;
+
+    /*
+      "Mejor opción":
+      equilibrio entre precio y distancia dentro
+      de las 10 más cercanas.
+      Se normalizan ambos factores para que
+      euros/litro y kilómetros sean comparables.
+    */
+
+    let mejorOpcion =
+      masBarataCerca || mejorPrecio;
+
+    if (diezMasCercanas.length > 1) {
+
+      const preciosCerca =
+        diezMasCercanas.map(
+          estacion => estacion.precio
+        );
+
+      const distanciasCerca =
+        diezMasCercanas.map(
+          estacion => estacion.distancia
+        );
+
+      const minPrecio =
+        Math.min(...preciosCerca);
+
+      const maxPrecio =
+        Math.max(...preciosCerca);
+
+      const minDistancia =
+        Math.min(...distanciasCerca);
+
+      const maxDistancia =
+        Math.max(...distanciasCerca);
+
+      mejorOpcion =
+        [...diezMasCercanas]
+          .map(estacion => {
+
+            const precioNormalizado =
+              maxPrecio === minPrecio
+                ? 0
+                : (estacion.precio - minPrecio) /
+                  (maxPrecio - minPrecio);
+
+            const distanciaNormalizada =
+              maxDistancia === minDistancia
+                ? 0
+                : (estacion.distancia - minDistancia) /
+                  (maxDistancia - minDistancia);
+
+            return {
+              estacion,
+              puntuacion:
+                (precioNormalizado * 0.6) +
+                (distanciaNormalizada * 0.4)
+            };
+
+          })
+          .sort(
+            (a, b) =>
+              a.puntuacion - b.puntuacion
+          )[0].estacion;
+
+    }
+
+    const ahorroPorLitro =
+      precioMedio -
+      mejorPrecio.precio;
+
+
+    /* =========================
        TARJETAS SUPERIORES
     ========================= */
 
@@ -1020,6 +1161,7 @@ async function buscar() {
       results.innerHTML = `
 
         <div class="option-grid">
+
           <div class="option-card">
 
             <div class="option-label">
@@ -1285,7 +1427,9 @@ async function buscar() {
 
                 <div class="position">
 
-                  ${posicion}</div>
+                  ${posicion}
+
+                </div>
 
 
                 <div class="station-name">
