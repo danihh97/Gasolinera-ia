@@ -446,11 +446,57 @@
         font-size: 21px;
       }
     }
+    /* =========================\n       PRIVACIDAD / COOKIES\n    ========================= */
+    .cookie-overlay{position:fixed;inset:0;background:rgba(15,23,42,.48);z-index:9998;display:none;align-items:flex-end;justify-content:center;padding:14px;backdrop-filter:blur(3px)}
+    .cookie-box{width:min(700px,100%);background:#fff;color:#172033;border-radius:22px;box-shadow:0 18px 55px rgba(0,0,0,.25);padding:20px}
+    .cookie-title{font-size:19px;font-weight:900;margin:0 0 8px}
+    .cookie-text{font-size:13px;line-height:1.55;color:#5f6978;margin:0 0 14px}
+    .cookie-links{font-size:12px;margin-bottom:15px}.cookie-links a{color:#287c2e;font-weight:800;text-decoration:none}
+    .cookie-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}.cookie-actions button,.cookie-save{min-height:46px;border-radius:12px;padding:10px 12px;font-size:13px;font-weight:800;cursor:pointer}
+    .cookie-accept,.cookie-save{border:0;background:#31a83d;color:#fff}.cookie-reject,.cookie-config{border:1px solid #dce2e7;background:#f8faf9;color:#172033}
+    .cookie-settings{display:none}.cookie-setting{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:14px 0;border-top:1px solid #edf0f2}.cookie-setting:first-of-type{border-top:0}
+    .cookie-setting strong{display:block;font-size:14px;margin-bottom:3px}.cookie-setting small{color:#697386;font-size:12px;line-height:1.45}.cookie-required{color:#287c2e;font-size:11px;font-weight:800;white-space:nowrap}
+    .cookie-toggle{width:46px;height:26px;border-radius:999px;border:0;background:#cbd2d9;position:relative;flex:0 0 auto;cursor:pointer}.cookie-toggle:after{content:"";position:absolute;width:20px;height:20px;top:3px;left:3px;border-radius:50%;background:#fff;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}.cookie-toggle.on{background:#31a83d}.cookie-toggle.on:after{left:23px}
+    .cookie-manage{position:fixed;right:14px;bottom:14px;z-index:9997;display:none;border:1px solid #dce2e7;background:rgba(255,255,255,.97);color:#287c2e;border-radius:999px;padding:9px 12px;font-size:12px;font-weight:800;box-shadow:0 5px 18px rgba(23,32,51,.12);cursor:pointer}
+    .legal-footer{max-width:680px;margin:0 auto 28px;padding:0 15px;text-align:center;font-size:12px;color:#7a8493}.legal-footer a{color:#287c2e;text-decoration:none;font-weight:700}
+    @media(max-width:520px){.cookie-actions{grid-template-columns:1fr}}
+
   </style>
 
 </head>
 
 <body>
+
+<div id="cookieOverlay" class="cookie-overlay" role="dialog" aria-modal="true" aria-labelledby="cookieTitle">
+  <div id="cookieBanner" class="cookie-box">
+    <h2 id="cookieTitle" class="cookie-title">🍪 Tu privacidad importa</h2>
+    <p class="cookie-text">Usamos almacenamiento necesario para recordar tu elección de cookies y, solo si lo aceptas, Google Analytics para obtener estadísticas de uso y mejorar AhorraFuel. Puedes aceptar, rechazar o configurar las cookies de análisis.</p>
+    <div class="cookie-links"><a href="/cookies.html">Política de cookies</a> · <a href="/privacidad.html">Privacidad</a></div>
+    <div class="cookie-actions">
+      <button id="cookieReject" class="cookie-reject" type="button">Rechazar</button>
+      <button id="cookieConfig" class="cookie-config" type="button">Configurar</button>
+      <button id="cookieAccept" class="cookie-accept" type="button">Aceptar</button>
+    </div>
+  </div>
+  <div id="cookieSettings" class="cookie-box cookie-settings">
+    <h2 class="cookie-title">Configurar cookies</h2>
+    <p class="cookie-text">Las cookies necesarias permiten guardar tu decisión. Las cookies de análisis son opcionales y solo se activan si las autorizas.</p>
+    <div class="cookie-setting">
+      <div><strong>Cookies necesarias</strong><small>Guardan tu preferencia de consentimiento y permiten funciones básicas.</small></div>
+      <span class="cookie-required">SIEMPRE ACTIVAS</span>
+    </div>
+    <div class="cookie-setting">
+      <div><strong>Cookies de análisis</strong><small>Google Analytics 4: estadísticas de usuarios, sesiones y uso de la web.</small></div>
+      <button id="analyticsToggle" class="cookie-toggle" type="button" aria-label="Activar cookies de análisis" aria-pressed="false"></button>
+    </div>
+    <div class="cookie-actions">
+      <button id="settingsReject" class="cookie-reject" type="button">Rechazar todas</button>
+      <button id="settingsSave" class="cookie-save" type="button">Guardar selección</button>
+    </div>
+  </div>
+</div>
+<button id="cookieManage" class="cookie-manage" type="button">🍪 Cookies</button>
+
 
 <div class="app">
 
@@ -478,6 +524,7 @@
       </label>
 
       <select id="province">
+        <option value="" selected disabled>Selecciona tu provincia</option>
 
         <option value="01">Álava</option>
         <option value="02">Albacete</option>
@@ -513,8 +560,7 @@
         <option value="32">Ourense</option>
         <option value="33">Asturias</option>
         <option value="34">Palencia</option>
-        <option value="" selected disabled>📍 Elegir provincia</option>
-        <option value="35">Las Palmas</option>
+        <option value="35" selected>Las Palmas</option>
         <option value="36">Pontevedra</option>
         <option value="37">Salamanca</option>
         <option value="38">Santa Cruz de Tenerife</option>
@@ -547,11 +593,11 @@
       <select id="fuel">
 
         <option value="95">
-          Gasolina 95
+          Gasolina 95 E5
         </option>
 
         <option value="98">
-          Gasolina 98
+          Gasolina 98 E5
         </option>
 
         <option value="diesel">
@@ -596,6 +642,41 @@
 
 </div>
 
+
+
+<script>
+(function(){
+  const KEY='ahorrafuel_cookie_consent_v2';
+  const GA_ID='G-WYPKB4XJYZ';
+  const overlay=document.getElementById('cookieOverlay');
+  const banner=document.getElementById('cookieBanner');
+  const settings=document.getElementById('cookieSettings');
+  const toggle=document.getElementById('analyticsToggle');
+  const manage=document.getElementById('cookieManage');
+  function read(){try{return JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){return null}}
+  function write(analytics){localStorage.setItem(KEY,JSON.stringify({analytics:!!analytics,savedAt:new Date().toISOString()}))}
+  function toggleSet(on){toggle.classList.toggle('on',!!on);toggle.setAttribute('aria-pressed',String(!!on))}
+  function openBanner(){overlay.style.display='flex';banner.style.display='block';settings.style.display='none';manage.style.display='none'}
+  function openSettings(value){overlay.style.display='flex';banner.style.display='none';settings.style.display='block';toggleSet(!!value);manage.style.display='none'}
+  function close(){overlay.style.display='none';manage.style.display='block'}
+  function loadGA(){
+    if(window.__afGA)return; window.__afGA=true;
+    window.dataLayer=window.dataLayer||[]; function gtag(){dataLayer.push(arguments)} window.gtag=gtag;
+    gtag('js',new Date()); gtag('config',GA_ID);
+    const s=document.createElement('script'); s.async=true; s.src='https://www.googletagmanager.com/gtag/js?id='+encodeURIComponent(GA_ID); document.head.appendChild(s);
+  }
+  function save(analytics){write(analytics);if(analytics)loadGA();close()}
+  document.getElementById('cookieAccept').onclick=()=>save(true);
+  document.getElementById('cookieReject').onclick=()=>save(false);
+  document.getElementById('cookieConfig').onclick=()=>openSettings(false);
+  document.getElementById('settingsReject').onclick=()=>save(false);
+  document.getElementById('settingsSave').onclick=()=>save(toggle.classList.contains('on'));
+  toggle.onclick=()=>toggleSet(!toggle.classList.contains('on'));
+  manage.onclick=()=>{const c=read();openSettings(c?c.analytics:false)};
+  const consent=read();
+  if(!consent)openBanner();else{manage.style.display='block';if(consent.analytics)loadGA()}
+})();
+</script>
 
 <script>
 
@@ -703,6 +784,12 @@ async function buscar() {
 
   const provincia =
     document.getElementById("province").value;
+
+  if (!provincia) {
+    const results = document.getElementById("results");
+    results.innerHTML = `<div class="error">📍 Selecciona tu provincia para buscar gasolineras.</div>`;
+    return;
+  }
 
   const producto =
     document.getElementById("fuel").value;
@@ -962,6 +1049,72 @@ async function buscar() {
             )[0]
         : mejorPrecio;
 
+    /*
+      "Mejor opción":
+      equilibrio entre precio y distancia dentro
+      de las 10 más cercanas.
+      Se normalizan ambos factores para que
+      euros/litro y kilómetros sean comparables.
+    */
+
+    let mejorOpcion =
+      masBarataCerca || mejorPrecio;
+
+    if (diezMasCercanas.length > 1) {
+
+      const preciosCerca =
+        diezMasCercanas.map(
+          estacion => estacion.precio
+        );
+
+      const distanciasCerca =
+        diezMasCercanas.map(
+          estacion => estacion.distancia
+        );
+
+      const minPrecio =
+        Math.min(...preciosCerca);
+
+      const maxPrecio =
+        Math.max(...preciosCerca);
+
+      const minDistancia =
+        Math.min(...distanciasCerca);
+
+      const maxDistancia =
+        Math.max(...distanciasCerca);
+
+      mejorOpcion =
+        [...diezMasCercanas]
+          .map(estacion => {
+
+            const precioNormalizado =
+              maxPrecio === minPrecio
+                ? 0
+                : (estacion.precio - minPrecio) /
+                  (maxPrecio - minPrecio);
+
+            const distanciaNormalizada =
+              maxDistancia === minDistancia
+                ? 0
+                : (estacion.distancia - minDistancia) /
+                  (maxDistancia - minDistancia);
+
+            return {
+              estacion,
+              puntuacion:
+                (precioNormalizado * 0.6) +
+                (distanciaNormalizada * 0.4)
+            };
+
+          })
+          .sort(
+            (a, b) =>
+              a.puntuacion - b.puntuacion
+          )[0].estacion;
+
+    }
+
     const ahorroPorLitro =
       precioMedio -
       mejorPrecio.precio;
@@ -979,6 +1132,27 @@ async function buscar() {
       results.innerHTML = `
 
         <div class="option-grid">
+
+          <div class="option-card">
+
+            <div class="option-label">
+              ⭐ MEJOR OPCIÓN
+            </div>
+
+            <div class="option-price">
+              ${mejorOpcion.precio.toFixed(3)} €/L
+            </div>
+
+            <div class="option-name">
+              ${escapeHtml(mejorOpcion.nombre)}
+            </div>
+
+            <div class="option-distance">
+              🚗 ${formatearDistancia(mejorOpcion.distancia)}
+            </div>
+
+          </div>
+
 
           <div class="option-card">
 
@@ -1603,6 +1777,14 @@ function escapeHtml(
 }
 
 </script>
+
+
+<div class="legal-footer">
+  <a href="/privacidad.html">Privacidad</a> ·
+  <a href="/cookies.html">Cookies</a> ·
+  <a href="/informacion-legal.html">Información legal</a> ·
+  <a href="/condiciones-de-uso.html">Condiciones de uso</a>
+</div>
 
 </body>
 
