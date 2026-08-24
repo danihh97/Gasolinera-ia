@@ -966,6 +966,17 @@ function mostrarMensajeRecopilando() {
   bubble.classList.remove("af-bubble-leaving");
 }
 
+function mostrarMensajeResultados() {
+  const bubble = document.getElementById("afMascotBubble");
+  if (!bubble) return;
+
+  bubble.innerHTML = `
+    💚 <strong>¡Gracias por confiar en AhorraFuel!</strong><br>
+    ⛽ Esperamos que te sea de gran ayuda y que encuentres siempre los mejores precios.<br>
+    <strong>¡Ahorra en cada repostaje! 🚗💨</strong>
+  `;
+}
+
 async function buscar() {
 
   mostrarMensajeRecopilando();
@@ -1790,6 +1801,8 @@ async function buscar() {
       }
 
     );
+
+    mostrarMensajeResultados();
 
 
   } catch (error) {
