@@ -503,14 +503,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: -4px auto 14px;
+  gap: 12px;
+  margin: 2px auto 14px;
   min-height: 125px;
+  width: min(100%, 560px);
+  padding: 0 12px;
   z-index: 20;
   pointer-events: none;
 }
 .af-mascot-img {
-  width: 135px;
-  max-width: 38vw;
+  flex: 0 0 auto;
+  width: 125px;
+  max-width: 32vw;
   height: 125px;
   object-fit: contain;
   filter: drop-shadow(0 10px 14px rgba(23,32,51,.16));
@@ -518,10 +522,12 @@
   transform-origin: 50% 85%;
 }
 .af-mascot-bubble {
-  position: absolute;
-  left: calc(50% + 48px);
-  top: 0;
-  width: min(220px, 46vw);
+  position: relative;
+  left: auto;
+  top: auto;
+  flex: 0 1 255px;
+  width: auto;
+  max-width: 255px;
   padding: 11px 14px;
   background: #fff;
   color: #172033;
@@ -532,16 +538,17 @@
   line-height: 1.35;
   font-weight: 800;
   text-align: left;
+  animation: afBubbleIn 2.8s ease-out 1, afBubbleLeave 1s ease-in 5.8s forwards;
 }
 .af-mascot-bubble::after {
   content: "";
   position: absolute;
-  left: 18px;
-  bottom: -10px;
-  width: 17px;
-  height: 17px;
+  left: -9px;
+  bottom: 22px;
+  width: 16px;
+  height: 16px;
   background: #fff;
-  border-right: 2px solid #63c51d;
+  border-left: 2px solid #63c51d;
   border-bottom: 2px solid #63c51d;
   transform: rotate(45deg);
 }
@@ -554,19 +561,49 @@
   24%  { transform: translate3d(0, -4px, 0) scale(1.02) rotate(2deg); }
   36%  { transform: translate3d(0, 0, 0) scale(1) rotate(-2deg); }
   48%  { transform: translate3d(0, -3px, 0) scale(1.01) rotate(1deg); }
-  60%  { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); }
-  100% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); opacity: 1; }
+  60%, 100% { transform: translate3d(0, 0, 0) scale(1) rotate(0deg); opacity: 1; }
+}
+@keyframes afMascotLeave {
+  0% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-12px) scale(.92); }
 }
 @keyframes afBubbleIn {
   0%, 25% { opacity: 0; transform: translateX(12px) scale(.94); }
   55% { opacity: 1; transform: translateX(0) scale(1.02); }
   100% { opacity: 1; transform: translateX(0) scale(1); }
 }
-.af-mascot-bubble {
-  animation: afBubbleIn 2.8s ease-out 1, afBubbleLeave 1s ease-in 5.8s forwards;
+@keyframes afBubbleLeave {
+  0% { opacity: 1; transform: translateX(0) scale(1); }
+  100% { opacity: 0; transform: translateX(10px) scale(.94); }
 }
 .af-mascot:hover .af-mascot-img {
   transform: translateY(-3px) rotate(-1deg);
+}
+@media (max-width: 520px) {
+  .af-mascot {
+    min-height: 108px;
+    gap: 8px;
+    padding: 0 10px;
+    margin-top: 0;
+  }
+  .af-mascot-img {
+    width: 105px;
+    max-width: 30vw;
+    height: 108px;
+  }
+  .af-mascot-bubble {
+    flex-basis: 185px;
+    max-width: 185px;
+    font-size: 11.5px;
+    padding: 9px 10px;
+    border-radius: 14px;
+  }
+  .af-mascot-bubble::after {
+    left: -8px;
+    bottom: 20px;
+    width: 14px;
+    height: 14px;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .af-mascot-img,
@@ -574,26 +611,17 @@
     animation: none !important;
   }
 }
-@media (max-width: 520px) {
-  .af-mascot {
-    min-height: 105px;
-    margin-top: -2px;
-    margin-bottom: 8px;
-  }
-  .af-mascot-img {
-    width: 115px;
-    max-width: 34vw;
-    height: 105px;
-  }
-  .af-mascot-bubble {
-    left: calc(50% + 34px);
-    top: 0;
-    width: min(190px, 48vw);
-    font-size: 12px;
-    padding: 9px 11px;
-    border-radius: 14px;
-  }
-}
+
+
+/* MENSAJE DE RECOPILACIÓN */
+.af-collecting{background:rgba(255,255,255,.97);border:1px solid #e6ebee;border-radius:20px;padding:22px 18px;margin-bottom:14px;text-align:center;box-shadow:0 8px 25px rgba(23,32,51,.07);animation:afCollectIn .28s ease-out both}
+.af-collecting-icon{font-size:30px;display:block;margin-bottom:8px;animation:afCollectPulse 1.15s ease-in-out infinite}
+.af-collecting-title{color:#172033;font-size:17px;font-weight:900}
+.af-collecting-text{margin:7px auto 0;max-width:500px;color:#687385;font-size:13px;line-height:1.55}
+.af-collecting-thanks{margin-top:10px;color:#287c2e;font-size:12px;font-weight:800}
+@keyframes afCollectIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+@keyframes afCollectPulse{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-3px) scale(1.06)}}
+@media (prefers-reduced-motion:reduce){.af-collecting-icon{animation:none}}
 
   </style>
 
@@ -932,7 +960,14 @@ async function buscar() {
 
   if (!provincia) {
     const results = document.getElementById("results");
-    results.innerHTML = `<div class="error">📍 Selecciona tu provincia para buscar gasolineras.</div>`;
+    results.innerHTML = `
+      <div class="af-collecting" role="status" aria-live="polite">
+        <span class="af-collecting-icon">⛽</span>
+        <div class="af-collecting-title">Estamos recopilando los precios de las gasolineras...</div>
+        <div class="af-collecting-text">🔎 Estamos consultando y comparando los precios disponibles para encontrar las opciones más baratas para ti. Puede tardar unos segundos. 💚</div>
+        <div class="af-collecting-thanks">¡Gracias por esperar!</div>
+      </div>
+    `;
     return;
   }
 
