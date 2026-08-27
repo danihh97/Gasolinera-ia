@@ -1,7 +1,7 @@
 let cache = null;
 let cacheTime = 0;
 
-const CACHE_DURATION = 30 * 60 * 1000; // 30 minutos
+const const CACHE_DURATION = 60 * 60 * 1000; // 1 hora
 
 export default async function handler(req, res) {
   try {
