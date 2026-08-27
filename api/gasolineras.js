@@ -1,17 +1,33 @@
+let cache = null;
+let cacheTime = 0;
+
+const CACHE_DURATION = 30 * 60 * 1000; // 30 minutos
+
 export default async function handler(req, res) {
   try {
     const provincia = String(req.query.provincia || "35").padStart(2, "0");
     const producto = req.query.producto || "95";
 
-    const response = await fetch(
-      "https://energia.serviciosmin.gob.es/ServiciosRestCarburantes/PreciosCarburantes/EstacionesTerrestres/"
-    );
+    const ahora = Date.now();
 
-    if (!response.ok) {
-      throw new Error("La API oficial no responde");
+    // Si no hay caché o han pasado más de 30 minutos,
+    // descargamos los datos oficiales de nuevo.
+    if (!cache || ahora - cacheTime >= CACHE_DURATION) {
+      const response = await fetch(
+        "https://energia.serviciosmin.gob.es/ServiciosRestCarburantes/EstacionesTerrestres/"
+      );
+
+      if (!response.ok) {
+        throw new Error("La API oficial no responde");
+      }
+
+      cache = await response.json();
+      cacheTime = ahora;
     }
 
-    const data = await response.json();
+    // Utilizamos los datos guardados en caché
+    const data = cache;
+
     const estaciones = data.ListaEESSPrecio || [];
 
     // Campos oficiales de precios
