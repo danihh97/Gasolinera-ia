@@ -10,21 +10,24 @@ export default async function handler(req, res) {
 
     const ahora = Date.now();
 
-    // Descargar datos oficiales solamente si:
-    // 1. No tenemos caché
-    // 2. Han pasado 30 minutos
+    // Descargar datos oficiales solamente si no hay caché
+    // o han pasado 30 minutos.
     if (!cache || ahora - cacheTime >= CACHE_DURATION) {
       const response = await fetch(
-        "https://energia.serviciosmin.gob.es/ServiciosRestCarburantes/EstacionesTerrestres/"
+        "https://energia.serviciosmin.gob.es/ServiciosRestCarburantes/PreciosCarburantes/EstacionesTerrestres/"
       );
 
       if (!response.ok) {
-        // Si tenemos datos anteriores, seguimos utilizándolos
-        if (cache) {
-          console.warn("API oficial no disponible. Usando caché anterior.");
-        } else {
-          throw new Error("La API oficial no responde");
+        // Si tenemos una caché anterior, seguimos funcionando con ella.
+        if (!cache) {
+          throw new Error(
+            `La API oficial no responde (HTTP ${response.status})`
+          );
         }
+
+        console.warn(
+          `API oficial no disponible (HTTP ${response.status}). Usando caché anterior.`
+        );
       } else {
         cache = await response.json();
         cacheTime = ahora;
@@ -32,7 +35,6 @@ export default async function handler(req, res) {
     }
 
     const data = cache;
-
     const estaciones = data.ListaEESSPrecio || [];
 
     // Campos oficiales de precios
@@ -40,17 +42,11 @@ export default async function handler(req, res) {
 
     if (producto === "95") {
       campoPrecio = "Precio Gasolina 95 E5";
-    }
-
-    if (producto === "98") {
+    } else if (producto === "98") {
       campoPrecio = "Precio Gasolina 98 E5";
-    }
-
-    if (producto === "diesel") {
+    } else if (producto === "diesel") {
       campoPrecio = "Precio Gasoleo A";
-    }
-
-    if (!campoPrecio) {
+    } else {
       return res.status(400).json({
         error: "Producto no válido"
       });
@@ -61,7 +57,6 @@ export default async function handler(req, res) {
         return String(estacion["IDProvincia"] || "").trim() === provincia;
       })
       .map(estacion => {
-
         const precioTexto = estacion[campoPrecio];
 
         const precio = parseFloat(
@@ -97,7 +92,6 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-
     console.error(error);
 
     return res.status(500).json({
