@@ -1,7 +1,7 @@
 let cache = null;
 let cacheTime = 0;
 
-const const CACHE_DURATION = 60 * 60 * 1000; // 1 hora
+const CACHE_DURATION = 60 * 60 * 1000; // 1 hora
 
 export default async function handler(req, res) {
   try {
@@ -11,7 +11,7 @@ export default async function handler(req, res) {
     const ahora = Date.now();
 
     // Descargar datos oficiales solamente si no hay caché
-    // o han pasado 30 minutos.
+    // o han pasado 1 hora.
     if (!cache || ahora - cacheTime >= CACHE_DURATION) {
       const response = await fetch(
         "https://energia.serviciosmin.gob.es/ServiciosRestCarburantes/PreciosCarburantes/EstacionesTerrestres/"
