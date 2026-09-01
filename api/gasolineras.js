@@ -1,27 +1,43 @@
-let cache = null;
-let cacheTime = 0;
+// api/gasolineras.js
 
 const CACHE_DURATION = 60 * 60 * 1000; // 1 hora
+const REDIS_TTL = 2 * 60 * 60; // 2 horas
+const LOCK_TTL = 60; // 60 segundos
 
-const REDIS_PREFIX = "ahorrafuel:estaciones:";
+const REDIS_PREFIX = "ahorrafuel:estaciones:v2:";
 const REDIS_LOCK_KEY = "ahorrafuel:estaciones:lock";
 
-const REDIS_CACHE_TTL = 2 * 60 * 60; // 2 horas
-const REDIS_LOCK_TTL = 60; // 60 segundos
-
-const MINISTERIO_API =
-  "https://energia.serviciosmin.gob.es/ServiciosRestCarburantes/PreciosCarburantes/EstacionesTerrestres/";
-
+// Caché local de la instancia de Vercel
+const localCache = new Map();
 
 /**
- * Ejecuta un comando Redis mediante la API REST de Upstash.
+ * Obtiene la URL base de Upstash.
+ *
+ * Por seguridad, si por error la variable de entorno termina
+ * en /pipeline, lo eliminamos para poder construir correctamente
+ * el endpoint /pipeline cuando sea necesario.
+ */
+function getRedisBaseUrl() {
+  const raw = process.env.UPSTASH_REDIS_REST_URL;
+
+  if (!raw) {
+    throw new Error("Falta UPSTASH_REDIS_REST_URL");
+  }
+
+  return raw
+    .replace(/\/+$/, "")
+    .replace(/\/pipeline$/, "");
+}
+
+/**
+ * Ejecuta un comando Redis individual.
  */
 async function redisCommand(command) {
-  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const url = getRedisBaseUrl();
   const token = process.env.UPSTASH_REDIS_REST_TOKEN;
 
-  if (!url || !token) {
-    throw new Error("Faltan las variables de entorno de Upstash");
+  if (!token) {
+    throw new Error("Falta UPSTASH_REDIS_REST_TOKEN");
   }
 
   const response = await fetch(url, {
@@ -33,13 +49,23 @@ async function redisCommand(command) {
     body: JSON.stringify(command)
   });
 
+  const text = await response.text();
+
   if (!response.ok) {
     throw new Error(
-      `Error de Upstash (HTTP ${response.status})`
+      `Error de Upstash (HTTP ${response.status}): ${text}`
     );
   }
 
-  const result = await response.json();
+  let result;
+
+  try {
+    result = JSON.parse(text);
+  } catch {
+    throw new Error(
+      `Respuesta inválida de Upstash: ${text}`
+    );
+  }
 
   if (result.error) {
     throw new Error(result.error);
@@ -48,19 +74,32 @@ async function redisCommand(command) {
   return result.result;
 }
 
-
 /**
- * Ejecuta varios comandos Redis mediante pipeline.
+ * Ejecuta un Pipeline de Upstash.
+ *
+ * IMPORTANTE:
+ * Upstash espera:
+ *
+ * [
+ *   ["SET", "clave", "valor"],
+ *   ["SET", "clave2", "valor2"]
+ * ]
+ *
+ * y el endpoint debe terminar en /pipeline.
  */
 async function redisPipeline(commands) {
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-
-  if (!url || !token) {
-    throw new Error("Faltan las variables de entorno de Upstash");
+  if (!Array.isArray(commands) || commands.length === 0) {
+    return [];
   }
 
-  const response = await fetch(`${url}/pipeline`, {
+  const baseUrl = getRedisBaseUrl();
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+
+  if (!token) {
+    throw new Error("Falta UPSTASH_REDIS_REST_TOKEN");
+  }
+
+  const response = await fetch(`${baseUrl}/pipeline`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -69,608 +108,723 @@ async function redisPipeline(commands) {
     body: JSON.stringify(commands)
   });
 
+  const text = await response.text();
+
   if (!response.ok) {
     throw new Error(
-      `Error de Upstash Pipeline (HTTP ${response.status})`
+      `Error de Upstash Pipeline (HTTP ${response.status}): ${text}`
     );
   }
 
-  const result = await response.json();
+  let results;
 
-  if (!Array.isArray(result)) {
-    throw new Error("Respuesta inesperada de Upstash Pipeline");
+  try {
+    results = JSON.parse(text);
+  } catch {
+    throw new Error(
+      `Respuesta inválida del Pipeline de Upstash: ${text}`
+    );
   }
 
-  return result;
-}
+  if (!Array.isArray(results)) {
+    throw new Error(
+      `Respuesta inesperada del Pipeline de Upstash`
+    );
+  }
 
-
-/**
- * Convierte una estación del Ministerio
- * al formato que utiliza AhorraFuel.
- */
-function prepararEstacion(estacion, campoPrecio) {
-  const precioTexto = estacion[campoPrecio];
-
-  const precio = parseFloat(
-    String(precioTexto || "").replace(",", ".")
+  const error = results.find(
+    item => item && item.error
   );
 
-  if (isNaN(precio)) {
-    return null;
+  if (error) {
+    throw new Error(
+      `Error en Pipeline de Upstash: ${error.error}`
+    );
   }
 
-  return {
-    nombre: estacion["Rótulo"] || "Gasolinera",
-
-    direccion: estacion["Dirección"] || "",
-
-    localidad: estacion["Localidad"] || "",
-
-    municipio: estacion["Municipio"] || "",
-
-    codigoPostal: estacion["C.P."] || "",
-
-    provincia: estacion["Provincia"] || "",
-
-    precio: precio,
-
-    latitud: estacion["Latitud"] || "",
-
-    longitud: estacion["Longitud (WGS84)"] || "",
-
-    horario: estacion["Horario"] || ""
-  };
+  return results.map(item => item.result);
 }
 
+/**
+ * Divide los comandos del Pipeline para evitar superar
+ * el límite de tamaño de las peticiones de Upstash.
+ *
+ * Dejamos bastante margen por debajo de los 10 MB.
+ */
+function crearLotesPipeline(commands) {
+  const MAX_BYTES = 6 * 1024 * 1024; // 6 MB
+
+  const lotes = [];
+  let loteActual = [];
+  let tamanoActual = 2;
+
+  for (const command of commands) {
+    const commandSize =
+      Buffer.byteLength(JSON.stringify(command), "utf8") + 1;
+
+    // Si un comando individual fuese demasiado grande
+    if (commandSize > MAX_BYTES) {
+      throw new Error(
+        "Una provincia contiene demasiados datos para almacenarla en Redis."
+      );
+    }
+
+    if (
+      loteActual.length > 0 &&
+      tamanoActual + commandSize > MAX_BYTES
+    ) {
+      lotes.push(loteActual);
+
+      loteActual = [];
+      tamanoActual = 2;
+    }
+
+    loteActual.push(command);
+    tamanoActual += commandSize;
+  }
+
+  if (loteActual.length > 0) {
+    lotes.push(loteActual);
+  }
+
+  return lotes;
+}
 
 /**
- * Descarga los datos oficiales y los divide por provincias.
+ * Descarga los datos oficiales del Ministerio.
  */
-function prepararProvincias(data) {
-  const estaciones = data.ListaEESSPrecio || [];
+async function descargarDatosOficiales() {
+  console.log(
+    "Actualizando datos oficiales del Ministerio..."
+  );
 
-  const provincias = {};
+  const response = await fetch(
+    "https://energia.serviciosmin.gob.es/ServiciosRestCarburantes/PreciosCarburantes/EstacionesTerrestres/",
+    {
+      headers: {
+        "User-Agent": "AhorraFuel/1.0"
+      }
+    }
+  );
 
-  // Productos que utiliza AhorraFuel
-  const camposPrecio = {
-    "95": "Precio Gasolina 95 E5",
-    "98": "Precio Gasolina 98 E5",
-    "diesel": "Precio Gasoleo A"
-  };
+  if (!response.ok) {
+    throw new Error(
+      `La API oficial no responde (HTTP ${response.status})`
+    );
+  }
+
+  const data = await response.json();
+
+  if (
+    !data ||
+    !Array.isArray(data.ListaEESSPrecio)
+  ) {
+    throw new Error(
+      "La API oficial devolvió un formato inesperado."
+    );
+  }
+
+  return data;
+}
+
+/**
+ * Convierte los datos del Ministerio en datos más pequeños
+ * agrupados por provincia.
+ */
+function agruparPorProvincia(data) {
+  const provincias = new Map();
+
+  const estaciones =
+    data.ListaEESSPrecio || [];
 
   for (const estacion of estaciones) {
     const provincia = String(
       estacion["IDProvincia"] || ""
-    ).trim().padStart(2, "0");
+    )
+      .trim()
+      .padStart(2, "0");
 
     if (!provincia) {
       continue;
     }
 
-    if (!provincias[provincia]) {
-      provincias[provincia] = [];
+    if (!provincias.has(provincia)) {
+      provincias.set(provincia, []);
     }
 
-    const estacionPreparada = {
-      nombre: estacion["Rótulo"] || "Gasolinera",
+    const precio95 = parseFloat(
+      String(
+        estacion["Precio Gasolina 95 E5"] || ""
+      ).replace(",", ".")
+    );
 
-      direccion: estacion["Dirección"] || "",
+    const precio98 = parseFloat(
+      String(
+        estacion["Precio Gasolina 98 E5"] || ""
+      ).replace(",", ".")
+    );
 
-      localidad: estacion["Localidad"] || "",
+    const diesel = parseFloat(
+      String(
+        estacion["Precio Gasoleo A"] || ""
+      ).replace(",", ".")
+    );
 
-      municipio: estacion["Municipio"] || "",
+    const estacionReducida = {
+      nombre:
+        estacion["Rótulo"] ||
+        "Gasolinera",
 
-      codigoPostal: estacion["C.P."] || "",
+      direccion:
+        estacion["Dirección"] ||
+        "",
 
-      provincia: estacion["Provincia"] || "",
+      localidad:
+        estacion["Localidad"] ||
+        "",
 
-      latitud: estacion["Latitud"] || "",
+      municipio:
+        estacion["Municipio"] ||
+        "",
 
-      longitud: estacion["Longitud (WGS84)"] || "",
+      codigoPostal:
+        estacion["C.P."] ||
+        "",
 
-      horario: estacion["Horario"] || "",
+      provincia:
+        estacion["Provincia"] ||
+        "",
 
-      precios: {
-        "95": parseFloat(
-          String(
-            estacion["Precio Gasolina 95 E5"] || ""
-          ).replace(",", ".")
-        ) || null,
+      precio95:
+        Number.isFinite(precio95)
+          ? precio95
+          : null,
 
-        "98": parseFloat(
-          String(
-            estacion["Precio Gasolina 98 E5"] || ""
-          ).replace(",", ".")
-        ) || null,
+      precio98:
+        Number.isFinite(precio98)
+          ? precio98
+          : null,
 
-        "diesel": parseFloat(
-          String(
-            estacion["Precio Gasoleo A"] || ""
-          ).replace(",", ".")
-        ) || null
-      }
+      diesel:
+        Number.isFinite(diesel)
+          ? diesel
+          : null,
+
+      latitud:
+        estacion["Latitud"] ||
+        "",
+
+      longitud:
+        estacion["Longitud (WGS84)"] ||
+        "",
+
+      horario:
+        estacion["Horario"] ||
+        ""
     };
 
-    provincias[provincia].push(estacionPreparada);
+    provincias
+      .get(provincia)
+      .push(estacionReducida);
   }
 
-  return {
-    fecha: data.Fecha || "",
-    provincias
-  };
+  return provincias;
 }
-
 
 /**
  * Guarda todas las provincias en Redis.
- *
- * Las dividimos en varios pipelines para evitar
- * superar el límite de tamaño de una petición.
  */
-async function guardarProvinciasRedis(datos) {
-  const provincias = Object.entries(datos.provincias);
+async function guardarProvinciasEnRedis(data) {
+  const provincias =
+    agruparPorProvincia(data);
 
   const ahora = Date.now();
 
-  // Procesamos de 5 provincias por petición.
-  const TAMANO_LOTE = 5;
+  const commands = [];
 
-  for (
-    let i = 0;
-    i < provincias.length;
-    i += TAMANO_LOTE
-  ) {
-    const lote = provincias.slice(
-      i,
-      i + TAMANO_LOTE
-    );
+  for (const [
+    provincia,
+    estaciones
+  ] of provincias.entries()) {
 
-    const comandos = lote.map(
-      ([provincia, estaciones]) => {
-        const valor = JSON.stringify({
-          cacheTime: ahora,
-          fecha: datos.fecha,
-          estaciones: estaciones
-        });
+    const valor = {
+      cacheTime: ahora,
+      fecha: data.Fecha || "",
+      provincia: provincia,
+      estaciones: estaciones
+    };
 
-        return [
-          "SET",
-          `${REDIS_PREFIX}${provincia}`,
-          valor,
-          "EX",
-          REDIS_CACHE_TTL
-        ];
-      }
-    );
+    const key =
+      `${REDIS_PREFIX}${provincia}`;
 
-    const resultados = await redisPipeline(
-      comandos
-    );
-
-    for (const resultado of resultados) {
-      if (resultado && resultado.error) {
-        throw new Error(
-          resultado.error
-        );
-      }
-    }
+    commands.push([
+      "SET",
+      key,
+      JSON.stringify(valor),
+      "EX",
+      REDIS_TTL
+    ]);
   }
 
   console.log(
-    `Datos guardados en Redis: ${provincias.length} provincias.`
+    `Preparando ${commands.length} provincias para Redis...`
+  );
+
+  const lotes =
+    crearLotesPipeline(commands);
+
+  console.log(
+    `Se utilizarán ${lotes.length} lotes de Pipeline.`
+  );
+
+  for (let i = 0; i < lotes.length; i++) {
+    console.log(
+      `Guardando lote ${i + 1}/${lotes.length}...`
+    );
+
+    await redisPipeline(lotes[i]);
+  }
+
+  // Actualizamos también la caché local
+  for (const [
+    provincia,
+    estaciones
+  ] of provincias.entries()) {
+
+    localCache.set(provincia, {
+      cacheTime: ahora,
+      fecha: data.Fecha || "",
+      provincia: provincia,
+      estaciones: estaciones
+    });
+  }
+
+  console.log(
+    `Redis actualizado correctamente. ${provincias.size} provincias guardadas.`
+  );
+
+  return provincias;
+}
+
+/**
+ * Intenta obtener una provincia desde Redis.
+ */
+async function obtenerProvinciaRedis(provincia) {
+  const key =
+    `${REDIS_PREFIX}${provincia}`;
+
+  const result =
+    await redisCommand([
+      "GET",
+      key
+    ]);
+
+  if (!result) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(result);
+  } catch {
+    console.warn(
+      `Datos inválidos en Redis para provincia ${provincia}`
+    );
+
+    return null;
+  }
+}
+
+/**
+ * Comprueba si la caché sigue siendo válida.
+ */
+function cacheEsValida(cache) {
+  if (!cache) {
+    return false;
+  }
+
+  return (
+    Date.now() - cache.cacheTime <
+    CACHE_DURATION
   );
 }
 
+/**
+ * Intenta adquirir un bloqueo para evitar que varias
+ * peticiones actualicen Redis al mismo tiempo.
+ */
+async function adquirirLock() {
+  try {
+    const result =
+      await redisCommand([
+        "SET",
+        REDIS_LOCK_KEY,
+        String(Date.now()),
+        "NX",
+        "EX",
+        LOCK_TTL
+      ]);
+
+    return result === "OK";
+  } catch (error) {
+    console.warn(
+      "No se pudo adquirir el lock de Redis:",
+      error.message
+    );
+
+    return false;
+  }
+}
 
 /**
- * Obtiene los datos de una provincia.
+ * Libera el bloqueo.
  */
-async function obtenerDatosProvincia(provincia) {
+async function liberarLock() {
+  try {
+    await redisCommand([
+      "DEL",
+      REDIS_LOCK_KEY
+    ]);
+  } catch (error) {
+    console.warn(
+      "No se pudo liberar el lock:",
+      error.message
+    );
+  }
+}
 
-  const clave = `${REDIS_PREFIX}${provincia}`;
+/**
+ * Actualiza Redis si es necesario.
+ */
+async function actualizarCache() {
+  const tieneLock =
+    await adquirirLock();
 
-  const ahora = Date.now();
+  if (!tieneLock) {
+    console.log(
+      "Otra petición ya está actualizando Redis."
+    );
 
-  // -------------------------------------------------------
-  // 1. Intentar Redis
-  // -------------------------------------------------------
-
-  let cacheRedis = null;
+    return false;
+  }
 
   try {
-    const valor = await redisCommand([
-      "GET",
-      clave
-    ]);
+    const data =
+      await descargarDatosOficiales();
 
-    if (valor) {
-      cacheRedis = JSON.parse(valor);
+    await guardarProvinciasEnRedis(data);
+
+    return true;
+
+  } finally {
+    await liberarLock();
+  }
+}
+
+/**
+ * Devuelve las estaciones de una provincia.
+ */
+async function obtenerEstacionesProvincia(
+  provincia
+) {
+
+  // 1. Primero intentamos caché local
+  const local =
+    localCache.get(provincia);
+
+  if (cacheEsValida(local)) {
+    console.log(
+      `Provincia ${provincia} servida desde caché local.`
+    );
+
+    return local;
+  }
+
+  // 2. Después Redis
+  try {
+    const redisData =
+      await obtenerProvinciaRedis(provincia);
+
+    if (
+      redisData &&
+      cacheEsValida(redisData)
+    ) {
+      localCache.set(
+        provincia,
+        redisData
+      );
+
+      console.log(
+        `Provincia ${provincia} servida desde Redis.`
+      );
+
+      return redisData;
     }
 
+    // Si existe pero está caducada,
+    // intentaremos actualizar abajo.
   } catch (error) {
-
     console.warn(
       "No se pudo leer Redis:",
       error.message
     );
   }
 
+  // 3. No hay caché válida.
+  // Actualizamos los datos oficiales.
+  try {
+    await actualizarCache();
+  } catch (error) {
+    console.error(
+      "No se pudo actualizar Redis:",
+      error.message
+    );
 
-  // -------------------------------------------------------
-  // 2. Si la provincia está actualizada,
-  //    devolverla directamente.
-  // -------------------------------------------------------
+    // Intentamos utilizar una copia local aunque esté caducada
+    if (local) {
+      console.warn(
+        "Usando caché local antigua como respaldo."
+      );
 
-  if (
-    cacheRedis &&
-    cacheRedis.estaciones &&
-    cacheRedis.cacheTime &&
-    ahora - cacheRedis.cacheTime < CACHE_DURATION
-  ) {
+      return local;
+    }
 
-    return cacheRedis;
+    // Intentamos Redis aunque esté caducado
+    try {
+      const redisAntiguo =
+        await obtenerProvinciaRedis(
+          provincia
+        );
+
+      if (redisAntiguo) {
+        console.warn(
+          "Usando datos antiguos de Redis como respaldo."
+        );
+
+        localCache.set(
+          provincia,
+          redisAntiguo
+        );
+
+        return redisAntiguo;
+      }
+    } catch (redisError) {
+      console.warn(
+        "Tampoco se pudo recuperar Redis:",
+        redisError.message
+      );
+    }
+
+    throw error;
   }
 
-
-  // -------------------------------------------------------
-  // 3. Intentar conseguir bloqueo
-  // -------------------------------------------------------
-
-  let bloqueoConseguido = false;
-
+  // 4. Después de actualizar, volvemos a pedir
+  // solamente la provincia solicitada.
   try {
+    const actualizada =
+      await obtenerProvinciaRedis(
+        provincia
+      );
 
-    const resultadoLock = await redisCommand([
-      "SET",
-      REDIS_LOCK_KEY,
-      String(ahora),
-      "EX",
-      REDIS_LOCK_TTL,
-      "NX"
-    ]);
+    if (actualizada) {
+      localCache.set(
+        provincia,
+        actualizada
+      );
 
-    bloqueoConseguido =
-      resultadoLock === "OK";
-
+      return actualizada;
+    }
   } catch (error) {
-
     console.warn(
-      "No se pudo crear el bloqueo:",
+      "No se pudo leer la provincia después de actualizar:",
       error.message
     );
   }
 
-
-  // -------------------------------------------------------
-  // 4. Si otro proceso está actualizando,
-  //    devolver datos antiguos si existen.
-  // -------------------------------------------------------
-
-  if (!bloqueoConseguido) {
-
-    if (
-      cacheRedis &&
-      cacheRedis.estaciones
-    ) {
-
-      console.log(
-        "Otra petición está actualizando Redis. Usando caché anterior."
-      );
-
-      return cacheRedis;
-    }
-
-    // Esperar un poco y volver a comprobar.
-    await new Promise(
-      resolve => setTimeout(resolve, 1000)
-    );
-
-    try {
-
-      const valor = await redisCommand([
-        "GET",
-        clave
-      ]);
-
-      if (valor) {
-
-        const segundaCache =
-          JSON.parse(valor);
-
-        if (
-          segundaCache &&
-          segundaCache.estaciones
-        ) {
-
-          return segundaCache;
-        }
-      }
-
-    } catch (error) {
-
-      console.warn(
-        "No se pudo recuperar la caché:",
-        error.message
-      );
-    }
+  // 5. Como último recurso, caché local
+  if (local) {
+    return local;
   }
 
-
-  // -------------------------------------------------------
-  // 5. Somos nosotros quienes actualizamos.
-  // -------------------------------------------------------
-
-  if (bloqueoConseguido) {
-
-    try {
-
-      console.log(
-        "Actualizando datos oficiales del Ministerio..."
-      );
-
-      const response =
-        await fetch(MINISTERIO_API);
-
-      if (!response.ok) {
-
-        throw new Error(
-          `La API oficial no responde (HTTP ${response.status})`
-        );
-      }
-
-      const data =
-        await response.json();
-
-      const datosPreparados =
-        prepararProvincias(data);
-
-      // Guardar todas las provincias
-      await guardarProvinciasRedis(
-        datosPreparados
-      );
-
-      // Obtener inmediatamente la provincia solicitada
-      const provinciaActual =
-        datosPreparados.provincias[provincia] || [];
-
-      const resultado = {
-        cacheTime: Date.now(),
-        fecha: datosPreparados.fecha,
-        estaciones: provinciaActual
-      };
-
-      // Caché local
-      cache = resultado;
-      cacheTime = resultado.cacheTime;
-
-      return resultado;
-
-    } catch (error) {
-
-      console.error(
-        "Error actualizando Redis:",
-        error.message
-      );
-
-      // Si teníamos datos anteriores,
-      // seguimos funcionando con ellos.
-      if (
-        cacheRedis &&
-        cacheRedis.estaciones
-      ) {
-
-        console.warn(
-          "Usando caché anterior."
-        );
-
-        return cacheRedis;
-      }
-
-      throw error;
-
-    } finally {
-
-      // Liberar bloqueo
-      try {
-
-        await redisCommand([
-          "DEL",
-          REDIS_LOCK_KEY
-        ]);
-
-      } catch (error) {
-
-        console.warn(
-          "No se pudo liberar el bloqueo:",
-          error.message
-        );
-      }
-    }
-  }
-
-
-  // -------------------------------------------------------
-  // 6. Caché local como último respaldo.
-  // -------------------------------------------------------
-
-  if (cache) {
-
-    console.warn(
-      "Usando caché local como respaldo."
-    );
-
-    return cache;
-  }
-
-
-  // -------------------------------------------------------
-  // 7. Último recurso: Ministerio.
-  // -------------------------------------------------------
-
-  const response =
-    await fetch(MINISTERIO_API);
-
-  if (!response.ok) {
-
-    throw new Error(
-      `La API oficial no responde (HTTP ${response.status})`
-    );
-  }
-
-  const data =
-    await response.json();
-
-  const datosPreparados =
-    prepararProvincias(data);
-
-  const resultado = {
-    cacheTime: Date.now(),
-    fecha: datosPreparados.fecha,
-    estaciones:
-      datosPreparados.provincias[provincia] || []
-  };
-
-  cache = resultado;
-  cacheTime = resultado.cacheTime;
-
-  return resultado;
+  throw new Error(
+    "No se han podido obtener los datos de la provincia."
+  );
 }
 
+/**
+ * Convierte los datos internos al formato que
+ * ya utiliza tu página web.
+ */
+function prepararRespuesta(
+  data,
+  producto
+) {
 
-export default async function handler(req, res) {
+  let campoPrecio;
+
+  if (producto === "95") {
+    campoPrecio = "precio95";
+  } else if (producto === "98") {
+    campoPrecio = "precio98";
+  } else if (producto === "diesel") {
+    campoPrecio = "diesel";
+  } else {
+    throw new Error(
+      "Producto no válido"
+    );
+  }
+
+  const estaciones =
+    (data.estaciones || [])
+      .map(estacion => {
+
+        const precio =
+          estacion[campoPrecio];
+
+        if (
+          typeof precio !== "number" ||
+          !Number.isFinite(precio)
+        ) {
+          return null;
+        }
+
+        return {
+          nombre:
+            estacion.nombre ||
+            "Gasolinera",
+
+          direccion:
+            estacion.direccion ||
+            "",
+
+          localidad:
+            estacion.localidad ||
+            "",
+
+          municipio:
+            estacion.municipio ||
+            "",
+
+          codigoPostal:
+            estacion.codigoPostal ||
+            "",
+
+          provincia:
+            estacion.provincia ||
+            "",
+
+          precio:
+            precio,
+
+          latitud:
+            estacion.latitud ||
+            "",
+
+          longitud:
+            estacion.longitud ||
+            "",
+
+          horario:
+            estacion.horario ||
+            ""
+        };
+      })
+      .filter(Boolean)
+      .sort(
+        (a, b) =>
+          a.precio - b.precio
+      );
+
+  return {
+    fecha:
+      data.fecha || "",
+
+    provincia:
+      data.provincia || "",
+
+    producto:
+      producto,
+
+    total:
+      estaciones.length,
+
+    estaciones:
+      estaciones
+  };
+}
+
+/**
+ * Handler principal de Vercel.
+ */
+export default async function handler(
+  req,
+  res
+) {
 
   try {
 
     const provincia = String(
       req.query.provincia || "35"
-    ).padStart(2, "0");
+    )
+      .trim()
+      .padStart(2, "0");
 
     const producto =
-      req.query.producto || "95";
+      String(
+        req.query.producto || "95"
+      )
+        .trim()
+        .toLowerCase();
 
-
-    // -------------------------------------------------------
-    // Validar producto
-    // -------------------------------------------------------
-
-    if (
-      producto !== "95" &&
-      producto !== "98" &&
-      producto !== "diesel"
-    ) {
-
+    // Validamos provincia
+    if (!/^\d{2}$/.test(provincia)) {
       return res.status(400).json({
-        error: "Producto no válido"
+        error:
+          "Provincia no válida"
       });
     }
 
+    // Validamos producto
+    if (
+      !["95", "98", "diesel"].includes(
+        producto
+      )
+    ) {
+      return res.status(400).json({
+        error:
+          "Producto no válido"
+      });
+    }
 
-    // -------------------------------------------------------
-    // Obtener provincia desde Redis
-    // -------------------------------------------------------
+    console.log(
+      `Buscando provincia ${provincia} - producto ${producto}`
+    );
 
     const data =
-      await obtenerDatosProvincia(
+      await obtenerEstacionesProvincia(
         provincia
       );
 
+    const respuesta =
+      prepararRespuesta(
+        data,
+        producto
+      );
 
-    // -------------------------------------------------------
-    // Seleccionar precio
-    // -------------------------------------------------------
-
-    const resultados =
-      data.estaciones
-
-        .map(estacion => {
-
-          const precio =
-            estacion.precios &&
-            estacion.precios[producto];
-
-          if (
-            precio === null ||
-            precio === undefined ||
-            isNaN(precio)
-          ) {
-            return null;
-          }
-
-          return {
-
-            nombre:
-              estacion.nombre,
-
-            direccion:
-              estacion.direccion,
-
-            localidad:
-              estacion.localidad,
-
-            municipio:
-              estacion.municipio,
-
-            codigoPostal:
-              estacion.codigoPostal,
-
-            provincia:
-              estacion.provincia,
-
-            precio:
-              precio,
-
-            latitud:
-              estacion.latitud,
-
-            longitud:
-              estacion.longitud,
-
-            horario:
-              estacion.horario
-          };
-        })
-
-        .filter(Boolean)
-
-        .sort(
-          (a, b) =>
-            a.precio - b.precio
-        );
-
-
-    // -------------------------------------------------------
-    // Respuesta
-    // -------------------------------------------------------
-
-    return res.status(200).json({
-
-      fecha:
-        data.fecha || "",
-
-      provincia:
-        provincia,
-
-      producto:
-        producto,
-
-      total:
-        resultados.length,
-
-      estaciones:
-        resultados
-    });
-
+    return res.status(200).json(
+      respuesta
+    );
 
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      "ERROR API GASOLINERAS:",
+      error
+    );
 
     return res.status(500).json({
-
       error:
-        error.message
-
+        error.message ||
+        "No se ha podido realizar la búsqueda."
     });
   }
 }
