@@ -1,0 +1,17 @@
+name: Actualizar precios AhorraFuel
+
+on:
+  schedule:
+    - cron: "15 * * * *"
+  workflow_dispatch:
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Actualizar precios
+        run: |
+          curl -f -X POST \
+            -H "Authorization: Bearer ${{ secrets.ACTUALIZAR_PRECIOS_TOKEN }}" \
+            https://ahorrafuel.es/api/actualizar-precios
