@@ -932,6 +932,20 @@ let ordenCerca = "distancia";
 
 function usarUbicacion() {
 
+  // Al pulsar "Cerca de mí", nunca se exige seleccionar provincia.
+  modoBusqueda = "cerca";
+
+  const provinceModeButton = document.getElementById("provinceModeButton");
+  const nearbyModeButton = document.getElementById("nearbyModeButton");
+  const provinceField = document.getElementById("province");
+
+  if (provinceModeButton) provinceModeButton.classList.remove("active");
+  if (nearbyModeButton) nearbyModeButton.classList.add("active");
+
+  const provinceWrap = provinceField ? provinceField.closest(".field") : null;
+  if (provinceWrap) provinceWrap.style.display = "none";
+
+
   const button =
     document.getElementById("locationButton");
 
@@ -1134,8 +1148,19 @@ async function buscar() {
       }
 
       const provinceSelect = document.getElementById("province");
+      const nombreAuto = String(provinciaAuto).trim().toLowerCase();
+
+      const equivalencias = {
+        "las palmas": "Las Palmas",
+        "las palmas de gran canaria": "Las Palmas",
+        "santa cruz de tenerife": "Santa Cruz de Tenerife"
+      };
+
+      const nombreBuscado =
+        (equivalencias[nombreAuto] || provinciaAuto).toString().trim().toLowerCase();
+
       const option = Array.from(provinceSelect.options).find(
-        opt => opt.textContent.trim().toLowerCase() === String(provinciaAuto).trim().toLowerCase()
+        opt => opt.textContent.trim().toLowerCase() === nombreBuscado
       );
 
       if (!option) {
