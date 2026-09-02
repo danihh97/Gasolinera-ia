@@ -152,15 +152,6 @@
       opacity: .6;
     }
 
-    /* MODOS DE BÚSQUEDA */
-    .location-mode{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 14px;padding:5px;background:#eef2ee;border-radius:15px}
-    .mode-button{min-height:44px;border:0;border-radius:11px;background:transparent;color:#687385;font-size:13px;font-weight:900;cursor:pointer}
-    .mode-button.active{background:#fff;color:#287c2e;box-shadow:0 3px 10px rgba(23,32,51,.08)}
-    .sort-mode{display:flex;align-items:center;gap:8px;margin:0 0 14px;padding:5px;background:#eef2ee;border-radius:15px}
-    .sort-label{padding-left:8px;color:#687385;font-size:11px;font-weight:900;white-space:nowrap}
-    .sort-button{flex:1;min-height:40px;border:0;border-radius:10px;background:transparent;color:#687385;font-size:12px;font-weight:900;cursor:pointer}
-    .sort-button.active{background:#fff;color:#287c2e;box-shadow:0 3px 10px rgba(23,32,51,.08)}
-
     /* UBICACIÓN */
 
     .location-button {
@@ -638,54 +629,6 @@
 
   </style>
 
-
-<style id="ahorrafuel-final-ux">
-.location-mode{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:8px;
-  margin:0 0 12px;
-}
-.mode-button{
-  min-height:46px;
-  border:1px solid #d8e1dc;
-  border-radius:12px;
-  background:#fff;
-  color:#315044;
-  font-weight:800;
-  font-size:15px;
-  cursor:pointer;
-}
-.mode-button.active{
-  background:#0d5c45;
-  color:#fff;
-  border-color:#0d5c45;
-  box-shadow:0 3px 10px rgba(13,92,69,.18);
-}
-.sort-mode{
-  display:flex;
-  align-items:center;
-  gap:7px;
-  flex-wrap:wrap;
-  margin:12px 0 4px;
-}
-.sort-label{font-weight:800;margin-right:2px}
-.sort-button{
-  border:1px solid #d8e1dc;
-  background:#fff;
-  color:#315044;
-  border-radius:10px;
-  padding:8px 11px;
-  font-weight:800;
-  cursor:pointer;
-}
-.sort-button.active{
-  background:#e7f4ef;
-  border-color:#0d5c45;
-  color:#0d5c45;
-}
-</style>
-
 </head>
 
 <body>
@@ -915,8 +858,6 @@
 <script>
 
 let ubicacionUsuario = null;
-let modoBusqueda = "provincia";
-let ordenCerca = "distancia";
 
 
 /* =========================
@@ -1047,18 +988,14 @@ async function buscar() {
   const provincia =
     document.getElementById("province").value;
 
-  if (modoBusqueda === "cerca" && !ubicacionUsuario) {
-    usarUbicacion();
-    return;
-  }
-
-  if (modoBusqueda === "provincia" && !provincia) {
+  if (!provincia) {
     const results = document.getElementById("results");
     results.innerHTML = `
       <div class="af-collecting" role="status" aria-live="polite">
         <span class="af-collecting-icon">⛽</span>
-        <div class="af-collecting-title">Selecciona una provincia</div>
-        <div class="af-collecting-text">Elige una provincia para comparar sus precios.</div>
+        <div class="af-collecting-title">Estamos recopilando los precios de las gasolineras...</div>
+        <div class="af-collecting-text">🔎 Estamos consultando y comparando los precios disponibles para encontrar las opciones más baratas para ti. Puede tardar unos segundos. 💚</div>
+        <div class="af-collecting-thanks">¡Gracias por esperar!</div>
       </div>
     `;
     return;
@@ -1098,57 +1035,12 @@ async function buscar() {
 
   try {
 
-    let url;
-
-    if (modoBusqueda === "cerca") {
-      const geoResponse = await fetch(
-        "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" +
-        encodeURIComponent(ubicacionUsuario.lat) +
-        "&lon=" +
-        encodeURIComponent(ubicacionUsuario.lon) +
-        "&zoom=10&addressdetails=1",
-        {
-          headers: {
-            "Accept": "application/json",
-            "Accept-Language": "es"
-          }
-        }
-      );
-
-      if (!geoResponse.ok) {
-        throw new Error("No se pudo determinar automáticamente tu provincia.");
-      }
-
-      const geoData = await geoResponse.json();
-      const provinciaAuto = geoData?.address?.province || geoData?.address?.state;
-
-      if (!provinciaAuto) {
-        throw new Error("No se pudo determinar automáticamente tu provincia.");
-      }
-
-      const provinceSelect = document.getElementById("province");
-      const option = Array.from(provinceSelect.options).find(
-        opt => opt.textContent.trim().toLowerCase() === String(provinciaAuto).trim().toLowerCase()
-      );
-
-      if (!option) {
-        throw new Error("No se encontró la provincia de tu ubicación.");
-      }
-
-      url =
-        "/api/gasolineras" +
-        "?provincia=" +
-        encodeURIComponent(option.value) +
-        "&producto=" +
-        encodeURIComponent(producto);
-    } else {
-      url =
-        "/api/gasolineras" +
-        "?provincia=" +
-        encodeURIComponent(provincia) +
-        "&producto=" +
-        encodeURIComponent(producto);
-    }
+    const url =
+      "/api/gasolineras" +
+      "?provincia=" +
+      encodeURIComponent(provincia) +
+      "&producto=" +
+      encodeURIComponent(producto);
 
 
     const response =
@@ -1627,32 +1519,6 @@ async function buscar() {
 
     `;
 
-
-    if (modoBusqueda === "cerca") {
-      const oldSort = document.getElementById("sortMode");
-      if (oldSort) oldSort.remove();
-
-      const sort = document.createElement("div");
-      sort.id = "sortMode";
-      sort.className = "sort-mode";
-      sort.innerHTML = `
-        <span class="sort-label">Ordenar:</span>
-        <button id="sortDistance" class="sort-button ${ordenCerca === "distancia" ? "active" : ""}" type="button">📍 Más cercana</button>
-        <button id="sortPrice" class="sort-button ${ordenCerca === "precio" ? "active" : ""}" type="button">💰 Más barata</button>
-      `;
-      results.parentNode.insertBefore(sort, results);
-      sort.querySelector("#sortDistance").onclick = () => {
-        ordenCerca = "distancia";
-        buscar();
-      };
-      sort.querySelector("#sortPrice").onclick = () => {
-        ordenCerca = "precio";
-        buscar();
-      };
-    } else {
-      const oldSort = document.getElementById("sortMode");
-      if (oldSort) oldSort.remove();
-    }
 
     /* =========================
        LISTA DE GASOLINERAS
@@ -2144,43 +2010,6 @@ function escapeHtml(
   <a href="/informacion-legal.html">Información legal</a> ·
   <a href="/condiciones-de-uso.html">Condiciones de uso</a>
 </div>
-
-<script>
-(function(){
-  const provinceModeButton = document.getElementById("provinceModeButton");
-  const nearbyModeButton = document.getElementById("nearbyModeButton");
-  const provinceField = document.getElementById("province");
-  const locationButton = document.getElementById("locationButton");
-  const locationStatus = document.getElementById("locationStatus");
-
-  function actualizarModo(){
-    const cerca = modoBusqueda === "cerca";
-    provinceModeButton.classList.toggle("active", !cerca);
-    nearbyModeButton.classList.toggle("active", cerca);
-
-    const provinceWrap = provinceField ? provinceField.closest(".field") : null;
-    if (provinceWrap) provinceWrap.style.display = cerca ? "none" : "";
-    if (locationButton) locationButton.style.display = cerca ? "block" : "";
-    if (locationStatus) locationStatus.style.display = cerca ? "block" : "";
-  }
-
-  provinceModeButton.addEventListener("click", function(){
-    modoBusqueda = "provincia";
-    ubicacionUsuario = null;
-    const sort = document.getElementById("sortMode");
-    if (sort) sort.remove();
-    actualizarModo();
-  });
-
-  nearbyModeButton.addEventListener("click", function(){
-    modoBusqueda = "cerca";
-    actualizarModo();
-    usarUbicacion();
-  });
-
-  actualizarModo();
-})();
-</script>
 
 </body>
 
