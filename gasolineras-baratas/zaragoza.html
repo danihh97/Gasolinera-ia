@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Gasolineras más baratas en Zaragoza | AhorraFuel</title>
+
+  <meta name="description" content="Encuentra las gasolineras más baratas de Zaragoza. Compara precios actuales de gasolina 95, gasolina 98 y diésel y descubre dónde repostar más barato.">
+
+  <meta name="robots" content="index, follow">
+
+  <link rel="canonical" href="https://ahorrafuel.es/gasolineras-baratas/zaragoza.html">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Gasolineras más baratas en Zaragoza | AhorraFuel">
+  <meta property="og:description" content="Compara los precios actuales de gasolina 95, gasolina 98 y diésel en Zaragoza.">
+  <meta property="og:url" content="https://ahorrafuel.es/gasolineras-baratas/zaragoza.html">
+  <meta property="og:site_name" content="AhorraFuel">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      color: #17202a;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    header {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.06);
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 30px;
+    }
+
+    h2 {
+      margin-top: 30px;
+      font-size: 23px;
+    }
+
+    p {
+      line-height: 1.6;
+    }
+
+    .intro {
+      color: #4b5563;
+    }
+
+    .fuel-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 15px;
+      cursor: pointer;
+      background: #e5e7eb;
+    }
+
+    button.active {
+      background: #111827;
+      color: white;
+    }
+
+    .status {
+      padding: 15px;
+      background: white;
+      border-radius: 12px;
+      margin: 15px 0;
+    }
+
+    .station {
+      background: white;
+      border-radius: 14px;
+      padding: 18px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,.05);
+    }
+
+    .station h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+    }
+
+    .price {
+      font-size: 25px;
+      font-weight: bold;
+      margin: 8px 0;
+    }
+
+    .address {
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    .updated {
+      color: #6b7280;
+      font-size: 14px;
+      margin-top: 15px;
+    }
+
+    .back {
+      display: inline-block;
+      margin-bottom: 20px;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    footer {
+      margin-top: 35px;
+      padding: 20px 0;
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 12px;
+      }
+
+      h1 {
+        font-size: 25px;
+      }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "Gasolineras más baratas en Zaragoza",
+    "description": "Compara los precios actuales de gasolina 95, gasolina 98 y diésel en Zaragoza.",
+    "url": "https://ahorrafuel.es/gasolineras-baratas/zaragoza.html",
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "AhorraFuel",
+      "url": "https://ahorrafuel.es/"
+    }
+  }
+  </script>
+</head>
+
+<body>
+
+  <main class="container">
+
+    <a class="back" href="/">← Volver a AhorraFuel</a>
+
+    <header>
+      <h1>Gasolineras más baratas en Zaragoza</h1>
+
+      <p class="intro">
+        Compara los precios actuales de las gasolineras de Zaragoza y descubre
+        dónde puedes repostar gasolina 95, gasolina 98 o diésel más barato.
+        AhorraFuel utiliza los precios oficiales disponibles para ayudarte a
+        encontrar las mejores opciones para repostar.
+      </p>
+    </header>
+
+    <section>
+      <h2>Precios de combustible en Zaragoza</h2>
+
+      <div class="fuel-buttons">
+        <button id="btn95" class="active" onclick="cargar('95')">
+          Gasolina 95
+        </button>
+
+        <button id="btn98" onclick="cargar('98')">
+          Gasolina 98
+        </button>
+
+        <button id="btndiesel" onclick="cargar('diesel')">
+          Diésel
+        </button>
+      </div>
+
+      <div id="status" class="status">
+        Cargando precios de Zaragoza...
+      </div>
+
+      <div id="results"></div>
+    </section>
+
+    <section>
+      <h2>Encuentra gasolina y diésel baratos en Zaragoza</h2>
+
+      <p>
+        En AhorraFuel puedes comparar las gasolineras de Zaragoza para
+        encontrar los precios más bajos de combustible. Consulta gasolina 95,
+        gasolina 98 y diésel y compara las estaciones disponibles antes de
+        repostar.
+      </p>
+
+      <p>
+        Los precios pueden cambiar, por lo que recomendamos consultar
+        AhorraFuel antes de desplazarte a la gasolinera.
+      </p>
+    </section>
+
+    <footer>
+      AhorraFuel · Comparador de precios de gasolina y diésel en España
+    </footer>
+
+  </main>
+
+  <script>
+    const PROVINCIA = "50";
+
+    const nombresCombustible = {
+      "95": "Gasolina 95",
+      "98": "Gasolina 98",
+      "diesel": "Diésel"
+    };
+
+    async function cargar(producto) {
+
+      document.querySelectorAll("button").forEach(b => {
+        b.classList.remove("active");
+      });
+
+      if (producto === "95") {
+        document.getElementById("btn95").classList.add("active");
+      }
+
+      if (producto === "98") {
+        document.getElementById("btn98").classList.add("active");
+      }
+
+      if (producto === "diesel") {
+        document.getElementById("btndiesel").classList.add("active");
+      }
+
+      const status = document.getElementById("status");
+      const results = document.getElementById("results");
+
+      status.textContent = "Cargando precios...";
+      results.innerHTML = "";
+
+      try {
+
+        const respuesta = await fetch(
+          `/api/gasolineras?provincia=${PROVINCIA}&producto=${producto}`
+        );
+
+        if (!respuesta.ok) {
+          throw new Error("No se pudieron obtener los precios.");
+        }
+
+        const data = await respuesta.json();
+
+        if (!data.estaciones || data.estaciones.length === 0) {
+          status.textContent =
+            "No hay precios disponibles para este combustible.";
+          return;
+        }
+
+        status.textContent =
+          `${data.total} gasolineras encontradas · ${nombresCombustible[producto]}`;
+
+        const estaciones = data.estaciones;
+
+        results.innerHTML = estaciones.map((estacion, index) => {
+
+          return `
+            <article class="station">
+              <h3>${index + 1}. ${escapeHtml(estacion.nombre)}</h3>
+
+              <div class="price">
+                ${Number(estacion.precio).toFixed(3)} €/litro
+              </div>
+
+              <div class="address">
+                ${escapeHtml(estacion.direccion || "")}
+                ${estacion.municipio ? " · " + escapeHtml(estacion.municipio) : ""}
+              </div>
+            </article>
+          `;
+
+        }).join("");
+
+        if (data.fecha) {
+          status.innerHTML +=
+            `<div class="updated">Última actualización disponible: ${escapeHtml(data.fecha)}</div>`;
+        }
+
+      } catch (error) {
+
+        console.error(error);
+
+        status.textContent =
+          "No se han podido cargar los precios en este momento.";
+      }
+    }
+
+    function escapeHtml(text) {
+
+      return String(text || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    cargar("95");
+  </script>
+
+</body>
+</html>
