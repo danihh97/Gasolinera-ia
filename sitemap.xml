@@ -1,27 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
   <url>
     <loc>https://ahorrafuel.es/</loc>
   </url>
+
   <url>
     <loc>https://ahorrafuel.es/gasolineras-baratas/zaragoza.html</loc>
   </url>
+
   <url>
     <loc>https://ahorrafuel.es/gasolineras-baratas/madrid.html</loc>
   </url>
+
   <url>
     <loc>https://ahorrafuel.es/gasolineras-baratas/barcelona.html</loc>
   </url>
+
+  <url>
+    <loc>https://ahorrafuel.es/gasolineras-baratas/las-palmas.html</loc>
+  </url>
+
   <url>
     <loc>https://ahorrafuel.es/cookies.html</loc>
   </url>
+
   <url>
     <loc>https://ahorrafuel.es/privacidad.html</loc>
   </url>
+
   <url>
     <loc>https://ahorrafuel.es/informacion-legal.html</loc>
   </url>
+
   <url>
     <loc>https://ahorrafuel.es/condiciones-de-uso.html</loc>
   </url>
+
 </urlset>
