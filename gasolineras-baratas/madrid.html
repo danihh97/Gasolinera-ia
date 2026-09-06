@@ -28,6 +28,15 @@
 .cta{margin-top:23px;background:#172033;color:#fff;border-radius:23px;padding:21px;text-align:center;box-shadow:0 10px 28px rgba(23,32,51,.14)} .cta h2{margin:0 0 7px;font-size:21px} .cta p{margin:0 0 15px;color:#cbd2dc;font-size:13px;line-height:1.5} .cta a{display:block;text-decoration:none;background:linear-gradient(135deg,#73d51d,#31a83d);color:#fff;padding:13px;border-radius:14px;font-weight:900} .seo{margin-top:22px;background:rgba(255,255,255,.75);border-radius:21px;padding:20px 18px} .seo h2{font-size:20px;margin:0 0 9px} .seo h3{font-size:16px;margin:17px 0 5px} .seo p{font-size:13px;line-height:1.65;color:#687385;margin:0} .footer{text-align:center;margin-top:22px;color:#87909e;font-size:11px} .footer a{color:#287c2e;font-weight:800;text-decoration:none}
 @keyframes hello{0%{opacity:0;transform:translateY(18px) scale(.92)}30%{opacity:1;transform:translateY(0) scale(1)}42%{transform:rotate(-2deg) translateY(-2px)}54%{transform:rotate(2deg)}100%{transform:rotate(0)}} @media(max-width:520px){.app{padding:13px 12px 45px}.brand-logo{width:105px;height:105px}h1{font-size:29px}.hero{padding:20px 17px}.hero p{font-size:15px}.fuel-btn{font-size:14px;height:48px}.highlight{grid-template-columns:1fr}.highlight-price{font-size:27px}.bubble{font-size:13px;flex-basis:220px}.af-mascot-img{width:96px;height:100px}}
 .seo-live{background:#fff;border-radius:21px;padding:19px 17px;margin:0 0 14px;box-shadow:0 8px 25px rgba(23,32,51,.06);border:1px solid rgba(230,235,238,.75)}.seo-live h2{font-size:20px;line-height:1.25;margin:0 0 7px}.seo-live>p{font-size:13px;line-height:1.55;color:#687385;margin:0 0 12px}.seo-fuel{margin-top:14px}.seo-fuel h3{font-size:15px;margin:0 0 6px}.seo-row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-top:1px solid #edf0f2;font-size:12.5px;line-height:1.35}.seo-row strong{font-weight:850}.seo-row span{font-weight:950;color:#287c2e;white-space:nowrap}
+
+.seo-initial{margin:0 0 18px;background:#fff;border:1px solid rgba(23,32,51,.08);border-radius:22px;padding:18px 20px;box-shadow:0 8px 24px rgba(23,32,51,.05)}
+.seo-initial-intro{margin:0;font-size:18px;font-weight:800;color:#172033}
+.seo-initial-note{margin:5px 0 0;color:#718096;font-size:14px}
+.seo-initial .seo-rank{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:13px 0;border-top:1px solid #edf0f3}
+.seo-initial .seo-rank:first-of-type{margin-top:10px}
+.seo-initial .seo-name{font-weight:700;color:#172033}
+.seo-initial .seo-place{display:block;margin-top:3px;font-size:13px;color:#7a8699;font-weight:500}
+.seo-initial .seo-price{font-size:18px;font-weight:900;color:#287f32;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -45,184 +54,16 @@
   <div class="fuel-tabs"><button class="fuel-btn active" data-fuel="95">Gasolina 95</button><button class="fuel-btn" data-fuel="98">Gasolina 98</button><button class="fuel-btn" data-fuel="diesel">Diésel</button></div>
   <div class="sort-tabs" role="group" aria-label="Ordenar gasolineras"><button id="priceSort" class="sort-btn active" type="button">💰 Más baratas</button><button id="nearbySort" class="sort-btn" type="button">📍 Más cercanas a mí</button></div>
   <div id="locationHint" class="location-hint">📍 Pulsa «Más cercanas a mí» para usar tu ubicación y ordenar las gasolineras de Madrid por distancia.</div>
-  <!-- SEO_SERVER_START -->
-  <section class="seo-live" id="seo-live">
-    <h2>Gasolineras más baratas en Madrid</h2>
-    <p>Ranking actualizado de precios de gasolina 95, gasolina 98 y diésel en Madrid.</p>
-    <div id="seo-live-content">
-    <p>Precios consultados en los datos oficiales disponibles. Última actualización: 06/09/2026 18:22:47.</p>
-    
-    <div class="seo-fuel">
-      <h3>Gasolina 95 más barata en Madrid</h3>
-      
-        <div class="seo-row">
-          <strong>1. BALLENOIL · MOSTOLES</strong>
-          <span>1,589 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>2. PETROPRIX · MOSTOLES</strong>
-          <span>1,589 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>3. BALLENOIL · VILLAVICIOSA DE ODON</strong>
-          <span>1,589 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>4. GASEXPRESS · ALCALA DE HENARES</strong>
-          <span>1,629 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>5. PLENERGY · ALCALA DE HENARES</strong>
-          <span>1,629 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>6. BALLENOIL · ALCALA DE HENARES</strong>
-          <span>1,629 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>7. PLENERGY · ALCALA DE HENARES</strong>
-          <span>1,629 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>8. PETROPRIX · ALCALA DE HENARES</strong>
-          <span>1,629 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>9. BALLENOIL · ALCALA DE HENARES</strong>
-          <span>1,629 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>10. BALLENOIL · ALCALA DE HENARES</strong>
-          <span>1,629 €/L</span>
-        </div>
-      
-    </div>
-    
-    <div class="seo-fuel">
-      <h3>Gasolina 98 más barata en Madrid</h3>
-      
-        <div class="seo-row">
-          <strong>1. ALCAMPO · ALCALA DE HENARES</strong>
-          <span>1,749 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>2. E.LECLERC · ARANJUEZ</strong>
-          <span>1,749 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>3. LOUCOS  A.S. EL TORO · VALDEMORO</strong>
-          <span>1,755 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>4. ALCAMPO · TORREJON DE ARDOZ</strong>
-          <span>1,799 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>5. CONFOR AUTO · ALCOBENDAS</strong>
-          <span>1,805 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>6. ALCAMPO · ALCOBENDAS</strong>
-          <span>1,809 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>7. ALCAMPO · MADRID</strong>
-          <span>1,809 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>8. CONFORT AUTO · ALDEHUELA Y LA TORRECILLA (LA)</strong>
-          <span>1,819 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>9. ALCAMPO · ALCORCON</strong>
-          <span>1,849 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>10. ALCAMPO · COLMENAR VIEJO</strong>
-          <span>1,849 €/L</span>
-        </div>
-      
-    </div>
-    
-    <div class="seo-fuel">
-      <h3>Diésel más barato en Madrid</h3>
-      
-        <div class="seo-row">
-          <strong>1. BALLENOIL · MOSTOLES</strong>
-          <span>1,629 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>2. PETROPRIX · MOSTOLES</strong>
-          <span>1,629 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>3. BALLENOIL · VILLAVICIOSA DE ODON</strong>
-          <span>1,629 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>4. T9 · PINTO</strong>
-          <span>1,648 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>5. BALLENOIL · PINTO</strong>
-          <span>1,648 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>6. BALLENOIL · GETAFE</strong>
-          <span>1,649 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>7. PLENERGY · LEGANES</strong>
-          <span>1,649 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>8. BALLENOIL · LEGANES</strong>
-          <span>1,649 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>9. FAMILY ENERGY · LEGANES</strong>
-          <span>1,649 €/L</span>
-        </div>
-      
-        <div class="seo-row">
-          <strong>10. PETROPRIX · LEGANES</strong>
-          <span>1,649 €/L</span>
-        </div>
-      
-    </div>
-  
-    </div>
-  </section>
-  <!-- SEO_SERVER_END -->
   <div id="status" class="status"><div class="count">Cargando precios de Madrid…</div><div class="updated">Consultando los datos disponibles.</div></div>
   <div id="highlight"></div>
-  <div id="stations"></div>
+  <div id="stations">
+  <!-- SEO_SERVER_START -->
+  <div class="seo-initial" aria-label="Gasolineras más baratas en Madrid">
+    <p class="seo-initial-intro">Gasolineras más baratas en Madrid · Gasolina 95</p>
+    <p class="seo-initial-note">Ranking con los precios disponibles en los datos oficiales.</p>
+  </div>
+  <!-- SEO_SERVER_END -->
+  </div>
 
   <section class="cta"><h2>¿Quieres buscar otra provincia?</h2><p>Consulta AhorraFuel para comparar precios y encontrar opciones más económicas donde estés.</p><a href="/">🔎 Volver al buscador de AhorraFuel</a></section>
 
