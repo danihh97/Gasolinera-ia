@@ -27,6 +27,7 @@
 .station{background:#fff;border-radius:21px;padding:17px 16px 15px;margin-bottom:11px;box-shadow:0 7px 22px rgba(23,32,51,.065);border:1px solid rgba(230,235,238,.75)}.station-top{display:flex;gap:10px;justify-content:space-between;align-items:center}.rank{font-size:18px;line-height:1.2;font-weight:950;flex:1;min-width:0}.rank .rank-number{display:inline-flex;align-items:center;justify-content:center;min-width:31px;height:31px;margin-right:6px;border-radius:10px;background:#eef1f4;color:#172033;font-size:14px;vertical-align:middle}.rank .rank-number.gold,.rank .rank-number.silver,.rank .rank-number.bronze{font-size:18px;background:transparent}.price{font-size:22px;font-weight:950;white-space:nowrap;letter-spacing:-.4px}.address{margin-top:9px;color:#687385;font-size:12.5px;line-height:1.4;padding-right:4px}.meta{margin-top:8px;color:#8490a0;font-size:11.5px;line-height:1.35}.station-actions{display:flex;justify-content:flex-end;margin-top:11px}.maps-btn{display:inline-flex;align-items:center;gap:6px;background:#eef9e8;color:#287c2e;border:1px solid #d6edca;border-radius:11px;padding:8px 11px;text-decoration:none;font-size:11.5px;font-weight:900} .empty{background:#fff;border-radius:20px;padding:25px;text-align:center;color:#687385}
 .cta{margin-top:23px;background:#172033;color:#fff;border-radius:23px;padding:21px;text-align:center;box-shadow:0 10px 28px rgba(23,32,51,.14)} .cta h2{margin:0 0 7px;font-size:21px} .cta p{margin:0 0 15px;color:#cbd2dc;font-size:13px;line-height:1.5} .cta a{display:block;text-decoration:none;background:linear-gradient(135deg,#73d51d,#31a83d);color:#fff;padding:13px;border-radius:14px;font-weight:900} .seo{margin-top:22px;background:rgba(255,255,255,.75);border-radius:21px;padding:20px 18px} .seo h2{font-size:20px;margin:0 0 9px} .seo h3{font-size:16px;margin:17px 0 5px} .seo p{font-size:13px;line-height:1.65;color:#687385;margin:0} .footer{text-align:center;margin-top:22px;color:#87909e;font-size:11px} .footer a{color:#287c2e;font-weight:800;text-decoration:none}
 @keyframes hello{0%{opacity:0;transform:translateY(18px) scale(.92)}30%{opacity:1;transform:translateY(0) scale(1)}42%{transform:rotate(-2deg) translateY(-2px)}54%{transform:rotate(2deg)}100%{transform:rotate(0)}} @media(max-width:520px){.app{padding:13px 12px 45px}.brand-logo{width:105px;height:105px}h1{font-size:29px}.hero{padding:20px 17px}.hero p{font-size:15px}.fuel-btn{font-size:14px;height:48px}.highlight{grid-template-columns:1fr}.highlight-price{font-size:27px}.bubble{font-size:13px;flex-basis:220px}.af-mascot-img{width:96px;height:100px}}
+.seo-live{background:#fff;border-radius:21px;padding:19px 17px;margin:0 0 14px;box-shadow:0 8px 25px rgba(23,32,51,.06);border:1px solid rgba(230,235,238,.75)}.seo-live h2{font-size:20px;line-height:1.25;margin:0 0 7px}.seo-live>p{font-size:13px;line-height:1.55;color:#687385;margin:0 0 12px}.seo-fuel{margin-top:14px}.seo-fuel h3{font-size:15px;margin:0 0 6px}.seo-row{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-top:1px solid #edf0f2;font-size:12.5px;line-height:1.35}.seo-row strong{font-weight:850}.seo-row span{font-weight:950;color:#287c2e;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -44,6 +45,15 @@
   <div class="fuel-tabs"><button class="fuel-btn active" data-fuel="95">Gasolina 95</button><button class="fuel-btn" data-fuel="98">Gasolina 98</button><button class="fuel-btn" data-fuel="diesel">Diésel</button></div>
   <div class="sort-tabs" role="group" aria-label="Ordenar gasolineras"><button id="priceSort" class="sort-btn active" type="button">💰 Más baratas</button><button id="nearbySort" class="sort-btn" type="button">📍 Más cercanas a mí</button></div>
   <div id="locationHint" class="location-hint">📍 Pulsa «Más cercanas a mí» para usar tu ubicación y ordenar las gasolineras de Madrid por distancia.</div>
+  <!-- SEO_SERVER_START -->
+  <section class="seo-live" id="seo-live">
+    <h2>Gasolineras más baratas en Madrid</h2>
+    <p>Ranking actualizado de precios de gasolina 95, gasolina 98 y diésel en Madrid.</p>
+    <div id="seo-live-content">
+      <p>Consulta los precios disponibles de Madrid.</p>
+    </div>
+  </section>
+  <!-- SEO_SERVER_END -->
   <div id="status" class="status"><div class="count">Cargando precios de Madrid…</div><div class="updated">Consultando los datos disponibles.</div></div>
   <div id="highlight"></div>
   <div id="stations"></div>
