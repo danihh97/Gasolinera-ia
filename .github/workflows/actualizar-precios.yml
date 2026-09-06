@@ -5,13 +5,41 @@ on:
     - cron: "15 * * * *"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   actualizar:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v4
+
       - name: Actualizar precios
         run: |
           curl -f -X POST \
             -H "Authorization: Bearer ${{ secrets.ACTUALIZAR_PRECIOS_TOKEN }}" \
             https://ahorrafuel.es/api/actualizar-precios
+
+      - name: Actualizar HTML SEO de Madrid
+        run: |
+          node scripts/actualizar-madrid-seo.js
+
+      - name: Comprobar cambios en Madrid
+        id: cambios
+        run: |
+          if git diff --quiet -- gasolineras-baratas/madrid.html; then
+            echo "cambios=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "cambios=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Guardar Madrid actualizado
+        if: steps.cambios.outputs.cambios == 'true'
+        run: |
+          git config user.name "AhorraFuel Bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add gasolineras-baratas/madrid.html
+          git commit -m "Actualizar precios SEO Madrid"
+          git push
