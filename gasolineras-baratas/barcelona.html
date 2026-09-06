@@ -58,14 +58,26 @@ const province='08'; let currentFuel='95'; let currentData=[]; let currentDate='
 const labels={'95':'Gasolina 95','98':'Gasolina 98','diesel':'Diésel'};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
 function euro(v){return Number(v).toLocaleString('es-ES',{minimumFractionDigits:3,maximumFractionDigits:3})+' €/litro'}
-function priceOf(x){return Number(x.precio)}
-function validCoords(x){return Number.isFinite(Number(x.latitud))&&Number.isFinite(Number(x.longitud))}
+function priceOf(x){return Number(String(x?.precio??'').trim().replace(',','.'))}
+function coord(v){
+ if(v===null||v===undefined)return NaN;
+ let s=String(v).trim().replace(/\s/g,'');
+ if(!s)return NaN;
+ s=s.replace(',','.');
+ const n=Number(s);
+ return Number.isFinite(n)?n:NaN;
+}
+function getLat(x){return coord(x?.latitud??x?.lat??x?.Latitud??x?.latitude??x?.LATITUD)}
+function getLng(x){return coord(x?.longitud??x?.lng??x?.lon??x?.Longitud??x?.longitude??x?.LONGITUD)}
+function validCoords(x){const lat=getLat(x),lng=getLng(x);return Number.isFinite(lat)&&Number.isFinite(lng)&&lat>=-90&&lat<=90&&lng>=-180&&lng<=180}
 function distanceKm(lat1,lon1,lat2,lon2){const R=6371,rad=Math.PI/180;const dLat=(lat2-lat1)*rad,dLon=(lon2-lon1)*rad;const a=Math.sin(dLat/2)**2+Math.cos(lat1*rad)*Math.cos(lat2*rad)*Math.sin(dLon/2)**2;return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a))}
 function formatDistance(km){return km<1?(Math.round(km*1000)+' m'):(km.toLocaleString('es-ES',{minimumFractionDigits:1,maximumFractionDigits:1})+' km')}
 function sortedList(data){
  const list=(data||[]).slice().filter(x=>Number.isFinite(priceOf(x)));
- if(sortMode==='nearby'&&userPosition){list.forEach(x=>x._distanceKm=validCoords(x)?distanceKm(userPosition.lat,userPosition.lng,Number(x.latitud),Number(x.longitud)):Infinity);list.sort((a,b)=>a._distanceKm-b._distanceKm||priceOf(a)-priceOf(b));}
- else list.sort((a,b)=>priceOf(a)-priceOf(b));
+ if(sortMode==='nearby'&&userPosition){
+  list.forEach(x=>x._distanceKm=validCoords(x)?distanceKm(userPosition.lat,userPosition.lng,getLat(x),getLng(x)):Infinity);
+  list.sort((a,b)=>a._distanceKm-b._distanceKm||priceOf(a)-priceOf(b));
+ } else list.sort((a,b)=>priceOf(a)-priceOf(b));
  return list;
 }
 async function loadFuel(fuel){
@@ -81,13 +93,13 @@ function render(){
  const bestMapsQuery=[cheapest.nombre,cheapest.direccion,cheapest.localidad,'Barcelona'].filter(Boolean).join(', ');
  const bestMapsUrl='https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(bestMapsQuery)+'&travelmode=driving';
  document.getElementById('highlight').innerHTML='<div class="highlight"><div><div class="highlight-label">🔥 La opción más barata ahora</div><div class="highlight-name">'+esc(cheapest.nombre)+'</div><div class="highlight-address">'+esc(cheapest.direccion||cheapest.localidad||'Barcelona')+'</div><div class="station-actions" style="justify-content:flex-start;margin-top:10px"><a class="maps-btn" href="'+bestMapsUrl+'" target="_blank" rel="noopener">📍 Cómo llegar</a></div></div><div class="highlight-price">'+euro(priceOf(cheapest))+'</div></div>';
- document.getElementById('stations').innerHTML=list.map((x,i)=>{const medals=['🥇','🥈','🥉'];const medal=medals[i]||'';const rankClass=i<3?['gold','silver','bronze'][i]:'';const rankNumber=medal?'<span class="rank-number '+rankClass+'">'+medal+'</span>':'<span class="rank-number">'+(i+1)+'</span>';const mapsQuery=[x.nombre,x.direccion,x.localidad,'Barcelona'].filter(Boolean).join(', ');const mapsUrl='https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(mapsQuery)+'&travelmode=driving';const dist=sortMode==='nearby'&&Number.isFinite(x._distanceKm)?'<div class="distance">📍 '+formatDistance(x._distanceKm)+'</div>':'';return '<article class="station"><div class="station-top"><div class="rank">'+rankNumber+esc(x.nombre)+'</div><div class="price">'+euro(priceOf(x))+'</div></div><div class="address">📍 '+esc(x.direccion||'Dirección no disponible')+(x.localidad?' · '+esc(x.localidad):'')+'</div>'+dist+'<div class="meta">'+(x.horario?'🕒 '+esc(x.horario):'')+'</div><div class="station-actions"><a class="maps-btn" href="'+mapsUrl+'" target="_blank" rel="noopener">📍 Cómo llegar</a></div></article>'}).join('');
+ document.getElementById('stations').innerHTML=list.map((x,i)=>{const medals=['🥇','🥈','🥉'];const medal=medals[i]||'';const rankClass=i<3?['gold','silver','bronze'][i]:'';const rankNumber=medal?'<span class="rank-number '+rankClass+'">'+medal+'</span>':'<span class="rank-number">'+(i+1)+'</span>';const mapsQuery=[x.nombre,x.direccion,x.localidad,'Barcelona'].filter(Boolean).join(', ');const mapsUrl='https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(mapsQuery)+'&travelmode=driving';const dist=sortMode==='nearby'&&Number.isFinite(x._distanceKm)?'<div class="distance">📍 A '+formatDistance(x._distanceKm)+' de ti</div>':'';return '<article class="station"><div class="station-top"><div class="rank">'+rankNumber+esc(x.nombre)+'</div><div class="price">'+euro(priceOf(x))+'</div></div><div class="address">📍 '+esc(x.direccion||'Dirección no disponible')+(x.localidad?' · '+esc(x.localidad):'')+'</div>'+dist+'<div class="meta">'+(x.horario?'🕒 '+esc(x.horario):'')+'</div><div class="station-actions"><a class="maps-btn" href="'+mapsUrl+'" target="_blank" rel="noopener">📍 Cómo llegar</a></div></article>'}).join('');
 }
 function setSortMode(mode){
  if(mode==='price'){sortMode='price';document.getElementById('priceSort').classList.add('active');document.getElementById('nearbySort').classList.remove('active');document.getElementById('locationHint').classList.remove('show');if(currentData.length)render();return;}
  if(!navigator.geolocation){document.getElementById('locationHint').textContent='⚠️ Tu navegador no permite obtener la ubicación. Se mantiene el orden por precio.';document.getElementById('locationHint').classList.add('show');return;}
  document.getElementById('locationHint').textContent='📍 Obteniendo tu ubicación…';document.getElementById('locationHint').classList.add('show');
- navigator.geolocation.getCurrentPosition(pos=>{userPosition={lat:Number(pos.coords.latitude),lng:Number(pos.coords.longitude)};sortMode='nearby';document.getElementById('priceSort').classList.remove('active');document.getElementById('nearbySort').classList.add('active');document.getElementById('locationHint').textContent='📍 Barcelona ordenada desde tu ubicación. La distancia es aproximada.';document.getElementById('locationHint').classList.add('show');if(currentData.length)render();},err=>{sortMode='price';document.getElementById('priceSort').classList.add('active');document.getElementById('nearbySort').classList.remove('active');const msg=err&&err.code===1?'⚠️ Has bloqueado el acceso a tu ubicación. Permítelo en el navegador para usar «Más cercanas a mí».':'⚠️ No hemos podido obtener tu ubicación. Comprueba los permisos y vuelve a intentarlo.';document.getElementById('locationHint').textContent=msg;document.getElementById('locationHint').classList.add('show');if(currentData.length)render();},{enableHighAccuracy:false,timeout:10000,maximumAge:300000});
+ navigator.geolocation.getCurrentPosition(pos=>{userPosition={lat:Number(pos.coords.latitude),lng:Number(pos.coords.longitude)};const coordsCount=currentData.filter(validCoords).length;sortMode='nearby';document.getElementById('priceSort').classList.remove('active');document.getElementById('nearbySort').classList.add('active');document.getElementById('locationHint').textContent=coordsCount?'📍 Barcelona ordenada desde tu ubicación. La distancia es aproximada.':'⚠️ Las gasolineras de Barcelona no tienen coordenadas válidas disponibles ahora mismo.';document.getElementById('locationHint').classList.add('show');if(currentData.length)render();},err=>{sortMode='price';document.getElementById('priceSort').classList.add('active');document.getElementById('nearbySort').classList.remove('active');const msg=err&&err.code===1?'⚠️ Has bloqueado el acceso a tu ubicación. Permítelo en el navegador para usar «Más cercanas a mí».':'⚠️ No hemos podido obtener tu ubicación. Comprueba los permisos y vuelve a intentarlo.';document.getElementById('locationHint').textContent=msg;document.getElementById('locationHint').classList.add('show');if(currentData.length)render();},{enableHighAccuracy:false,timeout:10000,maximumAge:300000});
 }
 document.getElementById('priceSort').addEventListener('click',()=>setSortMode('price'));document.getElementById('nearbySort').addEventListener('click',()=>setSortMode('nearby'));document.querySelectorAll('.fuel-btn').forEach(b=>b.addEventListener('click',()=>loadFuel(b.dataset.fuel)));loadFuel('95');
 </script>
