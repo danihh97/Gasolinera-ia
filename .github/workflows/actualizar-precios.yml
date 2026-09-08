@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Descargar repositorio
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Actualizar precios
         run: |
@@ -40,6 +42,9 @@ jobs:
         run: |
           git config user.name "AhorraFuel Bot"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
           git add gasolineras-baratas/madrid.html
           git commit -m "Actualizar precios SEO Madrid"
-          git push
+
+          git pull --rebase origin main
+          git push origin main
