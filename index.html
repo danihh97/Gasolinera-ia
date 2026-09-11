@@ -631,38 +631,30 @@
 @media (prefers-reduced-motion:reduce){.af-collecting-icon{animation:none}}
 
   
-    /* MAPA CERCA DE TI — diseño oscuro AhorraFuel */
-    .af-map-card{background:linear-gradient(145deg,#07131b 0%,#0b1b24 55%,#061018 100%);border:1px solid rgba(91,255,126,.18);border-radius:26px;padding:12px;margin-bottom:18px;box-shadow:0 18px 45px rgba(0,0,0,.22);overflow:hidden;color:#fff}
+    /* MAPA CERCA DE TI — interfaz propia AhorraFuel */
+    .af-map-card{background:linear-gradient(145deg,#07151d 0%,#0b2027 100%);border:1px solid rgba(91,255,126,.16);border-radius:26px;padding:12px;margin-bottom:18px;box-shadow:0 18px 45px rgba(0,0,0,.18);overflow:hidden;color:#fff}
     .af-map-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 6px 12px}
-    .af-map-title{margin:0;font-size:17px;font-weight:950;color:#f5fbf7;letter-spacing:-.45px}
-    .af-map-subtitle{margin:0;color:#a7b7c2;font-size:11px;font-weight:800;text-align:right}
-    .af-map-zones{display:flex;gap:7px;padding:0 2px 11px;overflow-x:auto;scrollbar-width:none}
-    .af-map-zones::-webkit-scrollbar{display:none}
-    .af-map-zone{flex:0 0 auto;border:1px solid rgba(176,201,213,.14);background:rgba(20,42,53,.86);color:#aebfc9;border-radius:999px;padding:9px 14px;font-size:11px;font-weight:950;cursor:pointer;transition:.18s ease;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
-    .af-map-zone:hover{border-color:rgba(77,255,112,.45);color:#fff}
-    .af-map-zone.active{background:#42e66a;color:#061018;border-color:#42e66a;box-shadow:0 6px 18px rgba(66,230,106,.28)}
-    .af-map-wrap{position:relative;border-radius:21px;overflow:hidden;border:1px solid rgba(71,224,105,.22);background:#dfe7e3;box-shadow:inset 0 0 0 1px rgba(255,255,255,.025),0 10px 30px rgba(0,0,0,.24)}
-    #afMap{width:100%;height:390px;background:#dfe7e3}
-    .af-map-tile{filter:brightness(.94) saturate(.72) contrast(.98) hue-rotate(2deg)}
-    .af-map-wrap .leaflet-control-zoom{margin:12px!important;border:1px solid rgba(255,255,255,.14)!important;border-radius:13px!important;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.30)!important}
-    .af-map-wrap .leaflet-control-zoom a{width:38px!important;height:38px!important;line-height:38px!important;background:#0b1b25!important;color:#fff!important;border:0!important;font-size:20px!important}
-    .af-map-wrap .leaflet-control-zoom a+a{border-top:1px solid rgba(255,255,255,.10)!important}
-    .af-map-wrap .leaflet-control-attribution{background:rgba(5,14,20,.78)!important;color:#8fa2ae!important;border-radius:8px 0 0 0!important;font-size:8px!important;padding:3px 6px!important}
-    .af-map-wrap .leaflet-control-attribution a{color:#a9ffba!important}
-    .af-map-user{width:16px;height:16px;border-radius:50%;background:#2f8cff;border:4px solid #fff;box-shadow:0 0 0 7px rgba(47,140,255,.18),0 4px 16px rgba(0,0,0,.5)}
-    .af-price-pin{background:transparent;border:0}
-    .af-price-label{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;min-width:72px;height:35px;padding:0 11px;border-radius:12px;background:rgba(8,23,31,.94);border:1px solid rgba(112,232,137,.42);color:#f4fff5;font-size:12px;font-weight:950;box-shadow:0 8px 20px rgba(0,0,0,.42);transform:translate(-50%,-50%);backdrop-filter:blur(10px);letter-spacing:-.1px}
-    .af-price-label.best{background:#43e66b;color:#061018;border-color:#8bffa5;box-shadow:0 8px 24px rgba(67,230,107,.38);transform:translate(-50%,-50%) scale(1.06)}
-    .af-map-popup{min-width:205px}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#0b1b24;color:#eef8f1}.leaflet-popup-content{margin:14px}.af-map-popup strong{display:block;font-size:14px;margin-bottom:6px;color:#f3fff7}.af-map-popup .af-popup-price{font-size:20px;font-weight:950;color:#45e66d}.af-map-popup .af-popup-distance{margin-top:5px;color:#a5b6c0;font-size:12px;font-weight:800}.af-map-popup a{display:inline-block;margin-top:10px;padding:9px 12px;border-radius:11px;background:#43e66b;color:#061018;text-decoration:none;font-size:11px;font-weight:950}.leaflet-popup-close-button{color:#a8bac3!important}
-    .af-map-overlay{position:absolute;z-index:500;top:12px;right:12px;display:flex;gap:6px}
-    .af-map-tool{border:1px solid rgba(255,255,255,.14);background:rgba(7,20,28,.88);color:#e9f3ee;border-radius:12px;padding:8px 11px;font-size:11px;font-weight:900;box-shadow:0 7px 18px rgba(0,0,0,.25);backdrop-filter:blur(8px);cursor:pointer}
-    .af-map-tool.active{background:#123e22;border-color:#39df60;color:#72ff91}
-    .af-map-location{position:absolute;z-index:500;left:12px;bottom:12px;border:1px solid rgba(255,255,255,.14);background:rgba(7,20,28,.90);color:#fff;border-radius:12px;padding:9px 12px;font-size:11px;font-weight:900;box-shadow:0 7px 18px rgba(0,0,0,.30);backdrop-filter:blur(8px)}
-    .af-map-legend{position:absolute;z-index:500;right:12px;bottom:12px;border:1px solid rgba(255,255,255,.12);background:rgba(7,20,28,.88);color:#cbd8de;border-radius:12px;padding:8px 10px;font-size:9px;font-weight:800;box-shadow:0 7px 18px rgba(0,0,0,.25);backdrop-filter:blur(8px)}
-    .af-map-legend span{display:inline-flex;align-items:center;margin-right:8px}.af-map-legend span:last-child{margin-right:0}.af-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px}.af-dot.green{background:#39df60}.af-dot.blue{background:#238bff}
-    .af-price-pin{background:transparent!important;border:0!important}.af-price-label{position:relative;display:inline-flex;align-items:center;justify-content:center;min-width:78px;height:36px;padding:0 12px;border-radius:12px;background:rgba(8,22,30,.94);border:1.5px solid rgba(218,235,241,.7);color:#f4faf7;font-size:13px;font-weight:950;letter-spacing:-.2px;white-space:nowrap;box-shadow:0 8px 20px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.08);backdrop-filter:blur(9px);transform:translate(-50%,-100%)}.af-price-label::after{content:"";position:absolute;left:50%;bottom:-7px;width:12px;height:12px;background:rgba(8,22,30,.94);border-right:1.5px solid rgba(218,235,241,.7);border-bottom:1.5px solid rgba(218,235,241,.7);transform:translateX(-50%) rotate(45deg)}.af-price-label.best{background:linear-gradient(135deg,#35e967,#17b94c);border-color:#78ff9a;color:#03100a;font-size:15px;min-width:94px;height:42px;box-shadow:0 10px 28px rgba(48,232,101,.30),0 5px 16px rgba(0,0,0,.45)}.af-price-label.best::after{background:#20c953;border-color:#68f88b}.af-price-label .af-pin-fuel{margin-right:6px;font-size:14px}.af-radius-circle{stroke:#238bff!important;stroke-width:3!important;fill:#238bff!important;fill-opacity:.08!important;stroke-opacity:.9!important}.af-station-dot{width:11px;height:11px;border-radius:50%;background:#dbe8ee;border:3px solid #0b1b24;box-shadow:0 3px 10px rgba(0,0,0,.5)}
-    .af-radius-circle{fill-opacity:.045;weight:1.2;color:#4aa3ff;fill-color:#4aa3ff;dash-array:7 7}
-    @media(max-width:520px){#afMap{height:350px}.af-map-card{padding:9px;border-radius:22px}.af-map-title{font-size:15px}.af-map-subtitle{font-size:10px}.af-price-label{min-width:61px;height:32px;font-size:11px}.af-map-tool{padding:8px 9px}.af-map-legend{font-size:8px}.af-map-location{font-size:10px}}
+    .af-map-title{margin:0;font-size:17px;font-weight:950;color:#f5fbf7;letter-spacing:-.45px}.af-map-subtitle{margin:0;color:#a7b7c2;font-size:11px;font-weight:800}
+    .af-map-zones{display:flex;gap:7px;padding:0 2px 11px;overflow-x:auto;scrollbar-width:none}.af-map-zones::-webkit-scrollbar{display:none}
+    .af-map-zone{flex:0 0 auto;border:1px solid rgba(176,201,213,.14);background:#142f38;color:#b8c8ce;border-radius:999px;padding:9px 14px;font-size:11px;font-weight:950;cursor:pointer;transition:.18s ease}.af-map-zone.active{background:#43e66b;color:#061018;border-color:#43e66b;box-shadow:0 6px 18px rgba(66,230,106,.22)}
+    .af-map-wrap{position:relative;border-radius:21px;overflow:hidden;border:1px solid rgba(71,224,105,.22);background:#b7c7c0;box-shadow:0 10px 30px rgba(0,0,0,.24)}
+    #afMap{position:relative;width:100%;height:390px;background:#aebeb8;overflow:hidden;touch-action:none;cursor:grab}
+    #afMap.af-dragging{cursor:grabbing}
+    .af-map-canvas{position:absolute;left:50%;top:50%;width:0;height:0;will-change:transform}
+    .af-map-tile{position:absolute;width:256px;height:256px;user-select:none;pointer-events:none;image-rendering:auto}
+    .af-map-grid{position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:64px 64px;pointer-events:none;mix-blend-mode:soft-light}
+    .af-map-user{position:absolute;width:18px;height:18px;border-radius:50%;background:#2f8cff;border:4px solid #fff;box-shadow:0 0 0 8px rgba(47,140,255,.18),0 5px 18px rgba(0,0,0,.35);transform:translate(-50%,-50%);z-index:40}
+    .af-map-radius{position:absolute;border:2px solid rgba(55,230,105,.58);background:rgba(55,230,105,.09);border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:10}
+    .af-price-marker{position:absolute;transform:translate(-50%,-100%);z-index:30;cursor:pointer;transition:transform .15s ease;white-space:nowrap}.af-price-marker:hover{transform:translate(-50%,-100%) scale(1.06);z-index:60}
+    .af-price-pill{display:flex;align-items:center;gap:5px;padding:7px 9px;border-radius:12px;background:rgba(16,30,36,.96);border:1px solid rgba(255,255,255,.16);color:#fff;font-size:11px;font-weight:950;box-shadow:0 7px 18px rgba(0,0,0,.28);backdrop-filter:blur(7px)}
+    .af-price-pill.best{background:#43e66b;color:#061018;border-color:#a0ffb5;box-shadow:0 7px 20px rgba(67,230,107,.35)}.af-price-pill .af-price-brand{font-size:10px;opacity:.78}.af-price-pill.best .af-price-brand{opacity:.72}
+    .af-marker-stem{width:7px;height:7px;margin:-1px auto 0;background:inherit;border-right:1px solid rgba(255,255,255,.15);border-bottom:1px solid rgba(255,255,255,.15);transform:rotate(45deg)}
+    .af-map-controls{position:absolute;right:12px;top:12px;display:flex;flex-direction:column;gap:7px;z-index:100}.af-map-control{width:40px;height:40px;border:1px solid rgba(255,255,255,.2);border-radius:13px;background:rgba(7,19,26,.88);color:#fff;font-size:19px;font-weight:900;box-shadow:0 8px 18px rgba(0,0,0,.25);cursor:pointer}.af-map-control:active{transform:scale(.95)}
+    .af-map-style{position:absolute;left:12px;top:12px;display:flex;gap:5px;padding:4px;border-radius:13px;background:rgba(7,19,26,.88);border:1px solid rgba(255,255,255,.15);z-index:100}.af-map-tool{border:0;background:transparent;color:#aab9bf;border-radius:9px;padding:8px 10px;font-size:10px;font-weight:900;cursor:pointer}.af-map-tool.active{background:#43e66b;color:#061018}
+    .af-map-location{position:absolute;left:12px;bottom:12px;padding:8px 11px;border-radius:999px;background:rgba(7,19,26,.9);border:1px solid rgba(255,255,255,.14);color:#fff;font-size:10px;font-weight:900;z-index:100}.af-map-legend{position:absolute;right:12px;bottom:12px;display:flex;gap:7px;padding:7px 9px;border-radius:12px;background:rgba(7,19,26,.86);color:#dbe5e8;font-size:9px;font-weight:800;z-index:100}.af-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px}.af-dot.green{background:#43e66b}.af-dot.blue{background:#2f8cff}
+    .af-map-popup-card{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);width:min(330px,calc(100% - 24px));padding:13px 14px;border-radius:18px;background:rgba(7,19,26,.96);border:1px solid rgba(67,230,107,.35);box-shadow:0 16px 35px rgba(0,0,0,.35);z-index:200;color:#fff}.af-map-popup-card strong{font-size:13px}.af-map-popup-price{font-size:21px;font-weight:950;color:#43e66b;margin-top:2px}.af-map-popup-meta{font-size:10px;color:#aab9bf;margin:3px 0 9px}.af-map-popup-card a{display:inline-block;background:#43e66b;color:#061018;text-decoration:none;font-size:10px;font-weight:950;border-radius:10px;padding:8px 11px}.af-map-popup-close{position:absolute;right:9px;top:7px;background:none;border:0;color:#aab9bf;font-size:17px;cursor:pointer}
+    .af-map-attribution{position:absolute;right:5px;bottom:2px;font-size:7px;color:rgba(255,255,255,.75);z-index:101;text-shadow:0 1px 2px #000}.af-map-attribution a{color:inherit}
+    @media(max-width:600px){#afMap{height:360px}.af-map-price-pill{font-size:10px}}
 </style>
 
 
@@ -732,8 +724,6 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
 @media(max-width:600px){.af-home-cities-head{gap:10px!important}.af-home-cities-title{font-size:1.08rem!important}.af-cities-mark{width:5px;height:23px}.af-home-cities-all{font-size:.82rem!important}}
 </style>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 </head>
 
 <body>
@@ -1991,145 +1981,101 @@ async function buscar() {
 
 
 /* =========================
-   MAPA CERCA DE TI
+   MAPA CERCA DE TI — MOTOR PROPIO
 ========================= */
 function mostrarMapaCercano(estaciones) {
   const el = document.getElementById("afMap");
-  if (!el || !ubicacionUsuario || typeof L === "undefined") return;
+  if (!el || !ubicacionUsuario) return;
 
-  if (window.afMapInstance) window.afMapInstance.remove();
+  if (window.afMapCleanup) window.afMapCleanup();
+  el.innerHTML = `
+    <div class="af-map-canvas" id="afMapCanvas"></div>
+    <div class="af-map-grid"></div>
+    <div class="af-map-style">
+      <button type="button" class="af-map-tool active" id="afMapRoads">Mapa</button>
+      <button type="button" class="af-map-tool" id="afMapSatellite">Satélite</button>
+    </div>
+    <div class="af-map-controls">
+      <button type="button" class="af-map-control" id="afMapPlus" aria-label="Acercar">+</button>
+      <button type="button" class="af-map-control" id="afMapMinus" aria-label="Alejar">−</button>
+      <button type="button" class="af-map-control" id="afMapCenter" aria-label="Centrar ubicación">⌾</button>
+    </div>
+    <div class="af-map-location">⌾ Mi ubicación</div>
+    <div class="af-map-legend"><span><i class="af-dot green"></i>Más barata</span><span><i class="af-dot blue"></i>Tú</span></div>
+    <div class="af-map-attribution">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></div>
+  `;
 
-  const map = L.map(el, {
-    scrollWheelZoom: false,
-    zoomControl: false,
-    attributionControl: true
-  }).setView([ubicacionUsuario.lat, ubicacionUsuario.lon], 13);
-  window.afMapInstance = map;
-
-  const darkTiles = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}", {
-    maxZoom: 19,
-    className: "af-map-tile",
-    attribution: '&copy; OpenStreetMap contributors'
-  }).addTo(map);
-
-  const satelliteTiles = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
-    maxZoom: 19,
-    attribution: 'Tiles &copy; Esri'
-  });
-
-  L.control.zoom({position:'topleft'}).addTo(map);
-
-  const userIcon = L.divIcon({
-    className: "",
-    html: '<div class="af-map-user" title="Tu ubicación"></div>',
-    iconSize: [18,18],
-    iconAnchor: [9,9]
-  });
-
-  L.marker([ubicacionUsuario.lat, ubicacionUsuario.lon], {
-    icon: userIcon,
-    zIndexOffset: 5000
-  }).addTo(map).bindPopup("<strong>📍 Tu ubicación</strong>");
-
-  let radiusCircle = L.circle([ubicacionUsuario.lat, ubicacionUsuario.lon], {
-    radius: 10000,
-    className: "af-radius-circle"
-  }).addTo(map);
-
-  const validStations = [];
+  const canvas = document.getElementById("afMapCanvas");
+  const zoneButtons = document.querySelectorAll(".af-map-zone");
+  const valid = [];
   estaciones.forEach(estacion => {
     const lat = parseFloat(String(estacion.latitud || "").replace(",", "."));
     const lon = parseFloat(String(estacion.longitud || "").replace(",", "."));
     const precio = Number(estacion.precio);
-    if (isNaN(lat) || isNaN(lon) || !isFinite(precio)) return;
-    const distance = calcularDistancia(ubicacionUsuario.lat, ubicacionUsuario.lon, lat, lon);
-    validStations.push({ estacion, lat, lon, precio, distance });
+    if (!Number.isFinite(lat) || !Number.isFinite(lon) || !Number.isFinite(precio)) return;
+    valid.push({estacion,lat,lon,precio,distance:calcularDistancia(ubicacionUsuario.lat,ubicacionUsuario.lon,lat,lon)});
   });
+  const minPrice = valid.length ? Math.min(...valid.map(x=>x.precio)) : null;
+  let radiusKm = 10, zoom = 13, tileMode = "map";
+  let centerLat = ubicacionUsuario.lat, centerLon = ubicacionUsuario.lon;
+  let selected = null;
+  let dragging = false, sx=0, sy=0, startLon=0, startLat=0;
 
-  const minPrice = validStations.length ? Math.min(...validStations.map(x => x.precio)) : null;
-  const stationLayer = L.layerGroup().addTo(map);
+  const tileUrl = (x,y,z) => tileMode === "satellite"
+    ? `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${y}/${x}`
+    : `https://tile.openstreetmap.org/${z}/${x}/${y}.png`;
+  const clampLat = lat => Math.max(-85.05112878,Math.min(85.05112878,lat));
+  const worldPx = z => 256 * Math.pow(2,z);
+  const project = (lat,lon,z) => { const w=worldPx(z), x=(lon+180)/360*w, r=clampLat(lat)*Math.PI/180, y=(1-Math.log(Math.tan(r)+1/Math.cos(r))/Math.PI)/2*w; return {x,y}; };
+  const unproject = (x,y,z) => { const w=worldPx(z), lon=x/w*360-180, n=Math.PI-2*Math.PI*y/w, lat=180/Math.PI*Math.atan(0.5*(Math.exp(n)-Math.exp(-n))); return {lat,lon}; };
 
-  function renderZone(radiusKm) {
-    stationLayer.clearLayers();
-    radiusCircle.setRadius(radiusKm * 1000);
-
-    const zoneText = document.getElementById("afMapZoneText");
-    if (zoneText) zoneText.textContent = "Hasta " + radiusKm + " km";
-
-    const nearby = validStations
-      .filter(x => x.distance <= radiusKm)
-      .sort((a,b) => a.distance - b.distance);
-
-    nearby.forEach(({estacion, lat, lon, precio, distance}) => {
-      const isBest = minPrice !== null && Math.abs(precio - minPrice) < 0.0005;
-      const priceText = precio.toFixed(3) + " €/L";
-      const nombre = escapeHtml(estacion.nombre || "Gasolinera");
-      const distancia = formatearDistancia(distance);
-      const mapsUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(lat + "," + lon);
-
-      const icon = L.divIcon({
-        className: "af-price-pin",
-        html: '<div class="af-price-label'+(isBest?' best':'')+'"><span class="af-pin-fuel">⛽</span>'+priceText+'</div>',
-        iconSize: [0,0],
-        iconAnchor: [0,0]
-      });
-
-      const popup = `<div class="af-map-popup">
-        <strong>${nombre}</strong>
-        <div class="af-popup-price">${priceText}</div>
-        <div class="af-popup-distance">🚗 ${distancia}</div>
-        <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer">🧭 Cómo llegar</a>
-      </div>`;
-
-      L.marker([lat, lon], {
-        icon,
-        title: priceText,
-        zIndexOffset: isBest ? 3000 : 1000
-      }).bindPopup(popup).addTo(stationLayer);
+  function renderTiles(){
+    const z=zoom, cp=project(centerLat,centerLon,z), cols=Math.ceil(el.clientWidth/256)+3, rows=Math.ceil(el.clientHeight/256)+3;
+    canvas.innerHTML="";
+    const baseX=Math.floor(cp.x/256), baseY=Math.floor(cp.y/256), n=Math.pow(2,z);
+    for(let dx=-Math.floor(cols/2);dx<=Math.floor(cols/2);dx++) for(let dy=-Math.floor(rows/2);dy<=Math.floor(rows/2);dy++){
+      let tx=baseX+dx, ty=baseY+dy; if(tx<0) tx=(tx%n+n)%n; if(tx>=n) tx%=n; if(ty<0||ty>=n) continue;
+      const img=document.createElement("img"); img.className="af-map-tile"; img.alt=""; img.draggable=false; img.src=tileUrl(tx,ty,z);
+      img.style.left=(tx*256-cp.x)+"px"; img.style.top=(ty*256-cp.y)+"px"; canvas.appendChild(img);
+    }
+  }
+  function projectToScreen(lat,lon){ const p=project(lat,lon,zoom), cp=project(centerLat,centerLon,zoom); return {x:el.clientWidth/2+(p.x-cp.x),y:el.clientHeight/2+(p.y-cp.y)}; }
+  function renderOverlays(){
+    canvas.querySelectorAll(".af-map-overlay-item").forEach(n=>n.remove());
+    const user=projectToScreen(ubicacionUsuario.lat,ubicacionUsuario.lon);
+    const radiusPx=radiusKm*1000/(40075017*Math.cos(ubicacionUsuario.lat*Math.PI/180))*worldPx(zoom);
+    const circle=document.createElement("div"); circle.className="af-map-radius af-map-overlay-item"; circle.style.left=user.x+"px"; circle.style.top=user.y+"px"; circle.style.width=(radiusPx*2)+"px"; circle.style.height=(radiusPx*2)+"px"; canvas.appendChild(circle);
+    const userDot=document.createElement("div"); userDot.className="af-map-user af-map-overlay-item"; userDot.style.left=user.x+"px"; userDot.style.top=user.y+"px"; userDot.title="Tu ubicación"; canvas.appendChild(userDot);
+    valid.filter(x=>x.distance<=radiusKm).sort((a,b)=>a.distance-b.distance).forEach(x=>{
+      const p=projectToScreen(x.lat,x.lon); if(p.x<-90||p.x>el.clientWidth+90||p.y<-60||p.y>el.clientHeight+60) return;
+      const m=document.createElement("div"); m.className="af-price-marker af-map-overlay-item"; m.style.left=p.x+"px"; m.style.top=p.y+"px";
+      const best=minPrice!==null && Math.abs(x.precio-minPrice)<0.0005;
+      const brand=String(x.estacion.nombre||"Gasolinera").split(" ").slice(0,2).join(" ");
+      m.innerHTML=`<div class="af-price-pill ${best?'best':''}"><span>⛽</span><span>${x.precio.toFixed(3)} €/L</span></div><div class="af-marker-stem"></div>`;
+      m.addEventListener("click",ev=>{ev.stopPropagation(); selected=x; showSelected();}); canvas.appendChild(m);
     });
-
-    // Mantener el mapa centrado en la zona elegida, con un encuadre cómodo en móvil.
-    map.setView([ubicacionUsuario.lat, ubicacionUsuario.lon], radiusKm <= 5 ? 14 : radiusKm <= 10 ? 13 : radiusKm <= 20 ? 12 : 11);
-    setTimeout(() => map.invalidateSize(), 120);
   }
-
-  const roadsBtn = document.getElementById("afMapRoads");
-  const satelliteBtn = document.getElementById("afMapSatellite");
-  if (roadsBtn && satelliteBtn) {
-    roadsBtn.onclick = function(){
-      if (map.hasLayer(satelliteTiles)) map.removeLayer(satelliteTiles);
-      if (!map.hasLayer(darkTiles)) darkTiles.addTo(map);
-      roadsBtn.classList.add("active");
-      satelliteBtn.classList.remove("active");
-    };
-    satelliteBtn.onclick = function(){
-      if (map.hasLayer(darkTiles)) map.removeLayer(darkTiles);
-      if (!map.hasLayer(satelliteTiles)) satelliteTiles.addTo(map);
-      satelliteBtn.classList.add("active");
-      roadsBtn.classList.remove("active");
-    };
+  function render(){ renderTiles(); renderOverlays(); }
+  function showSelected(){
+    let old=el.querySelector(".af-map-popup-card"); if(old) old.remove(); if(!selected)return;
+    const e=selected.estacion, url="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(selected.lat+","+selected.lon);
+    const card=document.createElement("div"); card.className="af-map-popup-card"; card.innerHTML=`<button class="af-map-popup-close" aria-label="Cerrar">×</button><strong>${escapeHtml(e.nombre||"Gasolinera")}</strong><div class="af-map-popup-price">${selected.precio.toFixed(3)} €/L</div><div class="af-map-popup-meta">${formatearDistancia(selected.distance)} de tu ubicación</div><a href="${url}" target="_blank" rel="noopener">Cómo llegar →</a>`; el.appendChild(card); card.querySelector("button").onclick=()=>{card.remove();selected=null;};
   }
-
-  const locateBtn = document.querySelector('.af-map-location');
-  if (locateBtn) {
-    locateBtn.onclick = function(){
-      map.setView([ubicacionUsuario.lat, ubicacionUsuario.lon], 14, {animate:true});
-    };
-  }
-
-  document.querySelectorAll(".af-map-zone").forEach(btn => {
-    btn.onclick = function() {
-      document.querySelectorAll(".af-map-zone").forEach(b => b.classList.remove("active"));
-      this.classList.add("active");
-      renderZone(Number(this.dataset.radius));
-    };
-  });
-
-  renderZone(10);
+  function setRadius(km){ radiusKm=km; zoneButtons.forEach(b=>b.classList.toggle("active",Number(b.dataset.radius)===km)); const z=document.getElementById("afMapZoneText"); if(z)z.textContent="Hasta "+km+" km"; selected=null; const pop=el.querySelector(".af-map-popup-card"); if(pop)pop.remove(); renderOverlays(); }
+  zoneButtons.forEach(b=>b.addEventListener("click",()=>setRadius(Number(b.dataset.radius))));
+  document.getElementById("afMapPlus").onclick=()=>{zoom=Math.min(17,zoom+1);render();};
+  document.getElementById("afMapMinus").onclick=()=>{zoom=Math.max(8,zoom-1);render();};
+  document.getElementById("afMapCenter").onclick=()=>{centerLat=ubicacionUsuario.lat;centerLon=ubicacionUsuario.lon;render();};
+  document.getElementById("afMapRoads").onclick=()=>{tileMode="map";document.getElementById("afMapRoads").classList.add("active");document.getElementById("afMapSatellite").classList.remove("active");renderTiles();};
+  document.getElementById("afMapSatellite").onclick=()=>{tileMode="satellite";document.getElementById("afMapSatellite").classList.add("active");document.getElementById("afMapRoads").classList.remove("active");renderTiles();};
+  const down=ev=>{dragging=true;el.classList.add("af-dragging");sx=ev.clientX;sy=ev.clientY;startLon=centerLon;startLat=centerLat;el.setPointerCapture?.(ev.pointerId);};
+  const move=ev=>{if(!dragging)return;const cp=project(startLat,startLon,zoom);const nx=cp.x-(ev.clientX-sx),ny=cp.y-(ev.clientY-sy),u=unproject(nx,ny,zoom);centerLat=u.lat;centerLon=u.lon;render();};
+  const up=()=>{dragging=false;el.classList.remove("af-dragging");};
+  el.addEventListener("pointerdown",down);el.addEventListener("pointermove",move);el.addEventListener("pointerup",up);el.addEventListener("pointercancel",up);
+  const resize=()=>render(); window.addEventListener("resize",resize);
+  window.afMapCleanup=()=>{window.removeEventListener("resize",resize);el.removeEventListener("pointerdown",down);el.removeEventListener("pointermove",move);el.removeEventListener("pointerup",up);el.removeEventListener("pointercancel",up);};
+  render();
 }
-/* =========================
-   DISTANCIA
-========================= */
 
 function calcularDistancia(
   lat1,
