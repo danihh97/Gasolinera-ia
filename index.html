@@ -631,17 +631,26 @@
 @media (prefers-reduced-motion:reduce){.af-collecting-icon{animation:none}}
 
   
-    /* MAPA CERCA DE TI */
+    /* MAPA CERCA DE TI — precios visibles */
     .af-map-card{background:#fff;border:1px solid #e7ece9;border-radius:20px;padding:12px;margin-bottom:14px;box-shadow:0 6px 20px rgba(23,32,51,.06);overflow:hidden}
-    .af-map-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:3px 4px 10px}
+    .af-map-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:3px 4px 9px}
     .af-map-title{margin:0;font-size:16px;font-weight:900;color:#172033}
-    .af-map-subtitle{margin:0;color:#687385;font-size:11px;font-weight:700;text-align:right}
+    .af-map-subtitle{margin:0;color:#687385;font-size:11px;font-weight:800;text-align:right}
+    .af-map-zones{display:flex;gap:6px;padding:0 2px 10px;overflow-x:auto;scrollbar-width:none}
+    .af-map-zones::-webkit-scrollbar{display:none}
+    .af-map-zone{flex:0 0 auto;border:1px solid #dfe6e2;background:#f6f9f7;color:#526071;border-radius:999px;padding:7px 11px;font-size:11px;font-weight:900;cursor:pointer}
+    .af-map-zone.active{background:#2f9e44;color:#fff;border-color:#2f9e44;box-shadow:0 3px 8px rgba(47,158,68,.2)}
     #afMap{width:100%;height:360px;border-radius:15px;overflow:hidden;background:#eef2f4}
-    .af-map-user{width:18px;height:18px;border-radius:50%;background:#278bff;border:4px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.28)}
-    .af-map-popup{min-width:165px}.af-map-popup strong{display:block;font-size:14px;margin-bottom:5px;color:#172033}
-    .af-map-popup .af-popup-price{font-size:18px;font-weight:900;color:#2f9e44}.af-map-popup .af-popup-distance{margin-top:4px;color:#687385;font-size:12px;font-weight:700}
-    .af-map-popup a{display:inline-block;margin-top:8px;padding:6px 9px;border-radius:8px;background:#eef8e9;color:#287c2e;text-decoration:none;font-size:11px;font-weight:800}
-    @media(max-width:520px){#afMap{height:330px}.af-map-card{padding:9px}.af-map-title{font-size:15px}.af-map-subtitle{font-size:10px}}
+    .af-map-user{width:18px;height:18px;border-radius:50%;background:#278bff;border:4px solid #fff;box-shadow:0 2px 9px rgba(0,0,0,.30)}
+    .af-price-pin{background:transparent;border:0}
+    .af-price-label{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;min-width:54px;height:30px;padding:0 8px;border-radius:10px;background:#fff;border:2px solid #2f9e44;color:#237b35;font-size:12px;font-weight:950;box-shadow:0 4px 12px rgba(23,32,51,.22);transform:translate(-50%,-50%)}
+    .af-price-label.best{background:#2f9e44;color:#fff;border-color:#237b35;box-shadow:0 5px 14px rgba(47,158,68,.34)}
+    .af-map-popup{min-width:175px}.af-map-popup strong{display:block;font-size:14px;margin-bottom:5px;color:#172033}
+    .af-map-popup .af-popup-price{font-size:18px;font-weight:950;color:#2f9e44}.af-map-popup .af-popup-distance{margin-top:4px;color:#687385;font-size:12px;font-weight:800}
+    .af-map-popup a{display:inline-block;margin-top:8px;padding:7px 10px;border-radius:9px;background:#eef8e9;color:#287c2e;text-decoration:none;font-size:11px;font-weight:900}
+    .af-cluster{background:rgba(47,158,68,.14);border:3px solid rgba(47,158,68,.7);border-radius:50%;color:#237b35;font-weight:950;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(23,32,51,.15)}
+    .af-radius-circle{fillOpacity:.035;weight:1.5;dashArray:'6 6'}
+    @media(max-width:520px){#afMap{height:330px}.af-map-card{padding:9px}.af-map-title{font-size:15px}.af-map-subtitle{font-size:10px}.af-price-label{min-width:50px;height:28px;font-size:11px}}
 </style>
 
 
@@ -713,6 +722,9 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 </head>
 
 <body>
@@ -1621,7 +1633,13 @@ async function buscar() {
         <div class="af-map-card">
           <div class="af-map-head">
             <h2 class="af-map-title">🗺️ Gasolineras cerca de ti</h2>
-            <p class="af-map-subtitle">Hasta 30 km</p>
+            <p class="af-map-subtitle" id="afMapZoneText">Hasta 10 km</p>
+          </div>
+          <div class="af-map-zones" aria-label="Seleccionar zona del mapa">
+            <button type="button" class="af-map-zone" data-radius="5">5 km</button>
+            <button type="button" class="af-map-zone active" data-radius="10">10 km</button>
+            <button type="button" class="af-map-zone" data-radius="20">20 km</button>
+            <button type="button" class="af-map-zone" data-radius="30">30 km</button>
           </div>
           <div id="afMap" aria-label="Mapa de gasolineras cercanas"></div>
         </div>
@@ -1961,27 +1979,137 @@ async function buscar() {
 function mostrarMapaCercano(estaciones) {
   const el = document.getElementById("afMap");
   if (!el || !ubicacionUsuario || typeof L === "undefined") return;
-  if (window.afMapInstance) window.afMapInstance.remove();
-  const map = L.map(el, {scrollWheelZoom:false}).setView([ubicacionUsuario.lat, ubicacionUsuario.lon], 11);
-  window.afMapInstance = map;
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom:19, attribution:"&copy; OpenStreetMap contributors"}).addTo(map);
-  const userIcon = L.divIcon({className:"",html:'<div class="af-map-user" title="Tu ubicación"></div>',iconSize:[18,18],iconAnchor:[9,9]});
-  L.marker([ubicacionUsuario.lat,ubicacionUsuario.lon],{icon:userIcon,zIndexOffset:1000}).addTo(map).bindPopup("<strong>📍 Tu ubicación</strong>");
-  const bounds=L.latLngBounds([[ubicacionUsuario.lat,ubicacionUsuario.lon]]);
-  estaciones.forEach(estacion=>{
-    const lat=parseFloat(String(estacion.latitud||"").replace(",",".")); const lon=parseFloat(String(estacion.longitud||"").replace(",","."));
-    if(isNaN(lat)||isNaN(lon)) return;
-    const nombre=escapeHtml(estacion.nombre);
-    const precio=typeof estacion.precio==="number"?estacion.precio.toFixed(3)+" €/L":"Precio no disponible";
-    const distancia=estacion.distancia!==null&&typeof estacion.distancia==="number"?formatearDistancia(estacion.distancia):"";
-    const mapsUrl="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(lat+","+lon);
-    const popup=`<div class="af-map-popup"><strong>${nombre}</strong><div class="af-popup-price">${precio}</div>${distancia?`<div class="af-popup-distance">🚗 ${distancia}</div>`:""}<a href="${mapsUrl}" target="_blank" rel="noopener noreferrer">🗺️ Cómo llegar</a></div>`;
-    L.marker([lat,lon]).addTo(map).bindPopup(popup); bounds.extend([lat,lon]);
-  });
-  if(estaciones.length) map.fitBounds(bounds,{padding:[25,25],maxZoom:13});
-  setTimeout(()=>map.invalidateSize(),150);
-}
 
+  if (window.afMapInstance) window.afMapInstance.remove();
+
+  const map = L.map(el, {
+    scrollWheelZoom: false,
+    zoomControl: true
+  }).setView([ubicacionUsuario.lat, ubicacionUsuario.lon], 12);
+  window.afMapInstance = map;
+
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: "&copy; OpenStreetMap contributors"
+  }).addTo(map);
+
+  const userIcon = L.divIcon({
+    className: "",
+    html: '<div class="af-map-user" title="Tu ubicación"></div>',
+    iconSize: [18,18],
+    iconAnchor: [9,9]
+  });
+
+  L.marker([ubicacionUsuario.lat, ubicacionUsuario.lon], {
+    icon: userIcon,
+    zIndexOffset: 2000
+  }).addTo(map).bindPopup("<strong>📍 Tu ubicación</strong>");
+
+  // Radio visual de la zona seleccionada.
+  let radiusCircle = L.circle([ubicacionUsuario.lat, ubicacionUsuario.lon], {
+    radius: 10000,
+    className: "af-radius-circle"
+  }).addTo(map);
+
+  const markers = L.markerClusterGroup({
+    showCoverageOnHover: false,
+    spiderfyOnMaxZoom: true,
+    disableClusteringAtZoom: 14,
+    maxClusterRadius: 45,
+    iconCreateFunction: function(cluster) {
+      const count = cluster.getChildCount();
+      const size = count > 50 ? 50 : count > 20 ? 44 : 38;
+      return L.divIcon({
+        html: '<div class="af-cluster" style="width:'+size+'px;height:'+size+'px">'+count+'</div>',
+        className: "",
+        iconSize: [size,size],
+        iconAnchor: [size/2,size/2]
+      });
+    }
+  });
+
+  const validStations = [];
+  estaciones.forEach(estacion => {
+    const lat = parseFloat(String(estacion.latitud || "").replace(",", "."));
+    const lon = parseFloat(String(estacion.longitud || "").replace(",", "."));
+    const precio = Number(estacion.precio);
+    if (isNaN(lat) || isNaN(lon) || !isFinite(precio)) return;
+    validStations.push({ estacion, lat, lon, precio });
+  });
+
+  const minPrice = validStations.length
+    ? Math.min(...validStations.map(x => x.precio))
+    : null;
+
+  function renderZone(radiusKm) {
+    markers.clearLayers();
+    radiusCircle.setRadius(radiusKm * 1000);
+
+    const zoneText = document.getElementById("afMapZoneText");
+    if (zoneText) zoneText.textContent = "Hasta " + radiusKm + " km";
+
+    validStations.forEach(({estacion, lat, lon, precio}) => {
+      const distance = calcularDistancia(
+        ubicacionUsuario.lat,
+        ubicacionUsuario.lon,
+        lat,
+        lon
+      );
+      if (distance > radiusKm) return;
+
+      const isBest = minPrice !== null && Math.abs(precio - minPrice) < 0.0005;
+      const priceText = precio.toFixed(3) + " €/L";
+      const nombre = escapeHtml(estacion.nombre);
+      const distancia = formatearDistancia(distance);
+      const mapsUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(lat + "," + lon);
+
+      const icon = L.divIcon({
+        className: "af-price-pin",
+        html: '<div class="af-price-label'+(isBest?' best':'')+'">'+priceText+'</div>',
+        iconSize: [0,0],
+        iconAnchor: [0,0]
+      });
+
+      const popup = `<div class="af-map-popup">
+        <strong>${nombre}</strong>
+        <div class="af-popup-price">${priceText}</div>
+        <div class="af-popup-distance">🚗 ${distancia}</div>
+        <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer">🗺️ Cómo llegar</a>
+      </div>`;
+
+      markers.addLayer(
+        L.marker([lat, lon], {icon, title: precio.toFixed(3) + " €/L"}).bindPopup(popup)
+      );
+    });
+
+    map.addLayer(markers);
+
+    // En móvil priorizamos la zona del usuario, sin enseñar toda la isla.
+    const bounds = L.latLngBounds([
+      [ubicacionUsuario.lat, ubicacionUsuario.lon]
+    ]);
+    validStations.forEach(({lat, lon}) => {
+      const d = calcularDistancia(ubicacionUsuario.lat, ubicacionUsuario.lon, lat, lon);
+      if (d <= radiusKm) bounds.extend([lat, lon]);
+    });
+    if (bounds.isValid()) {
+      map.fitBounds(bounds, {padding:[28,28], maxZoom:14});
+    } else {
+      map.setView([ubicacionUsuario.lat, ubicacionUsuario.lon], radiusKm <= 5 ? 14 : 12);
+    }
+    setTimeout(() => map.invalidateSize(), 100);
+  }
+
+  document.querySelectorAll(".af-map-zone").forEach(btn => {
+    btn.onclick = function() {
+      document.querySelectorAll(".af-map-zone").forEach(b => b.classList.remove("active"));
+      this.classList.add("active");
+      renderZone(Number(this.dataset.radius));
+    };
+  });
+
+  renderZone(10);
+}
 /* =========================
    DISTANCIA
 ========================= */
