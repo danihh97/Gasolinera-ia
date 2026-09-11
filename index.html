@@ -641,9 +641,9 @@
     .af-map-zone{flex:0 0 auto;border:1px solid rgba(176,201,213,.14);background:rgba(20,42,53,.86);color:#aebfc9;border-radius:999px;padding:9px 14px;font-size:11px;font-weight:950;cursor:pointer;transition:.18s ease;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
     .af-map-zone:hover{border-color:rgba(77,255,112,.45);color:#fff}
     .af-map-zone.active{background:#42e66a;color:#061018;border-color:#42e66a;box-shadow:0 6px 18px rgba(66,230,106,.28)}
-    .af-map-wrap{position:relative;border-radius:21px;overflow:hidden;border:1px solid rgba(132,184,202,.16);background:#07151d;box-shadow:inset 0 0 0 1px rgba(255,255,255,.025),0 10px 30px rgba(0,0,0,.24)}
-    #afMap{width:100%;height:390px;background:#14232b}
-    .af-map-tile{filter:brightness(.80) saturate(.78) contrast(1.04)}
+    .af-map-wrap{position:relative;border-radius:21px;overflow:hidden;border:1px solid rgba(71,224,105,.22);background:#dfe7e3;box-shadow:inset 0 0 0 1px rgba(255,255,255,.025),0 10px 30px rgba(0,0,0,.24)}
+    #afMap{width:100%;height:390px;background:#dfe7e3}
+    .af-map-tile{filter:brightness(.94) saturate(.72) contrast(.98) hue-rotate(2deg)}
     .af-map-wrap .leaflet-control-zoom{margin:12px!important;border:1px solid rgba(255,255,255,.14)!important;border-radius:13px!important;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.30)!important}
     .af-map-wrap .leaflet-control-zoom a{width:38px!important;height:38px!important;line-height:38px!important;background:#0b1b25!important;color:#fff!important;border:0!important;font-size:20px!important}
     .af-map-wrap .leaflet-control-zoom a+a{border-top:1px solid rgba(255,255,255,.10)!important}
@@ -2006,10 +2006,10 @@ function mostrarMapaCercano(estaciones) {
   }).setView([ubicacionUsuario.lat, ubicacionUsuario.lon], 13);
   window.afMapInstance = map;
 
-  const darkTiles = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}", {
+  const darkTiles = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}", {
     maxZoom: 19,
     className: "af-map-tile",
-    attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ'
+    attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
 
   const satelliteTiles = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
