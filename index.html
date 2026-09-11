@@ -4,6 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.css" rel="stylesheet">
+  <script src="https://unpkg.com/maplibre-gl@5.6.0/dist/maplibre-gl.js"></script>
 
   <title>Gasolineras más baratas en España | AhorraFuel</title>
   <meta name="description" content="Encuentra y compara las gasolineras más baratas de España. Consulta gasolina 95, gasolina 98 y diésel y busca las mejores opciones cerca de ti.">
@@ -630,32 +632,7 @@
 @keyframes afCollectPulse{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-3px) scale(1.06)}}
 @media (prefers-reduced-motion:reduce){.af-collecting-icon{animation:none}}
 
-  
-    /* MAPA CERCA DE TI — interfaz propia AhorraFuel */
-    .af-map-card{background:linear-gradient(145deg,#07151d 0%,#0b2027 100%);border:1px solid rgba(91,255,126,.16);border-radius:26px;padding:12px;margin-bottom:18px;box-shadow:0 18px 45px rgba(0,0,0,.18);overflow:hidden;color:#fff}
-    .af-map-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 6px 12px}
-    .af-map-title{margin:0;font-size:17px;font-weight:950;color:#f5fbf7;letter-spacing:-.45px}.af-map-subtitle{margin:0;color:#a7b7c2;font-size:11px;font-weight:800}
-    .af-map-zones{display:flex;gap:7px;padding:0 2px 11px;overflow-x:auto;scrollbar-width:none}.af-map-zones::-webkit-scrollbar{display:none}
-    .af-map-zone{flex:0 0 auto;border:1px solid rgba(176,201,213,.14);background:#142f38;color:#b8c8ce;border-radius:999px;padding:9px 14px;font-size:11px;font-weight:950;cursor:pointer;transition:.18s ease}.af-map-zone.active{background:#43e66b;color:#061018;border-color:#43e66b;box-shadow:0 6px 18px rgba(66,230,106,.22)}
-    .af-map-wrap{position:relative;border-radius:21px;overflow:hidden;border:1px solid rgba(71,224,105,.22);background:#b7c7c0;box-shadow:0 10px 30px rgba(0,0,0,.24)}
-    #afMap{position:relative;width:100%;height:390px;background:#aebeb8;overflow:hidden;touch-action:none;cursor:grab}
-    #afMap.af-dragging{cursor:grabbing}
-    .af-map-canvas{position:absolute;left:50%;top:50%;width:0;height:0;will-change:transform}
-    .af-map-tile{position:absolute;width:256px;height:256px;user-select:none;pointer-events:none;image-rendering:auto}
-    .af-map-grid{position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:64px 64px;pointer-events:none;mix-blend-mode:soft-light}
-    .af-map-user{position:absolute;width:18px;height:18px;border-radius:50%;background:#2f8cff;border:4px solid #fff;box-shadow:0 0 0 8px rgba(47,140,255,.18),0 5px 18px rgba(0,0,0,.35);transform:translate(-50%,-50%);z-index:40}
-    .af-map-radius{position:absolute;border:2px solid rgba(55,230,105,.58);background:rgba(55,230,105,.09);border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;z-index:10}
-    .af-price-marker{position:absolute;transform:translate(-50%,-100%);z-index:30;cursor:pointer;transition:transform .15s ease;white-space:nowrap}.af-price-marker:hover{transform:translate(-50%,-100%) scale(1.06);z-index:60}
-    .af-price-pill{display:flex;align-items:center;gap:5px;padding:7px 9px;border-radius:12px;background:rgba(16,30,36,.96);border:1px solid rgba(255,255,255,.16);color:#fff;font-size:11px;font-weight:950;box-shadow:0 7px 18px rgba(0,0,0,.28);backdrop-filter:blur(7px)}
-    .af-price-pill.best{background:#43e66b;color:#061018;border-color:#a0ffb5;box-shadow:0 7px 20px rgba(67,230,107,.35)}.af-price-pill .af-price-brand{font-size:10px;opacity:.78}.af-price-pill.best .af-price-brand{opacity:.72}
-    .af-marker-stem{width:7px;height:7px;margin:-1px auto 0;background:inherit;border-right:1px solid rgba(255,255,255,.15);border-bottom:1px solid rgba(255,255,255,.15);transform:rotate(45deg)}
-    .af-map-controls{position:absolute;right:12px;top:12px;display:flex;flex-direction:column;gap:7px;z-index:100}.af-map-control{width:40px;height:40px;border:1px solid rgba(255,255,255,.2);border-radius:13px;background:rgba(7,19,26,.88);color:#fff;font-size:19px;font-weight:900;box-shadow:0 8px 18px rgba(0,0,0,.25);cursor:pointer}.af-map-control:active{transform:scale(.95)}
-    .af-map-style{position:absolute;left:12px;top:12px;display:flex;gap:5px;padding:4px;border-radius:13px;background:rgba(7,19,26,.88);border:1px solid rgba(255,255,255,.15);z-index:100}.af-map-tool{border:0;background:transparent;color:#aab9bf;border-radius:9px;padding:8px 10px;font-size:10px;font-weight:900;cursor:pointer}.af-map-tool.active{background:#43e66b;color:#061018}
-    .af-map-location{position:absolute;left:12px;bottom:12px;padding:8px 11px;border-radius:999px;background:rgba(7,19,26,.9);border:1px solid rgba(255,255,255,.14);color:#fff;font-size:10px;font-weight:900;z-index:100}.af-map-legend{position:absolute;right:12px;bottom:12px;display:flex;gap:7px;padding:7px 9px;border-radius:12px;background:rgba(7,19,26,.86);color:#dbe5e8;font-size:9px;font-weight:800;z-index:100}.af-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:4px}.af-dot.green{background:#43e66b}.af-dot.blue{background:#2f8cff}
-    .af-map-popup-card{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);width:min(330px,calc(100% - 24px));padding:13px 14px;border-radius:18px;background:rgba(7,19,26,.96);border:1px solid rgba(67,230,107,.35);box-shadow:0 16px 35px rgba(0,0,0,.35);z-index:200;color:#fff}.af-map-popup-card strong{font-size:13px}.af-map-popup-price{font-size:21px;font-weight:950;color:#43e66b;margin-top:2px}.af-map-popup-meta{font-size:10px;color:#aab9bf;margin:3px 0 9px}.af-map-popup-card a{display:inline-block;background:#43e66b;color:#061018;text-decoration:none;font-size:10px;font-weight:950;border-radius:10px;padding:8px 11px}.af-map-popup-close{position:absolute;right:9px;top:7px;background:none;border:0;color:#aab9bf;font-size:17px;cursor:pointer}
-    .af-map-attribution{position:absolute;right:5px;bottom:2px;font-size:7px;color:rgba(255,255,255,.75);z-index:101;text-shadow:0 1px 2px #000}.af-map-attribution a{color:inherit}
-    @media(max-width:600px){#afMap{height:360px}.af-map-price-pill{font-size:10px}}
-</style>
+  </style>
 
 
 <style id="ahorrafuel-home-v5">
@@ -722,6 +699,10 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
 .af-cities-mark{width:7px;height:28px;border-radius:99px;background:#25a957;display:inline-block;flex:none;box-shadow:0 4px 10px rgba(37,169,87,.18)}
 .af-home-cities-all{font-size:clamp(.88rem,2.4vw,1rem)!important;font-weight:700!important;white-space:nowrap!important;color:#218b48!important;text-decoration:none!important}
 @media(max-width:600px){.af-home-cities-head{gap:10px!important}.af-home-cities-title{font-size:1.08rem!important}.af-cities-mark{width:5px;height:23px}.af-home-cities-all{font-size:.82rem!important}}
+</style>
+
+<style id="ahorrafuel-map-v1">
+.af-map-card{background:#fff;border:1px solid #e7ecef;border-radius:22px;padding:10px;margin:0 0 18px;box-shadow:0 10px 28px rgba(20,35,45,.08);overflow:hidden}.af-map-head{display:flex;justify-content:space-between;align-items:center;padding:6px 7px 10px}.af-map-title{margin:0;font-size:17px;font-weight:900;color:#12232b}.af-map-subtitle{margin:0;color:#74818a;font-size:11px;font-weight:800}.af-map-zones{display:flex;gap:7px;padding:0 2px 10px;overflow-x:auto;scrollbar-width:none}.af-map-zones::-webkit-scrollbar{display:none}.af-map-zone{border:1px solid #e0e6e9;background:#f5f7f8;color:#58666e;border-radius:999px;padding:8px 13px;font-size:11px;font-weight:900;white-space:nowrap}.af-map-zone.active{background:#42dc68;color:#05200e;border-color:#42dc68;box-shadow:0 5px 14px rgba(66,220,104,.22)}.af-map-wrap{position:relative;border-radius:18px;overflow:hidden;border:1px solid #dce4e7;background:#dfe7e9}.af-map-wrap #afMap{height:410px;width:100%}.af-map-top{position:absolute;z-index:5;left:12px;right:12px;top:12px;display:flex;justify-content:space-between;gap:8px;pointer-events:none}.af-map-pill,.af-map-mode{pointer-events:auto;background:rgba(255,255,255,.96);border:1px solid rgba(15,30,38,.08);box-shadow:0 5px 16px rgba(0,0,0,.13);border-radius:12px;color:#182930;font-size:11px;font-weight:900}.af-map-pill{padding:9px 11px}.af-map-modes{display:flex;gap:5px}.af-map-mode{padding:0 10px;cursor:pointer}.af-map-mode.active{background:#12272f;color:#fff}.af-map-selected{position:absolute;z-index:10;left:12px;right:12px;bottom:12px;background:#fff;border-radius:16px;padding:12px 13px;box-shadow:0 12px 30px rgba(0,0,0,.2);border:1px solid rgba(0,0,0,.07);display:none}.af-map-selected.show{display:block}.af-map-selected-close{position:absolute;right:8px;top:7px;border:0;background:#f1f4f5;width:28px;height:28px;border-radius:50%;font-size:18px;color:#5c6870}.af-map-selected-name{font-size:13px;font-weight:950;padding-right:35px;color:#14262d}.af-map-selected-price{font-size:24px;font-weight:950;color:#16a34a;line-height:1.05;margin-top:3px}.af-map-selected-meta{font-size:11px;color:#65737b;margin-top:4px}.af-map-selected-link{display:inline-flex;margin-top:8px;background:#12272f;color:#fff;text-decoration:none;border-radius:10px;padding:8px 11px;font-size:11px;font-weight:900}.af-price-marker{display:flex;align-items:center;gap:2px;background:#fff;color:#24343b;border:1px solid rgba(18,39,47,.14);border-radius:9px;padding:5px 7px;font-size:10px;font-weight:950;box-shadow:0 4px 12px rgba(0,0,0,.17);white-space:nowrap;cursor:pointer;transform:translate(-50%,-100%);transition:.12s}.af-price-marker:hover{transform:translate(-50%,-100%) scale(1.05)}.af-price-marker.best{background:#22d35f;color:#05200e;border-color:#15b84d}.af-price-marker.expensive{background:#fff4f4;color:#b42318}.af-map-user-marker{width:18px;height:18px;border-radius:50%;background:#2687ff;border:4px solid #fff;box-shadow:0 0 0 7px rgba(38,135,255,.18),0 3px 10px rgba(0,0,0,.25)}.maplibregl-ctrl-group{border:0!important;border-radius:12px!important;overflow:hidden;box-shadow:0 5px 16px rgba(0,0,0,.14)!important}.maplibregl-ctrl button{width:38px!important;height:38px!important}.maplibregl-ctrl-top-right{top:62px;right:12px}.maplibregl-ctrl-attrib{font-size:9px!important}
 </style>
 
 </head>
@@ -1015,51 +996,25 @@ let ubicacionUsuario = null;
 ========================= */
 
 async function usarUbicacion() {
-  const button = document.getElementById("locationButton");
-  const status = document.getElementById("locationStatus");
-  const provinceSelect = document.getElementById("province");
-
-  if (!navigator.geolocation) { status.textContent = "❌ Tu dispositivo no permite obtener la ubicación."; return; }
-
-  button.disabled = true;
-  button.textContent = "📍 Obteniendo ubicación...";
-  status.textContent = "Permite el acceso a tu ubicación.";
-
-  navigator.geolocation.getCurrentPosition(
-    async function(position) {
-      ubicacionUsuario = { lat: position.coords.latitude, lon: position.coords.longitude };
-      try {
-        status.textContent = "📍 Localizando tu provincia...";
-        const geoResponse = await fetch("https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=" + encodeURIComponent(ubicacionUsuario.lat) + "&longitude=" + encodeURIComponent(ubicacionUsuario.lon) + "&localityLanguage=es");
-        if (!geoResponse.ok) throw new Error("No se pudo localizar la provincia");
-        const geo = await geoResponse.json();
-        const provinciaNombre = (geo.principalSubdivision || "").trim().toLowerCase();
-        const opcion = Array.from(provinceSelect.options).find(option => option.textContent.trim().toLowerCase() === provinciaNombre);
-        if (!opcion) throw new Error("No hemos podido identificar la provincia");
-        provinceSelect.value = opcion.value;
-        button.disabled = false;
-        button.textContent = "✅ Ubicación activada";
-        status.textContent = "📍 Ubicación obtenida. Mostrando gasolineras cercanas...";
-        await buscar();
-      } catch (error) {
-        console.error(error); ubicacionUsuario = null; button.disabled = false; button.textContent = "📍 Buscar gasolineras cerca de mí";
-        status.textContent = "❌ No hemos podido identificar tu provincia. Selecciónala manualmente e inténtalo de nuevo.";
-      }
-    },
-    function(error) {
-      console.error(error); ubicacionUsuario = null; button.disabled = false; button.textContent = "📍 Buscar gasolineras cerca de mí";
-      if (error.code === 1) status.textContent = "❌ Has bloqueado el acceso a la ubicación. Actívalo en los ajustes del navegador.";
-      else if (error.code === 3) status.textContent = "❌ La ubicación tardó demasiado en responder. Inténtalo de nuevo.";
-      else status.textContent = "❌ No se pudo obtener tu ubicación.";
-    },
-    { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
-  );
+  const button=document.getElementById("locationButton");
+  const status=document.getElementById("locationStatus");
+  if(!navigator.geolocation){status.textContent="❌ Tu dispositivo no permite obtener la ubicación.";return;}
+  button.disabled=true;button.textContent="📍 Obteniendo ubicación...";status.textContent="Permite el acceso a tu ubicación.";
+  navigator.geolocation.getCurrentPosition(async position=>{
+    ubicacionUsuario={lat:position.coords.latitude,lon:position.coords.longitude};
+    button.disabled=false;button.textContent="✅ Ubicación activada";
+    status.textContent="Ubicación obtenida. Buscando gasolineras cercanas...";
+    try{
+      const r=await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${encodeURIComponent(ubicacionUsuario.lat)}&longitude=${encodeURIComponent(ubicacionUsuario.lon)}&localityLanguage=es`);
+      const geo=await r.json();
+      const provincia=(geo.principalSubdivision||geo.localityInfo?.administrative?.find(x=>x.adminLevel===4)?.name||"").toLowerCase();
+      const select=document.getElementById("province");
+      const option=[...select.options].find(o=>o.textContent.toLowerCase().includes(provincia)||provincia.includes(o.textContent.toLowerCase()));
+      if(option) select.value=option.value;
+    }catch(e){console.warn("No se pudo determinar automáticamente la provincia",e);}
+    buscar();
+  },error=>{console.error(error);button.disabled=false;button.textContent="📍 Buscar gasolineras cerca de mí";status.textContent=error.code===1?"❌ Debes permitir el acceso a la ubicación.":"❌ No se ha podido obtener tu ubicación.";},{enableHighAccuracy:true,timeout:12000,maximumAge:300000});
 }
-
-
-/* =========================
-   BUSCAR GASOLINERAS
-========================= */
 
 function mostrarMensajeRecopilando() {
   const bubble = document.getElementById("afMascotBubble");
@@ -1625,35 +1580,6 @@ async function buscar() {
 
 
     /* =========================
-       MAPA CERCA DE TI
-    ========================= */
-    if (ubicacionUsuario) {
-      results.innerHTML += `
-        <div class="af-map-card">
-          <div class="af-map-head">
-            <h2 class="af-map-title">📍 Gasolineras cerca de ti</h2>
-            <p class="af-map-subtitle" id="afMapZoneText">Zona cercana</p>
-          </div>
-          <div class="af-map-zones" aria-label="Seleccionar zona del mapa">
-            <button type="button" class="af-map-zone" data-radius="5">5 km</button>
-            <button type="button" class="af-map-zone active" data-radius="10">10 km</button>
-            <button type="button" class="af-map-zone" data-radius="20">20 km</button>
-            <button type="button" class="af-map-zone" data-radius="30">30 km</button>
-          </div>
-          <div class="af-map-wrap">
-            <div id="afMap" aria-label="Mapa de gasolineras cercanas"></div>
-            <div class="af-map-overlay">
-              <button type="button" class="af-map-tool active" id="afMapRoads">Mapa</button>
-              <button type="button" class="af-map-tool" id="afMapSatellite">Satélite</button>
-            </div>
-            <div class="af-map-location">⌾ Mi ubicación</div>
-            <div class="af-map-legend"><span><i class="af-dot green"></i>Más barata</span><span><i class="af-dot blue"></i>Tu ubicación</span></div>
-          </div>
-        </div>
-      `;
-    }
-
-    /* =========================
        LISTA DE GASOLINERAS
     ========================= */
 
@@ -1691,6 +1617,23 @@ async function buscar() {
         ? preciosOrdenados[indiceRojo]
         : null;
 
+
+    if (ubicacionUsuario) {
+      results.innerHTML += `
+        <div class="af-map-card">
+          <div class="af-map-head">
+            <h2 class="af-map-title">📍 Gasolineras cerca de ti</h2>
+            <p class="af-map-subtitle" id="afMapZoneText">Hasta 10 km</p>
+          </div>
+          <div class="af-map-zones">
+            <button type="button" class="af-map-zone" data-radius="5">5 km</button>
+            <button type="button" class="af-map-zone active" data-radius="10">10 km</button>
+            <button type="button" class="af-map-zone" data-radius="20">20 km</button>
+            <button type="button" class="af-map-zone" data-radius="30">30 km</button>
+          </div>
+          <div class="af-map-wrap"><div id="afMap" aria-label="Mapa de gasolineras cercanas"></div></div>
+        </div>`;
+    }
 
     estaciones.forEach(
       (estacion, index) => {
@@ -1939,7 +1882,7 @@ async function buscar() {
 
     );
 
-    if (ubicacionUsuario) { mostrarMapaCercano(estaciones); }
+    if (ubicacionUsuario) mostrarMapaCercano(estaciones);
 
     mostrarMensajeResultados();
 
@@ -1981,101 +1924,37 @@ async function buscar() {
 
 
 /* =========================
-   MAPA CERCA DE TI — MOTOR PROPIO
+   MAPA CERCA DE TI — experiencia tipo app
 ========================= */
-function mostrarMapaCercano(estaciones) {
-  const el = document.getElementById("afMap");
-  if (!el || !ubicacionUsuario) return;
-
-  if (window.afMapCleanup) window.afMapCleanup();
-  el.innerHTML = `
-    <div class="af-map-canvas" id="afMapCanvas"></div>
-    <div class="af-map-grid"></div>
-    <div class="af-map-style">
-      <button type="button" class="af-map-tool active" id="afMapRoads">Mapa</button>
-      <button type="button" class="af-map-tool" id="afMapSatellite">Satélite</button>
-    </div>
-    <div class="af-map-controls">
-      <button type="button" class="af-map-control" id="afMapPlus" aria-label="Acercar">+</button>
-      <button type="button" class="af-map-control" id="afMapMinus" aria-label="Alejar">−</button>
-      <button type="button" class="af-map-control" id="afMapCenter" aria-label="Centrar ubicación">⌾</button>
-    </div>
-    <div class="af-map-location">⌾ Mi ubicación</div>
-    <div class="af-map-legend"><span><i class="af-dot green"></i>Más barata</span><span><i class="af-dot blue"></i>Tú</span></div>
-    <div class="af-map-attribution">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a></div>
-  `;
-
-  const canvas = document.getElementById("afMapCanvas");
-  const zoneButtons = document.querySelectorAll(".af-map-zone");
-  const valid = [];
-  estaciones.forEach(estacion => {
-    const lat = parseFloat(String(estacion.latitud || "").replace(",", "."));
-    const lon = parseFloat(String(estacion.longitud || "").replace(",", "."));
-    const precio = Number(estacion.precio);
-    if (!Number.isFinite(lat) || !Number.isFinite(lon) || !Number.isFinite(precio)) return;
-    valid.push({estacion,lat,lon,precio,distance:calcularDistancia(ubicacionUsuario.lat,ubicacionUsuario.lon,lat,lon)});
-  });
-  const minPrice = valid.length ? Math.min(...valid.map(x=>x.precio)) : null;
-  let radiusKm = 10, zoom = 13, tileMode = "map";
-  let centerLat = ubicacionUsuario.lat, centerLon = ubicacionUsuario.lon;
-  let selected = null;
-  let dragging = false, sx=0, sy=0, startLon=0, startLat=0;
-
-  const tileUrl = (x,y,z) => tileMode === "satellite"
-    ? `https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/${z}/${y}/${x}`
-    : `https://tile.openstreetmap.org/${z}/${x}/${y}.png`;
-  const clampLat = lat => Math.max(-85.05112878,Math.min(85.05112878,lat));
-  const worldPx = z => 256 * Math.pow(2,z);
-  const project = (lat,lon,z) => { const w=worldPx(z), x=(lon+180)/360*w, r=clampLat(lat)*Math.PI/180, y=(1-Math.log(Math.tan(r)+1/Math.cos(r))/Math.PI)/2*w; return {x,y}; };
-  const unproject = (x,y,z) => { const w=worldPx(z), lon=x/w*360-180, n=Math.PI-2*Math.PI*y/w, lat=180/Math.PI*Math.atan(0.5*(Math.exp(n)-Math.exp(-n))); return {lat,lon}; };
-
-  function renderTiles(){
-    const z=zoom, cp=project(centerLat,centerLon,z), cols=Math.ceil(el.clientWidth/256)+3, rows=Math.ceil(el.clientHeight/256)+3;
-    canvas.innerHTML="";
-    const baseX=Math.floor(cp.x/256), baseY=Math.floor(cp.y/256), n=Math.pow(2,z);
-    for(let dx=-Math.floor(cols/2);dx<=Math.floor(cols/2);dx++) for(let dy=-Math.floor(rows/2);dy<=Math.floor(rows/2);dy++){
-      let tx=baseX+dx, ty=baseY+dy; if(tx<0) tx=(tx%n+n)%n; if(tx>=n) tx%=n; if(ty<0||ty>=n) continue;
-      const img=document.createElement("img"); img.className="af-map-tile"; img.alt=""; img.draggable=false; img.src=tileUrl(tx,ty,z);
-      img.style.left=(tx*256-cp.x)+"px"; img.style.top=(ty*256-cp.y)+"px"; canvas.appendChild(img);
-    }
-  }
-  function projectToScreen(lat,lon){ const p=project(lat,lon,zoom), cp=project(centerLat,centerLon,zoom); return {x:el.clientWidth/2+(p.x-cp.x),y:el.clientHeight/2+(p.y-cp.y)}; }
-  function renderOverlays(){
-    canvas.querySelectorAll(".af-map-overlay-item").forEach(n=>n.remove());
-    const user=projectToScreen(ubicacionUsuario.lat,ubicacionUsuario.lon);
-    const radiusPx=radiusKm*1000/(40075017*Math.cos(ubicacionUsuario.lat*Math.PI/180))*worldPx(zoom);
-    const circle=document.createElement("div"); circle.className="af-map-radius af-map-overlay-item"; circle.style.left=user.x+"px"; circle.style.top=user.y+"px"; circle.style.width=(radiusPx*2)+"px"; circle.style.height=(radiusPx*2)+"px"; canvas.appendChild(circle);
-    const userDot=document.createElement("div"); userDot.className="af-map-user af-map-overlay-item"; userDot.style.left=user.x+"px"; userDot.style.top=user.y+"px"; userDot.title="Tu ubicación"; canvas.appendChild(userDot);
-    valid.filter(x=>x.distance<=radiusKm).sort((a,b)=>a.distance-b.distance).forEach(x=>{
-      const p=projectToScreen(x.lat,x.lon); if(p.x<-90||p.x>el.clientWidth+90||p.y<-60||p.y>el.clientHeight+60) return;
-      const m=document.createElement("div"); m.className="af-price-marker af-map-overlay-item"; m.style.left=p.x+"px"; m.style.top=p.y+"px";
-      const best=minPrice!==null && Math.abs(x.precio-minPrice)<0.0005;
-      const brand=String(x.estacion.nombre||"Gasolinera").split(" ").slice(0,2).join(" ");
-      m.innerHTML=`<div class="af-price-pill ${best?'best':''}"><span>⛽</span><span>${x.precio.toFixed(3)} €/L</span></div><div class="af-marker-stem"></div>`;
-      m.addEventListener("click",ev=>{ev.stopPropagation(); selected=x; showSelected();}); canvas.appendChild(m);
-    });
-  }
-  function render(){ renderTiles(); renderOverlays(); }
-  function showSelected(){
-    let old=el.querySelector(".af-map-popup-card"); if(old) old.remove(); if(!selected)return;
-    const e=selected.estacion, url="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(selected.lat+","+selected.lon);
-    const card=document.createElement("div"); card.className="af-map-popup-card"; card.innerHTML=`<button class="af-map-popup-close" aria-label="Cerrar">×</button><strong>${escapeHtml(e.nombre||"Gasolinera")}</strong><div class="af-map-popup-price">${selected.precio.toFixed(3)} €/L</div><div class="af-map-popup-meta">${formatearDistancia(selected.distance)} de tu ubicación</div><a href="${url}" target="_blank" rel="noopener">Cómo llegar →</a>`; el.appendChild(card); card.querySelector("button").onclick=()=>{card.remove();selected=null;};
-  }
-  function setRadius(km){ radiusKm=km; zoneButtons.forEach(b=>b.classList.toggle("active",Number(b.dataset.radius)===km)); const z=document.getElementById("afMapZoneText"); if(z)z.textContent="Hasta "+km+" km"; selected=null; const pop=el.querySelector(".af-map-popup-card"); if(pop)pop.remove(); renderOverlays(); }
-  zoneButtons.forEach(b=>b.addEventListener("click",()=>setRadius(Number(b.dataset.radius))));
-  document.getElementById("afMapPlus").onclick=()=>{zoom=Math.min(17,zoom+1);render();};
-  document.getElementById("afMapMinus").onclick=()=>{zoom=Math.max(8,zoom-1);render();};
-  document.getElementById("afMapCenter").onclick=()=>{centerLat=ubicacionUsuario.lat;centerLon=ubicacionUsuario.lon;render();};
-  document.getElementById("afMapRoads").onclick=()=>{tileMode="map";document.getElementById("afMapRoads").classList.add("active");document.getElementById("afMapSatellite").classList.remove("active");renderTiles();};
-  document.getElementById("afMapSatellite").onclick=()=>{tileMode="satellite";document.getElementById("afMapSatellite").classList.add("active");document.getElementById("afMapRoads").classList.remove("active");renderTiles();};
-  const down=ev=>{dragging=true;el.classList.add("af-dragging");sx=ev.clientX;sy=ev.clientY;startLon=centerLon;startLat=centerLat;el.setPointerCapture?.(ev.pointerId);};
-  const move=ev=>{if(!dragging)return;const cp=project(startLat,startLon,zoom);const nx=cp.x-(ev.clientX-sx),ny=cp.y-(ev.clientY-sy),u=unproject(nx,ny,zoom);centerLat=u.lat;centerLon=u.lon;render();};
-  const up=()=>{dragging=false;el.classList.remove("af-dragging");};
-  el.addEventListener("pointerdown",down);el.addEventListener("pointermove",move);el.addEventListener("pointerup",up);el.addEventListener("pointercancel",up);
-  const resize=()=>render(); window.addEventListener("resize",resize);
-  window.afMapCleanup=()=>{window.removeEventListener("resize",resize);el.removeEventListener("pointerdown",down);el.removeEventListener("pointermove",move);el.removeEventListener("pointerup",up);el.removeEventListener("pointercancel",up);};
-  render();
+function mostrarMapaCercano(estaciones){
+  const el=document.getElementById("afMap");
+  if(!el||!ubicacionUsuario||typeof maplibregl==="undefined")return;
+  if(window.afMapCleanup)window.afMapCleanup();
+  const valid=estaciones.map(e=>({estacion:e,lat:parseFloat(String(e.latitud||"").replace(",",".")),lon:parseFloat(String(e.longitud||"").replace(",",".")),precio:Number(e.precio)})).filter(x=>Number.isFinite(x.lat)&&Number.isFinite(x.lon)&&Number.isFinite(x.precio));
+  const minPrice=valid.length?Math.min(...valid.map(x=>x.precio)):null;
+  let radiusKm=10;const markers=[];
+  const normal={version:8,sources:{osm:{type:"raster",tiles:["https://tile.openstreetmap.org/{z}/{x}/{y}.png"],tileSize:256,attribution:"© OpenStreetMap contributors"}},layers:[{id:"osm",type:"raster",source:"osm"}]};
+  const satellite={version:8,sources:{sat:{type:"raster",tiles:["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],tileSize:256,attribution:"© Esri"}},layers:[{id:"sat",type:"raster",source:"sat"}]};
+  const map=new maplibregl.Map({container:el,style:normal,center:[ubicacionUsuario.lon,ubicacionUsuario.lat],zoom:13,attributionControl:false});
+  map.addControl(new maplibregl.NavigationControl({showCompass:false}),"top-right");map.addControl(new maplibregl.AttributionControl({compact:true}),"bottom-right");
+  const top=document.createElement("div");top.className="af-map-top";top.innerHTML=`<div class="af-map-pill">⛽ <span id="afMapCount">Gasolineras</span></div><div class="af-map-modes"><button class="af-map-mode active" id="afMapNormal">Mapa</button><button class="af-map-mode" id="afMapSatellite">Sat</button></div>`;el.appendChild(top);
+  const selected=document.createElement("div");selected.className="af-map-selected";selected.innerHTML=`<button class="af-map-selected-close">×</button><div class="af-map-selected-name"></div><div class="af-map-selected-price"></div><div class="af-map-selected-meta"></div><a class="af-map-selected-link" target="_blank" rel="noopener">Cómo llegar →</a>`;el.appendChild(selected);
+  const user=document.createElement("div");user.className="af-map-user-marker";new maplibregl.Marker({element:user}).setLngLat([ubicacionUsuario.lon,ubicacionUsuario.lat]).addTo(map);
+  function closeCard(){selected.classList.remove("show");}
+  selected.querySelector("button").onclick=closeCard;
+  function show(x){const e=x.estacion;selected.querySelector(".af-map-selected-name").textContent=e.nombre||"Gasolinera";selected.querySelector(".af-map-selected-price").textContent=x.precio.toFixed(3)+" €/L";selected.querySelector(".af-map-selected-meta").textContent=formatearDistancia(x.distance)+" de tu ubicación";selected.querySelector("a").href="https://www.google.com/maps/dir/?api=1&destination="+encodeURIComponent(x.lat+","+x.lon);selected.classList.add("show");}
+  function renderMarkers(){markers.splice(0).forEach(m=>m.remove());const c=map.getCenter();const visible=valid.filter(x=>calcularDistancia(c.lat,c.lng,x.lat,x.lon)<=radiusKm).map(x=>({...x,distance:calcularDistancia(ubicacionUsuario.lat,ubicacionUsuario.lon,x.lat,x.lon)})).sort((a,b)=>a.distance-b.distance).slice(0,90);document.getElementById("afMapCount").textContent=visible.length+" cerca";visible.forEach(x=>{const d=document.createElement("div");d.className="af-price-marker "+(minPrice!==null&&Math.abs(x.precio-minPrice)<.0005?"best":(minPrice!==null&&x.precio>=minPrice+.12?"expensive":""));d.textContent="€ "+x.precio.toFixed(3);d.addEventListener("click",ev=>{ev.stopPropagation();show(x);map.easeTo({center:[x.lon,x.lat],duration:350})});markers.push(new maplibregl.Marker({element:d,anchor:"bottom"}).setLngLat([x.lon,x.lat]).addTo(map));});}
+  function radius(km){radiusKm=km;document.querySelectorAll(".af-map-zone").forEach(b=>b.classList.toggle("active",Number(b.dataset.radius)===km));const t=document.getElementById("afMapZoneText");if(t)t.textContent="Hasta "+km+" km";closeCard();renderMarkers();}
+  document.querySelectorAll(".af-map-zone").forEach(b=>b.onclick=()=>radius(Number(b.dataset.radius)));
+  document.getElementById("afMapNormal").onclick=()=>{map.setStyle(normal);document.getElementById("afMapNormal").classList.add("active");document.getElementById("afMapSatellite").classList.remove("active");setTimeout(renderMarkers,200)};
+  document.getElementById("afMapSatellite").onclick=()=>{map.setStyle(satellite);document.getElementById("afMapSatellite").classList.add("active");document.getElementById("afMapNormal").classList.remove("active");setTimeout(renderMarkers,200)};
+  map.on("load",renderMarkers);map.on("moveend",renderMarkers);map.on("click",closeCard);
+  window.afMapCleanup=()=>{markers.forEach(m=>m.remove());map.remove();};
 }
+
+/* =========================
+   DISTANCIA
+========================= */
 
 function calcularDistancia(
   lat1,
