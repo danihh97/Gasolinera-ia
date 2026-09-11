@@ -630,7 +630,19 @@
 @keyframes afCollectPulse{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-3px) scale(1.06)}}
 @media (prefers-reduced-motion:reduce){.af-collecting-icon{animation:none}}
 
-  </style>
+  
+    /* MAPA CERCA DE TI */
+    .af-map-card{background:#fff;border:1px solid #e7ece9;border-radius:20px;padding:12px;margin-bottom:14px;box-shadow:0 6px 20px rgba(23,32,51,.06);overflow:hidden}
+    .af-map-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:3px 4px 10px}
+    .af-map-title{margin:0;font-size:16px;font-weight:900;color:#172033}
+    .af-map-subtitle{margin:0;color:#687385;font-size:11px;font-weight:700;text-align:right}
+    #afMap{width:100%;height:360px;border-radius:15px;overflow:hidden;background:#eef2f4}
+    .af-map-user{width:18px;height:18px;border-radius:50%;background:#278bff;border:4px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.28)}
+    .af-map-popup{min-width:165px}.af-map-popup strong{display:block;font-size:14px;margin-bottom:5px;color:#172033}
+    .af-map-popup .af-popup-price{font-size:18px;font-weight:900;color:#2f9e44}.af-map-popup .af-popup-distance{margin-top:4px;color:#687385;font-size:12px;font-weight:700}
+    .af-map-popup a{display:inline-block;margin-top:8px;padding:6px 9px;border-radius:8px;background:#eef8e9;color:#287c2e;text-decoration:none;font-size:11px;font-weight:800}
+    @media(max-width:520px){#afMap{height:330px}.af-map-card{padding:9px}.af-map-title{font-size:15px}.af-map-subtitle{font-size:10px}}
+</style>
 
 
 <style id="ahorrafuel-home-v5">
@@ -698,6 +710,9 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
 .af-home-cities-all{font-size:clamp(.88rem,2.4vw,1rem)!important;font-weight:700!important;white-space:nowrap!important;color:#218b48!important;text-decoration:none!important}
 @media(max-width:600px){.af-home-cities-head{gap:10px!important}.af-home-cities-title{font-size:1.08rem!important}.af-cities-mark{width:5px;height:23px}.af-home-cities-all{font-size:.82rem!important}}
 </style>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 </head>
 
 <body>
@@ -988,92 +1003,46 @@ let ubicacionUsuario = null;
    OBTENER UBICACIÓN
 ========================= */
 
-function usarUbicacion() {
+async function usarUbicacion() {
+  const button = document.getElementById("locationButton");
+  const status = document.getElementById("locationStatus");
+  const provinceSelect = document.getElementById("province");
 
-  const button =
-    document.getElementById("locationButton");
-
-  const status =
-    document.getElementById("locationStatus");
-
-
-  if (!navigator.geolocation) {
-
-    status.textContent =
-      "❌ Tu dispositivo no permite obtener la ubicación.";
-
-    return;
-  }
-
+  if (!navigator.geolocation) { status.textContent = "❌ Tu dispositivo no permite obtener la ubicación."; return; }
 
   button.disabled = true;
-
-  button.textContent =
-    "📍 Obteniendo ubicación...";
-
-  status.textContent =
-    "Permite el acceso a tu ubicación.";
-
+  button.textContent = "📍 Obteniendo ubicación...";
+  status.textContent = "Permite el acceso a tu ubicación.";
 
   navigator.geolocation.getCurrentPosition(
-
-    function(position) {
-
-      ubicacionUsuario = {
-
-        lat:
-          position.coords.latitude,
-
-        lon:
-          position.coords.longitude
-
-      };
-
-
-      button.disabled = false;
-
-      button.textContent =
-        "✅ Ubicación activada";
-
-
-      status.textContent =
-        "Ubicación obtenida. Buscando gasolineras en un radio de 30 km...";
-
-      // Buscar automáticamente al obtener la ubicación.
-      buscar();
-
+    async function(position) {
+      ubicacionUsuario = { lat: position.coords.latitude, lon: position.coords.longitude };
+      try {
+        status.textContent = "📍 Localizando tu provincia...";
+        const geoResponse = await fetch("https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=" + encodeURIComponent(ubicacionUsuario.lat) + "&longitude=" + encodeURIComponent(ubicacionUsuario.lon) + "&localityLanguage=es");
+        if (!geoResponse.ok) throw new Error("No se pudo localizar la provincia");
+        const geo = await geoResponse.json();
+        const provinciaNombre = (geo.principalSubdivision || "").trim().toLowerCase();
+        const opcion = Array.from(provinceSelect.options).find(option => option.textContent.trim().toLowerCase() === provinciaNombre);
+        if (!opcion) throw new Error("No hemos podido identificar la provincia");
+        provinceSelect.value = opcion.value;
+        button.disabled = false;
+        button.textContent = "✅ Ubicación activada";
+        status.textContent = "📍 Ubicación obtenida. Mostrando gasolineras cercanas...";
+        await buscar();
+      } catch (error) {
+        console.error(error); ubicacionUsuario = null; button.disabled = false; button.textContent = "📍 Buscar gasolineras cerca de mí";
+        status.textContent = "❌ No hemos podido identificar tu provincia. Selecciónala manualmente e inténtalo de nuevo.";
+      }
     },
-
-
     function(error) {
-
-      console.error(error);
-
-      ubicacionUsuario = null;
-
-      button.disabled = false;
-
-      button.textContent =
-        "📍 Buscar gasolineras cerca de mí";
-
-
-      status.textContent =
-        "❌ No se pudo obtener tu ubicación.";
-
+      console.error(error); ubicacionUsuario = null; button.disabled = false; button.textContent = "📍 Buscar gasolineras cerca de mí";
+      if (error.code === 1) status.textContent = "❌ Has bloqueado el acceso a la ubicación. Actívalo en los ajustes del navegador.";
+      else if (error.code === 3) status.textContent = "❌ La ubicación tardó demasiado en responder. Inténtalo de nuevo.";
+      else status.textContent = "❌ No se pudo obtener tu ubicación.";
     },
-
-    {
-
-      enableHighAccuracy: true,
-
-      timeout: 10000,
-
-      maximumAge: 60000
-
-    }
-
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
   );
-
 }
 
 
@@ -1645,6 +1614,21 @@ async function buscar() {
 
 
     /* =========================
+       MAPA CERCA DE TI
+    ========================= */
+    if (ubicacionUsuario) {
+      results.innerHTML += `
+        <div class="af-map-card">
+          <div class="af-map-head">
+            <h2 class="af-map-title">🗺️ Gasolineras cerca de ti</h2>
+            <p class="af-map-subtitle">Hasta 30 km</p>
+          </div>
+          <div id="afMap" aria-label="Mapa de gasolineras cercanas"></div>
+        </div>
+      `;
+    }
+
+    /* =========================
        LISTA DE GASOLINERAS
     ========================= */
 
@@ -1930,6 +1914,8 @@ async function buscar() {
 
     );
 
+    if (ubicacionUsuario) { mostrarMapaCercano(estaciones); }
+
     mostrarMensajeResultados();
 
 
@@ -1968,6 +1954,33 @@ async function buscar() {
 
 }
 
+
+/* =========================
+   MAPA CERCA DE TI
+========================= */
+function mostrarMapaCercano(estaciones) {
+  const el = document.getElementById("afMap");
+  if (!el || !ubicacionUsuario || typeof L === "undefined") return;
+  if (window.afMapInstance) window.afMapInstance.remove();
+  const map = L.map(el, {scrollWheelZoom:false}).setView([ubicacionUsuario.lat, ubicacionUsuario.lon], 11);
+  window.afMapInstance = map;
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {maxZoom:19, attribution:"&copy; OpenStreetMap contributors"}).addTo(map);
+  const userIcon = L.divIcon({className:"",html:'<div class="af-map-user" title="Tu ubicación"></div>',iconSize:[18,18],iconAnchor:[9,9]});
+  L.marker([ubicacionUsuario.lat,ubicacionUsuario.lon],{icon:userIcon,zIndexOffset:1000}).addTo(map).bindPopup("<strong>📍 Tu ubicación</strong>");
+  const bounds=L.latLngBounds([[ubicacionUsuario.lat,ubicacionUsuario.lon]]);
+  estaciones.forEach(estacion=>{
+    const lat=parseFloat(String(estacion.latitud||"").replace(",",".")); const lon=parseFloat(String(estacion.longitud||"").replace(",","."));
+    if(isNaN(lat)||isNaN(lon)) return;
+    const nombre=escapeHtml(estacion.nombre);
+    const precio=typeof estacion.precio==="number"?estacion.precio.toFixed(3)+" €/L":"Precio no disponible";
+    const distancia=estacion.distancia!==null&&typeof estacion.distancia==="number"?formatearDistancia(estacion.distancia):"";
+    const mapsUrl="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(lat+","+lon);
+    const popup=`<div class="af-map-popup"><strong>${nombre}</strong><div class="af-popup-price">${precio}</div>${distancia?`<div class="af-popup-distance">🚗 ${distancia}</div>`:""}<a href="${mapsUrl}" target="_blank" rel="noopener noreferrer">🗺️ Cómo llegar</a></div>`;
+    L.marker([lat,lon]).addTo(map).bindPopup(popup); bounds.extend([lat,lon]);
+  });
+  if(estaciones.length) map.fitBounds(bounds,{padding:[25,25],maxZoom:13});
+  setTimeout(()=>map.invalidateSize(),150);
+}
 
 /* =========================
    DISTANCIA
