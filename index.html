@@ -631,26 +631,37 @@
 @media (prefers-reduced-motion:reduce){.af-collecting-icon{animation:none}}
 
   
-    /* MAPA CERCA DE TI — precios visibles */
-    .af-map-card{background:#fff;border:1px solid #e7ece9;border-radius:20px;padding:12px;margin-bottom:14px;box-shadow:0 6px 20px rgba(23,32,51,.06);overflow:hidden}
-    .af-map-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:3px 4px 9px}
-    .af-map-title{margin:0;font-size:16px;font-weight:900;color:#172033}
-    .af-map-subtitle{margin:0;color:#687385;font-size:11px;font-weight:800;text-align:right}
-    .af-map-zones{display:flex;gap:6px;padding:0 2px 10px;overflow-x:auto;scrollbar-width:none}
+    /* MAPA CERCA DE TI — diseño oscuro AhorraFuel */
+    .af-map-card{background:linear-gradient(145deg,#07131b 0%,#0b1b24 55%,#061018 100%);border:1px solid rgba(91,255,126,.18);border-radius:26px;padding:12px;margin-bottom:18px;box-shadow:0 18px 45px rgba(0,0,0,.22);overflow:hidden;color:#fff}
+    .af-map-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 6px 12px}
+    .af-map-title{margin:0;font-size:17px;font-weight:950;color:#f5fbf7;letter-spacing:-.45px}
+    .af-map-subtitle{margin:0;color:#a7b7c2;font-size:11px;font-weight:800;text-align:right}
+    .af-map-zones{display:flex;gap:7px;padding:0 2px 11px;overflow-x:auto;scrollbar-width:none}
     .af-map-zones::-webkit-scrollbar{display:none}
-    .af-map-zone{flex:0 0 auto;border:1px solid #dfe6e2;background:#f6f9f7;color:#526071;border-radius:999px;padding:7px 11px;font-size:11px;font-weight:900;cursor:pointer}
-    .af-map-zone.active{background:#2f9e44;color:#fff;border-color:#2f9e44;box-shadow:0 3px 8px rgba(47,158,68,.2)}
-    #afMap{width:100%;height:360px;border-radius:15px;overflow:hidden;background:#eef2f4}
-    .af-map-user{width:18px;height:18px;border-radius:50%;background:#278bff;border:4px solid #fff;box-shadow:0 2px 9px rgba(0,0,0,.30)}
+    .af-map-zone{flex:0 0 auto;border:1px solid rgba(176,201,213,.14);background:rgba(20,42,53,.86);color:#aebfc9;border-radius:999px;padding:9px 14px;font-size:11px;font-weight:950;cursor:pointer;transition:.18s ease;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
+    .af-map-zone:hover{border-color:rgba(77,255,112,.45);color:#fff}
+    .af-map-zone.active{background:#42e66a;color:#061018;border-color:#42e66a;box-shadow:0 6px 18px rgba(66,230,106,.28)}
+    .af-map-wrap{position:relative;border-radius:21px;overflow:hidden;border:1px solid rgba(132,184,202,.16);background:#07151d;box-shadow:inset 0 0 0 1px rgba(255,255,255,.025),0 10px 30px rgba(0,0,0,.24)}
+    #afMap{width:100%;height:390px;background:#07151d}
+    .af-map-wrap .leaflet-control-zoom{margin:12px!important;border:1px solid rgba(255,255,255,.14)!important;border-radius:13px!important;overflow:hidden;box-shadow:0 8px 20px rgba(0,0,0,.30)!important}
+    .af-map-wrap .leaflet-control-zoom a{width:38px!important;height:38px!important;line-height:38px!important;background:#0b1b25!important;color:#fff!important;border:0!important;font-size:20px!important}
+    .af-map-wrap .leaflet-control-zoom a+a{border-top:1px solid rgba(255,255,255,.10)!important}
+    .af-map-wrap .leaflet-control-attribution{background:rgba(5,14,20,.78)!important;color:#8fa2ae!important;border-radius:8px 0 0 0!important;font-size:8px!important;padding:3px 6px!important}
+    .af-map-wrap .leaflet-control-attribution a{color:#a9ffba!important}
+    .af-map-user{width:16px;height:16px;border-radius:50%;background:#2f8cff;border:4px solid #fff;box-shadow:0 0 0 7px rgba(47,140,255,.18),0 4px 16px rgba(0,0,0,.5)}
     .af-price-pin{background:transparent;border:0}
-    .af-price-label{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;min-width:54px;height:30px;padding:0 8px;border-radius:10px;background:#fff;border:2px solid #2f9e44;color:#237b35;font-size:12px;font-weight:950;box-shadow:0 4px 12px rgba(23,32,51,.22);transform:translate(-50%,-50%)}
-    .af-price-label.best{background:#2f9e44;color:#fff;border-color:#237b35;box-shadow:0 5px 14px rgba(47,158,68,.34)}
-    .af-map-popup{min-width:175px}.af-map-popup strong{display:block;font-size:14px;margin-bottom:5px;color:#172033}
-    .af-map-popup .af-popup-price{font-size:18px;font-weight:950;color:#2f9e44}.af-map-popup .af-popup-distance{margin-top:4px;color:#687385;font-size:12px;font-weight:800}
-    .af-map-popup a{display:inline-block;margin-top:8px;padding:7px 10px;border-radius:9px;background:#eef8e9;color:#287c2e;text-decoration:none;font-size:11px;font-weight:900}
-    .af-cluster{background:rgba(47,158,68,.14);border:3px solid rgba(47,158,68,.7);border-radius:50%;color:#237b35;font-weight:950;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 10px rgba(23,32,51,.15)}
-    .af-radius-circle{fillOpacity:.035;weight:1.5;dashArray:'6 6'}
-    @media(max-width:520px){#afMap{height:330px}.af-map-card{padding:9px}.af-map-title{font-size:15px}.af-map-subtitle{font-size:10px}.af-price-label{min-width:50px;height:28px;font-size:11px}}
+    .af-price-label{display:inline-flex;align-items:center;justify-content:center;white-space:nowrap;min-width:72px;height:35px;padding:0 11px;border-radius:12px;background:rgba(8,23,31,.94);border:1px solid rgba(112,232,137,.42);color:#f4fff5;font-size:12px;font-weight:950;box-shadow:0 8px 20px rgba(0,0,0,.42);transform:translate(-50%,-50%);backdrop-filter:blur(10px);letter-spacing:-.1px}
+    .af-price-label.best{background:#43e66b;color:#061018;border-color:#8bffa5;box-shadow:0 8px 24px rgba(67,230,107,.38);transform:translate(-50%,-50%) scale(1.06)}
+    .af-map-popup{min-width:205px}.leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#0b1b24;color:#eef8f1}.leaflet-popup-content{margin:14px}.af-map-popup strong{display:block;font-size:14px;margin-bottom:6px;color:#f3fff7}.af-map-popup .af-popup-price{font-size:20px;font-weight:950;color:#45e66d}.af-map-popup .af-popup-distance{margin-top:5px;color:#a5b6c0;font-size:12px;font-weight:800}.af-map-popup a{display:inline-block;margin-top:10px;padding:9px 12px;border-radius:11px;background:#43e66b;color:#061018;text-decoration:none;font-size:11px;font-weight:950}.leaflet-popup-close-button{color:#a8bac3!important}
+    .af-map-overlay{position:absolute;z-index:500;top:12px;right:12px;display:flex;gap:6px}
+    .af-map-tool{border:1px solid rgba(255,255,255,.14);background:rgba(7,20,28,.88);color:#e9f3ee;border-radius:12px;padding:8px 11px;font-size:11px;font-weight:900;box-shadow:0 7px 18px rgba(0,0,0,.25);backdrop-filter:blur(8px);cursor:pointer}
+    .af-map-tool.active{background:#123e22;border-color:#39df60;color:#72ff91}
+    .af-map-location{position:absolute;z-index:500;left:12px;bottom:12px;border:1px solid rgba(255,255,255,.14);background:rgba(7,20,28,.90);color:#fff;border-radius:12px;padding:9px 12px;font-size:11px;font-weight:900;box-shadow:0 7px 18px rgba(0,0,0,.30);backdrop-filter:blur(8px)}
+    .af-map-legend{position:absolute;z-index:500;right:12px;bottom:12px;border:1px solid rgba(255,255,255,.12);background:rgba(7,20,28,.88);color:#cbd8de;border-radius:12px;padding:8px 10px;font-size:9px;font-weight:800;box-shadow:0 7px 18px rgba(0,0,0,.25);backdrop-filter:blur(8px)}
+    .af-map-legend span{display:inline-flex;align-items:center;margin-right:8px}.af-map-legend span:last-child{margin-right:0}.af-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px}.af-dot.green{background:#39df60}.af-dot.blue{background:#238bff}
+    .af-cluster{background:rgba(57,223,96,.16);border:2px solid rgba(57,223,96,.72);border-radius:50%;color:#8aff9e;font-weight:950;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 15px rgba(0,0,0,.35),0 0 0 5px rgba(57,223,96,.07);backdrop-filter:blur(5px)}
+    .af-radius-circle{fill-opacity:.045;weight:1.2;color:#4aa3ff;fill-color:#4aa3ff;dash-array:7 7}
+    @media(max-width:520px){#afMap{height:350px}.af-map-card{padding:9px;border-radius:22px}.af-map-title{font-size:15px}.af-map-subtitle{font-size:10px}.af-price-label{min-width:61px;height:32px;font-size:11px}.af-map-tool{padding:8px 9px}.af-map-legend{font-size:8px}.af-map-location{font-size:10px}}
 </style>
 
 
@@ -1632,8 +1643,8 @@ async function buscar() {
       results.innerHTML += `
         <div class="af-map-card">
           <div class="af-map-head">
-            <h2 class="af-map-title">🗺️ Gasolineras cerca de ti</h2>
-            <p class="af-map-subtitle" id="afMapZoneText">Hasta 10 km</p>
+            <h2 class="af-map-title">📍 Gasolineras cerca de ti</h2>
+            <p class="af-map-subtitle" id="afMapZoneText">Zona cercana</p>
           </div>
           <div class="af-map-zones" aria-label="Seleccionar zona del mapa">
             <button type="button" class="af-map-zone" data-radius="5">5 km</button>
@@ -1641,7 +1652,15 @@ async function buscar() {
             <button type="button" class="af-map-zone" data-radius="20">20 km</button>
             <button type="button" class="af-map-zone" data-radius="30">30 km</button>
           </div>
-          <div id="afMap" aria-label="Mapa de gasolineras cercanas"></div>
+          <div class="af-map-wrap">
+            <div id="afMap" aria-label="Mapa de gasolineras cercanas"></div>
+            <div class="af-map-overlay">
+              <button type="button" class="af-map-tool active" id="afMapRoads">Mapa</button>
+              <button type="button" class="af-map-tool" id="afMapSatellite">Satélite</button>
+            </div>
+            <div class="af-map-location">⌾ Mi ubicación</div>
+            <div class="af-map-legend"><span><i class="af-dot green"></i>Más barata</span><span><i class="af-dot blue"></i>Tu ubicación</span></div>
+          </div>
         </div>
       `;
     }
@@ -1988,10 +2007,16 @@ function mostrarMapaCercano(estaciones) {
   }).setView([ubicacionUsuario.lat, ubicacionUsuario.lon], 12);
   window.afMapInstance = map;
 
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 19,
-    attribution: "&copy; OpenStreetMap contributors"
+  const darkTiles = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+    maxZoom: 20,
+    subdomains: "abcd",
+    attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
   }).addTo(map);
+
+  const satelliteTiles = L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+    maxZoom: 19,
+    attribution: 'Tiles &copy; Esri'
+  });
 
   const userIcon = L.divIcon({
     className: "",
@@ -2098,6 +2123,21 @@ function mostrarMapaCercano(estaciones) {
       map.setView([ubicacionUsuario.lat, ubicacionUsuario.lon], radiusKm <= 5 ? 14 : 12);
     }
     setTimeout(() => map.invalidateSize(), 100);
+  }
+
+  const roadsBtn = document.getElementById("afMapRoads");
+  const satelliteBtn = document.getElementById("afMapSatellite");
+  if (roadsBtn && satelliteBtn) {
+    roadsBtn.onclick = function(){
+      if (map.hasLayer(satelliteTiles)) map.removeLayer(satelliteTiles);
+      if (!map.hasLayer(darkTiles)) darkTiles.addTo(map);
+      roadsBtn.classList.add("active"); satelliteBtn.classList.remove("active");
+    };
+    satelliteBtn.onclick = function(){
+      if (map.hasLayer(darkTiles)) map.removeLayer(darkTiles);
+      if (!map.hasLayer(satelliteTiles)) satelliteTiles.addTo(map);
+      satelliteBtn.classList.add("active"); roadsBtn.classList.remove("active");
+    };
   }
 
   document.querySelectorAll(".af-map-zone").forEach(btn => {
