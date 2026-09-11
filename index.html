@@ -659,7 +659,7 @@
     .af-map-location{position:absolute;z-index:500;left:12px;bottom:12px;border:1px solid rgba(255,255,255,.14);background:rgba(7,20,28,.90);color:#fff;border-radius:12px;padding:9px 12px;font-size:11px;font-weight:900;box-shadow:0 7px 18px rgba(0,0,0,.30);backdrop-filter:blur(8px)}
     .af-map-legend{position:absolute;z-index:500;right:12px;bottom:12px;border:1px solid rgba(255,255,255,.12);background:rgba(7,20,28,.88);color:#cbd8de;border-radius:12px;padding:8px 10px;font-size:9px;font-weight:800;box-shadow:0 7px 18px rgba(0,0,0,.25);backdrop-filter:blur(8px)}
     .af-map-legend span{display:inline-flex;align-items:center;margin-right:8px}.af-map-legend span:last-child{margin-right:0}.af-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:5px}.af-dot.green{background:#39df60}.af-dot.blue{background:#238bff}
-    .af-cluster{background:rgba(57,223,96,.16);border:2px solid rgba(57,223,96,.72);border-radius:50%;color:#8aff9e;font-weight:950;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 15px rgba(0,0,0,.35),0 0 0 5px rgba(57,223,96,.07);backdrop-filter:blur(5px)}
+    .af-price-pin{background:transparent!important;border:0!important}.af-price-label{position:relative;display:inline-flex;align-items:center;justify-content:center;min-width:78px;height:36px;padding:0 12px;border-radius:12px;background:rgba(8,22,30,.94);border:1.5px solid rgba(218,235,241,.7);color:#f4faf7;font-size:13px;font-weight:950;letter-spacing:-.2px;white-space:nowrap;box-shadow:0 8px 20px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.08);backdrop-filter:blur(9px);transform:translate(-50%,-100%)}.af-price-label::after{content:"";position:absolute;left:50%;bottom:-7px;width:12px;height:12px;background:rgba(8,22,30,.94);border-right:1.5px solid rgba(218,235,241,.7);border-bottom:1.5px solid rgba(218,235,241,.7);transform:translateX(-50%) rotate(45deg)}.af-price-label.best{background:linear-gradient(135deg,#35e967,#17b94c);border-color:#78ff9a;color:#03100a;font-size:15px;min-width:94px;height:42px;box-shadow:0 10px 28px rgba(48,232,101,.30),0 5px 16px rgba(0,0,0,.45)}.af-price-label.best::after{background:#20c953;border-color:#68f88b}.af-price-label .af-pin-fuel{margin-right:6px;font-size:14px}.af-radius-circle{stroke:#238bff!important;stroke-width:3!important;fill:#238bff!important;fill-opacity:.08!important;stroke-opacity:.9!important}.af-station-dot{width:11px;height:11px;border-radius:50%;background:#dbe8ee;border:3px solid #0b1b24;box-shadow:0 3px 10px rgba(0,0,0,.5)}
     .af-radius-circle{fill-opacity:.045;weight:1.2;color:#4aa3ff;fill-color:#4aa3ff;dash-array:7 7}
     @media(max-width:520px){#afMap{height:350px}.af-map-card{padding:9px;border-radius:22px}.af-map-title{font-size:15px}.af-map-subtitle{font-size:10px}.af-price-label{min-width:61px;height:32px;font-size:11px}.af-map-tool{padding:8px 9px}.af-map-legend{font-size:8px}.af-map-location{font-size:10px}}
 </style>
@@ -733,9 +733,6 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
-    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 </head>
 
 <body>
@@ -2003,8 +2000,9 @@ function mostrarMapaCercano(estaciones) {
 
   const map = L.map(el, {
     scrollWheelZoom: false,
-    zoomControl: true
-  }).setView([ubicacionUsuario.lat, ubicacionUsuario.lon], 12);
+    zoomControl: false,
+    attributionControl: true
+  }).setView([ubicacionUsuario.lat, ubicacionUsuario.lon], 13);
   window.afMapInstance = map;
 
   const darkTiles = L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
@@ -2018,6 +2016,8 @@ function mostrarMapaCercano(estaciones) {
     attribution: 'Tiles &copy; Esri'
   });
 
+  L.control.zoom({position:'topleft'}).addTo(map);
+
   const userIcon = L.divIcon({
     className: "",
     html: '<div class="af-map-user" title="Tu ubicación"></div>',
@@ -2027,31 +2027,13 @@ function mostrarMapaCercano(estaciones) {
 
   L.marker([ubicacionUsuario.lat, ubicacionUsuario.lon], {
     icon: userIcon,
-    zIndexOffset: 2000
+    zIndexOffset: 5000
   }).addTo(map).bindPopup("<strong>📍 Tu ubicación</strong>");
 
-  // Radio visual de la zona seleccionada.
   let radiusCircle = L.circle([ubicacionUsuario.lat, ubicacionUsuario.lon], {
     radius: 10000,
     className: "af-radius-circle"
   }).addTo(map);
-
-  const markers = L.markerClusterGroup({
-    showCoverageOnHover: false,
-    spiderfyOnMaxZoom: true,
-    disableClusteringAtZoom: 14,
-    maxClusterRadius: 45,
-    iconCreateFunction: function(cluster) {
-      const count = cluster.getChildCount();
-      const size = count > 50 ? 50 : count > 20 ? 44 : 38;
-      return L.divIcon({
-        html: '<div class="af-cluster" style="width:'+size+'px;height:'+size+'px">'+count+'</div>',
-        className: "",
-        iconSize: [size,size],
-        iconAnchor: [size/2,size/2]
-      });
-    }
-  });
 
   const validStations = [];
   estaciones.forEach(estacion => {
@@ -2059,38 +2041,34 @@ function mostrarMapaCercano(estaciones) {
     const lon = parseFloat(String(estacion.longitud || "").replace(",", "."));
     const precio = Number(estacion.precio);
     if (isNaN(lat) || isNaN(lon) || !isFinite(precio)) return;
-    validStations.push({ estacion, lat, lon, precio });
+    const distance = calcularDistancia(ubicacionUsuario.lat, ubicacionUsuario.lon, lat, lon);
+    validStations.push({ estacion, lat, lon, precio, distance });
   });
 
-  const minPrice = validStations.length
-    ? Math.min(...validStations.map(x => x.precio))
-    : null;
+  const minPrice = validStations.length ? Math.min(...validStations.map(x => x.precio)) : null;
+  const stationLayer = L.layerGroup().addTo(map);
 
   function renderZone(radiusKm) {
-    markers.clearLayers();
+    stationLayer.clearLayers();
     radiusCircle.setRadius(radiusKm * 1000);
 
     const zoneText = document.getElementById("afMapZoneText");
     if (zoneText) zoneText.textContent = "Hasta " + radiusKm + " km";
 
-    validStations.forEach(({estacion, lat, lon, precio}) => {
-      const distance = calcularDistancia(
-        ubicacionUsuario.lat,
-        ubicacionUsuario.lon,
-        lat,
-        lon
-      );
-      if (distance > radiusKm) return;
+    const nearby = validStations
+      .filter(x => x.distance <= radiusKm)
+      .sort((a,b) => a.distance - b.distance);
 
+    nearby.forEach(({estacion, lat, lon, precio, distance}) => {
       const isBest = minPrice !== null && Math.abs(precio - minPrice) < 0.0005;
       const priceText = precio.toFixed(3) + " €/L";
-      const nombre = escapeHtml(estacion.nombre);
+      const nombre = escapeHtml(estacion.nombre || "Gasolinera");
       const distancia = formatearDistancia(distance);
       const mapsUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(lat + "," + lon);
 
       const icon = L.divIcon({
         className: "af-price-pin",
-        html: '<div class="af-price-label'+(isBest?' best':'')+'">'+priceText+'</div>',
+        html: '<div class="af-price-label'+(isBest?' best':'')+'"><span class="af-pin-fuel">⛽</span>'+priceText+'</div>',
         iconSize: [0,0],
         iconAnchor: [0,0]
       });
@@ -2099,30 +2077,19 @@ function mostrarMapaCercano(estaciones) {
         <strong>${nombre}</strong>
         <div class="af-popup-price">${priceText}</div>
         <div class="af-popup-distance">🚗 ${distancia}</div>
-        <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer">🗺️ Cómo llegar</a>
+        <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer">🧭 Cómo llegar</a>
       </div>`;
 
-      markers.addLayer(
-        L.marker([lat, lon], {icon, title: precio.toFixed(3) + " €/L"}).bindPopup(popup)
-      );
+      L.marker([lat, lon], {
+        icon,
+        title: priceText,
+        zIndexOffset: isBest ? 3000 : 1000
+      }).bindPopup(popup).addTo(stationLayer);
     });
 
-    map.addLayer(markers);
-
-    // En móvil priorizamos la zona del usuario, sin enseñar toda la isla.
-    const bounds = L.latLngBounds([
-      [ubicacionUsuario.lat, ubicacionUsuario.lon]
-    ]);
-    validStations.forEach(({lat, lon}) => {
-      const d = calcularDistancia(ubicacionUsuario.lat, ubicacionUsuario.lon, lat, lon);
-      if (d <= radiusKm) bounds.extend([lat, lon]);
-    });
-    if (bounds.isValid()) {
-      map.fitBounds(bounds, {padding:[28,28], maxZoom:14});
-    } else {
-      map.setView([ubicacionUsuario.lat, ubicacionUsuario.lon], radiusKm <= 5 ? 14 : 12);
-    }
-    setTimeout(() => map.invalidateSize(), 100);
+    // Mantener el mapa centrado en la zona elegida, con un encuadre cómodo en móvil.
+    map.setView([ubicacionUsuario.lat, ubicacionUsuario.lon], radiusKm <= 5 ? 14 : radiusKm <= 10 ? 13 : radiusKm <= 20 ? 12 : 11);
+    setTimeout(() => map.invalidateSize(), 120);
   }
 
   const roadsBtn = document.getElementById("afMapRoads");
@@ -2131,12 +2098,21 @@ function mostrarMapaCercano(estaciones) {
     roadsBtn.onclick = function(){
       if (map.hasLayer(satelliteTiles)) map.removeLayer(satelliteTiles);
       if (!map.hasLayer(darkTiles)) darkTiles.addTo(map);
-      roadsBtn.classList.add("active"); satelliteBtn.classList.remove("active");
+      roadsBtn.classList.add("active");
+      satelliteBtn.classList.remove("active");
     };
     satelliteBtn.onclick = function(){
       if (map.hasLayer(darkTiles)) map.removeLayer(darkTiles);
       if (!map.hasLayer(satelliteTiles)) satelliteTiles.addTo(map);
-      satelliteBtn.classList.add("active"); roadsBtn.classList.remove("active");
+      satelliteBtn.classList.add("active");
+      roadsBtn.classList.remove("active");
+    };
+  }
+
+  const locateBtn = document.querySelector('.af-map-location');
+  if (locateBtn) {
+    locateBtn.onclick = function(){
+      map.setView([ubicacionUsuario.lat, ubicacionUsuario.lon], 14, {animate:true});
     };
   }
 
