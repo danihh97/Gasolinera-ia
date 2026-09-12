@@ -698,6 +698,35 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
 .af-home-cities-all{font-size:clamp(.88rem,2.4vw,1rem)!important;font-weight:700!important;white-space:nowrap!important;color:#218b48!important;text-decoration:none!important}
 @media(max-width:600px){.af-home-cities-head{gap:10px!important}.af-home-cities-title{font-size:1.08rem!important}.af-cities-mark{width:5px;height:23px}.af-home-cities-all{font-size:.82rem!important}}
 </style>
+
+<style id="ahorrafuel-home-madrid-style">
+/* Portada inspirada en las páginas de ciudad, adaptada a toda España */
+.brand{margin-bottom:5px}
+.brand-logo{width:118px;height:118px;margin:0 auto 2px}
+.tagline{font-size:12px;font-weight:800;letter-spacing:.55px}
+.hero{background:rgba(255,255,255,.95);border-radius:25px;padding:23px 21px 21px;box-shadow:0 12px 35px rgba(23,32,51,.08);border:1px solid rgba(255,255,255,.8);margin-bottom:17px}
+.hero h1{font-size:32px;line-height:1.1;margin:0 0 10px;font-weight:950;letter-spacing:-.7px}
+.hero p{margin:0;color:#5d6879;font-size:16px;line-height:1.55}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;margin-top:15px;background:#eef9e8;color:#287c2e;border:1px solid #d5efc8;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:850}
+.af-home-search{padding:19px;border-radius:23px;background:rgba(255,255,255,.97);border:1px solid #edf1ee;box-shadow:0 10px 28px rgba(23,32,51,.075);backdrop-filter:none}
+.af-home-search .field{margin-bottom:14px}
+.af-home-search label{font-size:11px;letter-spacing:.8px;margin-bottom:6px;color:#6b7583}
+.af-home-search select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbfa;font-size:16px;padding:0 14px}
+.fuel-tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:12px}
+.fuel-btn{height:50px;border:0;border-radius:15px;background:#e3e7eb;color:#1683ef;font-size:15px;font-weight:850;cursor:pointer}
+.fuel-btn.active{background:#172033;color:#fff;box-shadow:0 7px 17px rgba(23,32,51,.18)}
+.sort-tabs{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:0 0 12px}
+.sort-btn{min-height:48px;border:1px solid #dce2e7;border-radius:15px;background:#fff;color:#172033;font-size:14px;font-weight:900;cursor:pointer;box-shadow:0 5px 15px rgba(23,32,51,.05)}
+.sort-btn.active{background:#63c51d;color:#fff;border-color:#63c51d;box-shadow:0 7px 17px rgba(99,197,29,.2)}
+.af-hidden-select{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.af-home-search .search-button{height:53px;border-radius:14px;background:linear-gradient(135deg,#63c51d,#31a83d);box-shadow:0 7px 16px rgba(49,168,61,.18);font-size:16px}
+.af-home-search .location-button{height:48px;margin-top:9px;border-radius:14px;background:#f5f8f6;border:1px solid #dfe6e2;color:#287c2e;font-size:14px}
+@media(max-width:520px){
+ .hero{padding:20px 17px}.hero h1{font-size:29px}.hero p{font-size:15px}
+ .fuel-btn{font-size:14px;height:48px}.af-home-search{padding:16px;border-radius:20px}
+ .sort-btn{font-size:13px}.brand-logo{width:105px;height:105px}
+}
+</style>
 </head>
 
 <body>
@@ -743,8 +772,6 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
       alt="AhorraFuel"
     >
 
-    <h1 class="brand-seo-title">Gasolineras más baratas en España</h1>
-
     <div class="tagline">
       ENCUENTRA · COMPARA · AHORRA
     </div>
@@ -763,124 +790,61 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
     </div>
   </div>
 
-  <div class="search-card">
+  <section class="hero">
+    <h1>Gasolineras más baratas en España</h1>
+    <p>Compara gasolina 95, gasolina 98 y diésel en toda España y encuentra dónde repostar más barato.</p>
+    <div class="hero-badge">🟢 Precios consultados y comparados para ti</div>
+  </section>
 
-    <div class="field">
-
-      <label for="province">
-        📍 PROVINCIA
-      </label>
-
+  <section class="search-card af-home-search" aria-label="Buscar gasolineras en España">
+    <div class="field province-field">
+      <label for="province">📍 PROVINCIA</label>
       <select id="province">
         <option value="" selected disabled>Selecciona tu provincia</option>
-
-        <option value="01">Álava</option>
-        <option value="02">Albacete</option>
-        <option value="03">Alicante</option>
-        <option value="04">Almería</option>
-        <option value="05">Ávila</option>
-        <option value="06">Badajoz</option>
-        <option value="07">Baleares</option>
-        <option value="08">Barcelona</option>
-        <option value="09">Burgos</option>
-        <option value="10">Cáceres</option>
-        <option value="11">Cádiz</option>
-        <option value="12">Castellón</option>
-        <option value="13">Ciudad Real</option>
-        <option value="14">Córdoba</option>
-        <option value="15">A Coruña</option>
-        <option value="16">Cuenca</option>
-        <option value="17">Girona</option>
-        <option value="18">Granada</option>
-        <option value="19">Guadalajara</option>
-        <option value="20">Guipúzcoa</option>
-        <option value="21">Huelva</option>
-        <option value="22">Huesca</option>
-        <option value="23">Jaén</option>
-        <option value="24">León</option>
-        <option value="25">Lleida</option>
-        <option value="26">La Rioja</option>
-        <option value="27">Lugo</option>
-        <option value="28">Madrid</option>
-        <option value="29">Málaga</option>
-        <option value="30">Murcia</option>
-        <option value="31">Navarra</option>
-        <option value="32">Ourense</option>
-        <option value="33">Asturias</option>
-        <option value="34">Palencia</option>
-        <option value="35">Las Palmas</option>
-        <option value="36">Pontevedra</option>
-        <option value="37">Salamanca</option>
-        <option value="38">Santa Cruz de Tenerife</option>
-        <option value="39">Cantabria</option>
-        <option value="40">Segovia</option>
-        <option value="41">Sevilla</option>
-        <option value="42">Soria</option>
-        <option value="43">Tarragona</option>
-        <option value="44">Teruel</option>
-        <option value="45">Toledo</option>
-        <option value="46">Valencia</option>
-        <option value="47">Valladolid</option>
-        <option value="48">Vizcaya</option>
-        <option value="49">Zamora</option>
-        <option value="50">Zaragoza</option>
-        <option value="51">Ceuta</option>
-        <option value="52">Melilla</option>
-
+        <option value="01">Álava</option><option value="02">Albacete</option><option value="03">Alicante</option>
+        <option value="04">Almería</option><option value="05">Ávila</option><option value="06">Badajoz</option>
+        <option value="07">Baleares</option><option value="08">Barcelona</option><option value="09">Burgos</option>
+        <option value="10">Cáceres</option><option value="11">Cádiz</option><option value="12">Castellón</option>
+        <option value="13">Ciudad Real</option><option value="14">Córdoba</option><option value="15">A Coruña</option>
+        <option value="16">Cuenca</option><option value="17">Girona</option><option value="18">Granada</option>
+        <option value="19">Guadalajara</option><option value="20">Guipúzcoa</option><option value="21">Huelva</option>
+        <option value="22">Huesca</option><option value="23">Jaén</option><option value="24">León</option>
+        <option value="25">Lleida</option><option value="26">La Rioja</option><option value="27">Lugo</option>
+        <option value="28">Madrid</option><option value="29">Málaga</option><option value="30">Murcia</option>
+        <option value="31">Navarra</option><option value="32">Ourense</option><option value="33">Asturias</option>
+        <option value="34">Palencia</option><option value="35">Las Palmas</option><option value="36">Pontevedra</option>
+        <option value="37">Salamanca</option><option value="38">Santa Cruz de Tenerife</option><option value="39">Cantabria</option>
+        <option value="40">Segovia</option><option value="41">Sevilla</option><option value="42">Soria</option>
+        <option value="43">Tarragona</option><option value="44">Teruel</option><option value="45">Toledo</option>
+        <option value="46">Valencia</option><option value="47">Valladolid</option><option value="48">Vizcaya</option>
+        <option value="49">Zamora</option><option value="50">Zaragoza</option><option value="51">Ceuta</option><option value="52">Melilla</option>
       </select>
-
     </div>
 
-
-    <div class="field">
-
-      <label for="fuel">
-        ⛽ COMBUSTIBLE
-      </label>
-
-      <select id="fuel">
-
-        <option value="95">
-          Gasolina 95
-        </option>
-
-        <option value="98">
-          Gasolina 98
-        </option>
-
-        <option value="diesel">
-          Diésel
-        </option>
-
+    <div class="field fuel-field">
+      <label>⛽ COMBUSTIBLE</label>
+      <div class="fuel-tabs" role="tablist" aria-label="Tipo de combustible">
+        <button type="button" class="fuel-btn active" data-fuel="95">Gasolina 95</button>
+        <button type="button" class="fuel-btn" data-fuel="98">Gasolina 98</button>
+        <button type="button" class="fuel-btn" data-fuel="diesel">Diésel</button>
+      </div>
+      <select id="fuel" class="af-hidden-select" aria-hidden="true" tabindex="-1">
+        <option value="95" selected>Gasolina 95</option>
+        <option value="98">Gasolina 98</option>
+        <option value="diesel">Diésel</option>
       </select>
-
     </div>
 
+    <div class="sort-tabs" role="tablist" aria-label="Orden de resultados">
+      <button type="button" class="sort-btn active" id="sortCheap">💰 Más baratas</button>
+      <button type="button" class="sort-btn" id="sortNear">📍 Más cercanas a mí</button>
+    </div>
 
-    <button
-      id="searchButton"
-      class="search-button"
-      onclick="buscar()"
-    >
-      🔎 Buscar gasolineras
-    </button>
+    <button id="searchButton" class="search-button" type="button" onclick="buscar()">🔎 Buscar gasolineras</button>
 
-
-    <button
-      id="locationButton"
-      class="location-button"
-      onclick="usarUbicacion()"
-    >
-      📍 Buscar gasolineras cerca de mí
-    </button>
-
-
-    <div
-      id="locationStatus"
-      class="location-status"
-    ></div>
-
-  </div>
+    <button id="locationButton" class="location-button" type="button" onclick="usarUbicacion()">📍 Activar ubicación</button>
+    <div id="locationStatus" class="location-status"></div>
+  </section>
 
 
 <section class="af-home-cities" aria-label="Ciudades más buscadas">
@@ -2135,6 +2099,34 @@ function escapeHtml(
   <a href="/condiciones-de-uso.html">Condiciones de uso</a>
 </div>
 
+
+<script>
+(function(){
+  const fuel=document.getElementById('fuel');
+  const fuelButtons=document.querySelectorAll('.fuel-btn');
+  const cheap=document.getElementById('sortCheap');
+  const near=document.getElementById('sortNear');
+  function setSort(active){
+    cheap.classList.toggle('active',active==='cheap');
+    near.classList.toggle('active',active==='near');
+  }
+  fuelButtons.forEach(btn=>btn.addEventListener('click',()=>{
+    fuel.value=btn.dataset.fuel;
+    fuelButtons.forEach(b=>b.classList.toggle('active',b===btn));
+  }));
+  cheap.addEventListener('click',()=>{
+    setSort('cheap');
+    ubicacionUsuario=null;
+    const status=document.getElementById('locationStatus');
+    if(status) status.textContent='';
+    buscar();
+  });
+  near.addEventListener('click',()=>{
+    setSort('near');
+    usarUbicacion();
+  });
+})();
+</script>
 </body>
 
 </html>
