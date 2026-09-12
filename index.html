@@ -2113,6 +2113,13 @@ function escapeHtml(
   fuelButtons.forEach(btn=>btn.addEventListener('click',()=>{
     fuel.value=btn.dataset.fuel;
     fuelButtons.forEach(b=>b.classList.toggle('active',b===btn));
+
+    // Al cambiar de combustible, actualizar el ranking automáticamente.
+    // No hace falta volver a pulsar "Buscar gasolineras".
+    const provincia = document.getElementById('province')?.value;
+    if (provincia) {
+      buscar();
+    }
   }));
   cheap.addEventListener('click',()=>{
     setSort('cheap');
