@@ -1110,62 +1110,149 @@ async function buscar() {
 
     if (modoBusqueda === "cerca") {
 
-      // La API actual de AhorraFuel trabaja por provincia.
-      // Determinamos automáticamente la provincia a partir de la ubicación,
-      // sin pedirle al usuario que la seleccione.
-      const geoResponse = await fetch(
-        "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" +
-        encodeURIComponent(ubicacionUsuario.lat) +
-        "&lon=" +
-        encodeURIComponent(ubicacionUsuario.lon) +
-        "&zoom=10&addressdetails=1",
-        {
-          headers: {
-            "Accept": "application/json",
-            "Accept-Language": "es"
+      /*
+       * "Cerca de mí" no depende de que el usuario seleccione provincia.
+       * La API de gasolineras trabaja por provincia, así que primero
+       * resolvemos la provincia automáticamente a partir de las
+       * coordenadas. Usamos BigDataCloud como primera opción y
+       * Nominatim como respaldo.
+       */
+      const latUsuario = ubicacionUsuario.lat;
+      const lonUsuario = ubicacionUsuario.lon;
+
+      function normalizarTexto(valor) {
+        return String(valor || "")
+          .normalize("NFD")
+          .replace(/[\\u0300-\\u036f]/g, "")
+          .toLowerCase()
+          .replace(/^(provincia|province)\\s+(de|of)\\s+/i, "")
+          .replace(/\\s+/g, " ")
+          .trim();
+      }
+
+      function buscarOpcionProvincia(nombre) {
+        const select = document.getElementById("province");
+        if (!select || !nombre) return null;
+
+        const objetivo = normalizarTexto(nombre);
+
+        return Array.from(select.options).find(opt => {
+          const texto = normalizarTexto(opt.textContent);
+          return (
+            texto === objetivo ||
+            texto.includes(objetivo) ||
+            objetivo.includes(texto)
+          );
+        }) || null;
+      }
+
+      function provinciaPorCoordenadasCanarias(lat, lon) {
+        // Respaldo específico para Canarias si el geocodificador devuelve
+        // solo "Canarias" y no la provincia.
+        if (lat >= 27.55 && lat <= 29.45 && lon >= -18.2 && lon <= -13.0) {
+          // Las Palmas: Gran Canaria, Fuerteventura, Lanzarote y La Graciosa.
+          if (
+            (lat >= 27.95 && lat <= 28.25 && lon >= -15.0 && lon <= -14.2) ||
+            (lat >= 28.0 && lat <= 29.45 && lon >= -14.8 && lon <= -13.0) ||
+            (lat >= 27.5 && lat <= 28.2 && lon >= -14.5 && lon <= -13.8)
+          ) {
+            return buscarOpcionProvincia("Las Palmas");
           }
+
+          // Santa Cruz de Tenerife: Tenerife, La Palma, La Gomera y El Hierro.
+          return buscarOpcionProvincia("Santa Cruz de Tenerife");
         }
-      );
 
-      if (!geoResponse.ok) {
-        throw new Error(
-          "No se pudo determinar automáticamente tu provincia."
-        );
+        return null;
       }
 
-      const geoData = await geoResponse.json();
+      async function obtenerProvinciaPorUbicacion() {
+        let candidatos = [];
 
-      const provinciaAuto =
-        geoData?.address?.province ||
-        geoData?.address?.state;
+        // Servicio gratuito que devuelve información administrativa
+        // directamente desde las coordenadas.
+        try {
+          const bdResponse = await fetch(
+            "https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=" +
+            encodeURIComponent(latUsuario) +
+            "&longitude=" +
+            encodeURIComponent(lonUsuario) +
+            "&localityLanguage=es",
+            { headers: { "Accept": "application/json" } }
+          );
 
-      if (!provinciaAuto) {
-        throw new Error(
-          "No se pudo determinar automáticamente tu provincia."
-        );
+          if (bdResponse.ok) {
+            const bd = await bdResponse.json();
+            const admin = Array.isArray(bd?.localityInfo?.administrative)
+              ? bd.localityInfo.administrative
+              : [];
+
+            candidatos.push(
+              bd?.principalSubdivision,
+              bd?.principalSubdivisionName,
+              bd?.countrySubdivision,
+              bd?.state,
+              bd?.locality,
+              bd?.city,
+              ...admin.map(x => x?.name)
+            );
+          }
+        } catch (e) {
+          console.warn("BigDataCloud no disponible:", e);
+        }
+
+        // Respaldo: Nominatim.
+        try {
+          const nomResponse = await fetch(
+            "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" +
+            encodeURIComponent(latUsuario) +
+            "&lon=" +
+            encodeURIComponent(lonUsuario) +
+            "&zoom=10&addressdetails=1&accept-language=es",
+            { headers: { "Accept": "application/json" } }
+          );
+
+          if (nomResponse.ok) {
+            const nom = await nomResponse.json();
+            const a = nom?.address || {};
+
+            candidatos.push(
+              a.province,
+              a.state_district,
+              a.county,
+              a.state,
+              a.region
+            );
+          }
+        } catch (e) {
+          console.warn("Nominatim no disponible:", e);
+        }
+
+        // Primero intentamos casar cualquier candidato con las provincias
+        // reales del selector.
+        for (const candidato of candidatos) {
+          const opcion = buscarOpcionProvincia(candidato);
+          if (opcion) return opcion;
+        }
+
+        // Si ambos servicios devuelven "Canarias" sin provincia,
+        // usamos la posición como último respaldo.
+        return provinciaPorCoordenadasCanarias(latUsuario, lonUsuario);
       }
 
-      const provinceSelect =
-        document.getElementById("province");
-
-      const option =
-        Array.from(provinceSelect.options).find(
-          opt =>
-            opt.textContent.trim().toLowerCase() ===
-            String(provinciaAuto).trim().toLowerCase()
-        );
+      const option = await obtenerProvinciaPorUbicacion();
 
       if (!option) {
         throw new Error(
-          "No se encontró la provincia de tu ubicación."
+          "No se pudo determinar automáticamente la provincia de tu ubicación."
         );
       }
 
       provincia = option.value;
 
-      // La provincia queda seleccionada internamente, pero el usuario
-      // no tiene que tocar el selector.
-      provinceSelect.value = provincia;
+      // Se selecciona internamente; el usuario no tiene que tocar el selector.
+      const provinceSelect = document.getElementById("province");
+      if (provinceSelect) provinceSelect.value = provincia;
 
       url =
         "/api/gasolineras" +
@@ -2159,10 +2246,8 @@ function escapeHtml(
   const fuel=document.getElementById('fuel');
   const fuelButtons=document.querySelectorAll('.fuel-btn');
   const cheap=document.getElementById('sortCheap');
-  const near=document.getElementById('sortNear');
   function setSort(active){
     cheap.classList.toggle('active',active==='cheap');
-    near.classList.toggle('active',active==='near');
   }
   fuelButtons.forEach(btn=>btn.addEventListener('click',()=>{
     fuel.value=btn.dataset.fuel;
@@ -2187,10 +2272,7 @@ function escapeHtml(
     buscar();
   });
 
-  near.addEventListener('click',()=>{
-    setSort('near');
-    usarUbicacion();
-  });
+
 })();
 </script>
 </body>
