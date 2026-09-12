@@ -842,8 +842,8 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
 
     <button id="searchButton" class="search-button" type="button" onclick="buscar()">🔎 Buscar gasolineras</button>
 
-    <button id="locationButton" class="location-button" type="button" onclick="usarUbicacion()">📍 Activar ubicación</button>
-    <div id="locationStatus" class="location-status"></div>
+    <button id="locationButton" class="location-button" type="button" onclick="usarUbicacion()">📍 Cerca de mí</button>
+    <div id="locationStatus" class="location-status" aria-live="polite"></div>
   </section>
 
 
@@ -946,6 +946,7 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
 <script>
 
 let ubicacionUsuario = null;
+let modoBusqueda = "provincia";
 
 
 /* =========================
@@ -960,86 +961,63 @@ function usarUbicacion() {
   const status =
     document.getElementById("locationStatus");
 
+  modoBusqueda = "cerca";
 
   if (!navigator.geolocation) {
-
     status.textContent =
       "❌ Tu dispositivo no permite obtener la ubicación.";
-
     return;
   }
 
-
   button.disabled = true;
-
-  button.textContent =
-    "📍 Obteniendo ubicación...";
-
-  status.textContent =
-    "Permite el acceso a tu ubicación.";
-
+  button.textContent = "📍 Obteniendo ubicación...";
+  status.textContent = "Permite el acceso a tu ubicación para buscar gasolineras cerca de ti.";
 
   navigator.geolocation.getCurrentPosition(
 
     function(position) {
 
       ubicacionUsuario = {
-
-        lat:
-          position.coords.latitude,
-
-        lon:
-          position.coords.longitude
-
+        lat: position.coords.latitude,
+        lon: position.coords.longitude
       };
 
-
       button.disabled = false;
-
-      button.textContent =
-        "✅ Ubicación activada";
-
+      button.textContent = "📍 Cerca de mí";
 
       status.textContent =
-        "Ubicación obtenida. Buscando gasolineras en un radio de 30 km...";
+        "Ubicación obtenida. Buscando las gasolineras más cercanas...";
 
-      // Buscar automáticamente al obtener la ubicación.
+      // Buscar automáticamente: no hace falta seleccionar provincia.
       buscar();
-
     },
-
 
     function(error) {
 
       console.error(error);
 
       ubicacionUsuario = null;
+      modoBusqueda = "provincia";
 
       button.disabled = false;
+      button.textContent = "📍 Cerca de mí";
 
-      button.textContent =
-        "📍 Buscar gasolineras cerca de mí";
-
-
-      status.textContent =
-        "❌ No se pudo obtener tu ubicación.";
-
+      if (error && error.code === 1) {
+        status.textContent =
+          "❌ Has bloqueado el acceso a tu ubicación. Actívalo en los permisos del navegador.";
+      } else {
+        status.textContent =
+          "❌ No se pudo obtener tu ubicación. Puedes buscar seleccionando una provincia.";
+      }
     },
 
     {
-
       enableHighAccuracy: true,
-
       timeout: 10000,
-
       maximumAge: 60000
-
     }
-
   );
-
 }
-
 
 /* =========================
    BUSCAR GASOLINERAS
@@ -1073,17 +1051,18 @@ async function buscar() {
 
   mostrarMensajeRecopilando();
 
-  const provincia =
+  let provincia =
     document.getElementById("province").value;
 
-  if (!provincia) {
+  // En "Cerca de mí" la provincia no es obligatoria:
+  // se determina automáticamente a partir de las coordenadas.
+  if (modoBusqueda === "provincia" && !provincia) {
     const results = document.getElementById("results");
     results.innerHTML = `
       <div class="af-collecting" role="status" aria-live="polite">
         <span class="af-collecting-icon">⛽</span>
-        <div class="af-collecting-title">Estamos recopilando los precios de las gasolineras...</div>
-        <div class="af-collecting-text">🔎 Estamos consultando y comparando los precios disponibles para encontrar las opciones más baratas para ti. Puede tardar unos segundos. 💚</div>
-        <div class="af-collecting-thanks">¡Gracias por esperar!</div>
+        <div class="af-collecting-title">Selecciona una provincia</div>
+        <div class="af-collecting-text">Elige una provincia para comparar sus precios.</div>
       </div>
     `;
     return;
@@ -1123,12 +1102,83 @@ async function buscar() {
 
   try {
 
-    const url =
-      "/api/gasolineras" +
-      "?provincia=" +
-      encodeURIComponent(provincia) +
-      "&producto=" +
-      encodeURIComponent(producto);
+    let url;
+
+    if (modoBusqueda === "cerca") {
+
+      // La API actual de AhorraFuel trabaja por provincia.
+      // Determinamos automáticamente la provincia a partir de la ubicación,
+      // sin pedirle al usuario que la seleccione.
+      const geoResponse = await fetch(
+        "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=" +
+        encodeURIComponent(ubicacionUsuario.lat) +
+        "&lon=" +
+        encodeURIComponent(ubicacionUsuario.lon) +
+        "&zoom=10&addressdetails=1",
+        {
+          headers: {
+            "Accept": "application/json",
+            "Accept-Language": "es"
+          }
+        }
+      );
+
+      if (!geoResponse.ok) {
+        throw new Error(
+          "No se pudo determinar automáticamente tu provincia."
+        );
+      }
+
+      const geoData = await geoResponse.json();
+
+      const provinciaAuto =
+        geoData?.address?.province ||
+        geoData?.address?.state;
+
+      if (!provinciaAuto) {
+        throw new Error(
+          "No se pudo determinar automáticamente tu provincia."
+        );
+      }
+
+      const provinceSelect =
+        document.getElementById("province");
+
+      const option =
+        Array.from(provinceSelect.options).find(
+          opt =>
+            opt.textContent.trim().toLowerCase() ===
+            String(provinciaAuto).trim().toLowerCase()
+        );
+
+      if (!option) {
+        throw new Error(
+          "No se encontró la provincia de tu ubicación."
+        );
+      }
+
+      provincia = option.value;
+
+      // La provincia queda seleccionada internamente, pero el usuario
+      // no tiene que tocar el selector.
+      provinceSelect.value = provincia;
+
+      url =
+        "/api/gasolineras" +
+        "?provincia=" +
+        encodeURIComponent(provincia) +
+        "&producto=" +
+        encodeURIComponent(producto);
+
+    } else {
+
+      url =
+        "/api/gasolineras" +
+        "?provincia=" +
+        encodeURIComponent(provincia) +
+        "&producto=" +
+        encodeURIComponent(producto);
+    }
 
 
     const response =
@@ -1162,7 +1212,7 @@ async function buscar() {
         <div class="error">
 
           ❌ No encontramos gasolineras
-          para esta provincia y combustible.
+          para esta zona y combustible.
 
         </div>
 
@@ -2114,20 +2164,25 @@ function escapeHtml(
     fuel.value=btn.dataset.fuel;
     fuelButtons.forEach(b=>b.classList.toggle('active',b===btn));
 
-    // Al cambiar de combustible, actualizar el ranking automáticamente.
-    // No hace falta volver a pulsar "Buscar gasolineras".
+    // Al cambiar de combustible, actualizar automáticamente tanto
+    // la búsqueda por provincia como "Cerca de mí".
     const provincia = document.getElementById('province')?.value;
-    if (provincia) {
+    if (provincia || modoBusqueda === "cerca") {
       buscar();
     }
   }));
+
   cheap.addEventListener('click',()=>{
     setSort('cheap');
-    ubicacionUsuario=null;
+    modoBusqueda = "provincia";
+    ubicacionUsuario = null;
+
     const status=document.getElementById('locationStatus');
     if(status) status.textContent='';
+
     buscar();
   });
+
   near.addEventListener('click',()=>{
     setSort('near');
     usarUbicacion();
