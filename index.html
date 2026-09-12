@@ -837,7 +837,6 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
 
     <div class="sort-tabs" role="tablist" aria-label="Orden de resultados">
       <button type="button" class="sort-btn active" id="sortCheap">💰 Más baratas</button>
-      <button type="button" class="sort-btn" id="sortNear">📍 Más cercanas a mí</button>
     </div>
 
     <button id="searchButton" class="search-button" type="button" onclick="buscar()">🔎 Buscar gasolineras</button>
@@ -1053,6 +1052,11 @@ async function buscar() {
 
   let provincia =
     document.getElementById("province").value;
+
+  // En modo "Cerca de mí" la provincia es interna y no la introduce el usuario.
+  if (modoBusqueda === "cerca") {
+    provincia = "";
+  }
 
   // En "Cerca de mí" la provincia no es obligatoria:
   // se determina automáticamente a partir de las coordenadas.
