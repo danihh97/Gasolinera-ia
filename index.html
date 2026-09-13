@@ -1335,6 +1335,68 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
 }
 </style>
 
+
+<style id="ahorrafuel-location-summary-reference">
+/* Resumen de ubicación inspirado directamente en la tarjeta de referencia */
+.option-grid{
+  gap:12px !important;
+}
+.option-card{
+  background:#fff !important;
+  border:1px solid #e2e9e4 !important;
+  border-radius:20px !important;
+  padding:18px !important;
+  box-shadow:0 7px 24px rgba(23,32,51,.07) !important;
+}
+.option-label{
+  display:inline-flex !important;
+  align-items:center !important;
+  width:max-content !important;
+  padding:7px 11px !important;
+  margin:0 0 8px !important;
+  border:1px solid #b9e8b5 !important;
+  border-radius:11px !important;
+  background:linear-gradient(135deg,#eaf9e7,#d9f3d5) !important;
+  color:#287c2e !important;
+  font-size:10px !important;
+  font-weight:900 !important;
+  letter-spacing:.5px !important;
+  line-height:1 !important;
+}
+.option-price{
+  margin-top:2px !important;
+  font-size:29px !important;
+  line-height:1.05 !important;
+  font-weight:950 !important;
+  color:#172033 !important;
+}
+.option-name{
+  margin-top:8px !important;
+  font-size:16px !important;
+  line-height:1.2 !important;
+  font-weight:900 !important;
+  color:#172033 !important;
+}
+.option-distance{
+  margin-top:8px !important;
+  font-size:13px !important;
+  color:#287c2e !important;
+  font-weight:900 !important;
+}
+@media(max-width:520px){
+  .option-card{
+    padding:16px !important;
+    border-radius:19px !important;
+  }
+  .option-price{
+    font-size:28px !important;
+  }
+  .option-name{
+    font-size:15px !important;
+  }
+}
+</style>
+
 </head>
 <body>
 <div aria-labelledby="cookieTitle" aria-modal="true" class="cookie-overlay" id="cookieOverlay" role="dialog">
