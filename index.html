@@ -639,7 +639,63 @@
   </style>
 
 
-
+<style id="ahorrafuel-home-v5">
+/* V5 — portada limpia inspirada en las páginas de ciudad */
+body{background:linear-gradient(180deg,#f8fbf7 0%,#eef3f1 100%) !important}
+.app{max-width:680px;padding:20px 15px 60px}
+.brand{margin-bottom:12px}
+.brand-logo{width:112px;height:112px;margin:0 auto 3px;filter:drop-shadow(0 6px 12px rgba(0,0,0,.10))}
+.brand-seo-title{font-size:30px;line-height:1.12;letter-spacing:-.8px;margin:0 auto 9px;max-width:620px;font-weight:900}
+.tagline{font-size:13px;letter-spacing:1.15px;color:#657180}
+/* Mascota: ayuda justo antes del buscador */
+.af-mascot{min-height:116px;width:min(100%,600px);gap:10px;margin:4px auto 13px;padding:0 8px}
+.af-mascot-img{width:118px;height:116px;max-width:30vw}
+.af-mascot-bubble{flex-basis:330px;max-width:330px;padding:13px 15px;border:2px solid #63c51d;border-radius:18px;box-shadow:0 7px 20px rgba(23,32,51,.09);font-size:14px;line-height:1.38;background:#fff}
+.af-mascot-bubble::after{left:-9px;bottom:25px;width:16px;height:16px}
+/* Buscador: protagonista, pero sin aspecto pesado */
+.search-card{padding:19px;border-radius:23px;background:rgba(255,255,255,.97);border:1px solid #edf1ee;box-shadow:0 10px 28px rgba(23,32,51,.075);backdrop-filter:none}
+.field{margin-bottom:14px}
+label{font-size:11px;letter-spacing:.8px;margin-bottom:6px;color:#6b7583}
+select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbfa;font-size:16px;padding:0 14px}
+.search-button{height:53px;border-radius:14px;background:linear-gradient(135deg,#63c51d,#31a83d);box-shadow:0 7px 16px rgba(49,168,61,.18);font-size:16px}
+.location-button{height:48px;margin-top:9px;border-radius:14px;background:#f5f8f6;border:1px solid #dfe6e2;color:#287c2e;font-size:14px}
+.location-status{margin-top:8px}
+/* Ciudades destacadas discretas */
+.af-home-cities{margin:20px 0 4px;padding:0 2px}
+.af-home-cities-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 2px 10px}
+.af-home-cities-title{margin:0;font-size:16px;font-weight:850;color:#172033}
+.af-home-cities-note{margin:0;color:#7a8491;font-size:11px}
+.af-home-cities{margin:24px auto 8px;max-width:980px;padding:0 2px}
+.af-home-cities-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:0 2px 12px}
+.af-home-cities-title{margin:0;font-size:18px;line-height:1.2;color:#172033;font-weight:850;letter-spacing:-.02em}
+.af-home-cities-all{color:#218c4a;text-decoration:none;font-size:14px;font-weight:800;white-space:nowrap}
+.af-home-cities-all span{font-size:19px;margin-left:3px}
+.af-home-city-list{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.af-home-city{display:flex;align-items:center;justify-content:flex-start;gap:11px;min-height:76px;padding:10px 14px;background:#fff;border:1px solid #e7ece9;border-radius:16px;color:#172033;text-decoration:none;font-size:15px;font-weight:800;box-shadow:0 4px 14px rgba(23,32,51,.045);transition:transform .15s ease,box-shadow .15s ease,border-color .15s ease}
+.af-home-city svg{width:42px;height:42px;flex:0 0 42px;fill:none;stroke:#6d7886;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.af-home-city:hover{border-color:#cfe1d6;transform:translateY(-1px);box-shadow:0 7px 18px rgba(23,32,51,.07)}
+@media(max-width:520px){
+ .app{padding:16px 14px 50px}
+ .brand-logo{width:96px;height:96px}
+ .brand-seo-title{font-size:27px;max-width:390px}
+ .tagline{font-size:12px;letter-spacing:.9px}
+ .af-mascot{min-height:104px;gap:7px;margin-top:2px;margin-bottom:11px;padding:0 2px}
+ .af-mascot-img{width:100px;height:104px;max-width:29vw}
+ .af-mascot-bubble{flex-basis:245px;max-width:245px;padding:10px 11px;font-size:12px;border-radius:15px}
+ .af-mascot-bubble::after{left:-8px;bottom:22px;width:14px;height:14px}
+ .search-card{padding:16px;border-radius:20px}
+ .af-home-cities{margin-top:17px}
+ .af-home-cities-head{display:block;margin-bottom:8px}
+ .af-home-cities-note{margin-top:2px}
+ .af-home-cities-head{align-items:flex-start}
+ .af-home-cities-title{font-size:16px}
+ .af-home-cities-all{font-size:12px}
+ .af-home-city-list{grid-template-columns:repeat(2,1fr);gap:8px}
+ .af-home-city{min-height:62px;padding:8px 11px;gap:8px;font-size:13px}
+ .af-home-city svg{width:34px;height:34px;flex-basis:34px}
+}
+@media(prefers-reduced-motion:reduce){.af-home-city{transition:none}}
+</style>
 
 <style id="af-cities-title-fix">
 .af-home-cities-head{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:18px!important;flex-wrap:nowrap!important;margin-bottom:14px!important}
@@ -848,312 +904,250 @@
 </style>
 
 
-<style id="ahorrafuel-home-v6">
-/* =========================================================
-   AHORRAFUEL V6 — PORTADA ESTILO APP
-   Solo cambia la presentación visual de la portada.
-   No modifica la lógica, búsquedas, API, SEO ni enlaces.
-========================================================= */
-
-html, body {
-  background: #03150f !important;
+<style id="af-home-reference-design">
+/* ===== AHORRAFUEL · PORTADA ESTILO APP ===== */
+html, body{
+  background:#031812 !important;
 }
-
-body {
-  color: #fff !important;
+body{
+  color:#fff !important;
   background:
-    radial-gradient(circle at 50% -5%, rgba(83, 210, 38, .20), transparent 31%),
-    radial-gradient(circle at 0% 45%, rgba(0, 126, 82, .16), transparent 34%),
-    linear-gradient(180deg, #052117 0%, #03150f 55%, #02110c 100%) !important;
+    radial-gradient(circle at 50% -8%,rgba(50,190,65,.20),transparent 34%),
+    radial-gradient(circle at 0% 55%,rgba(16,105,67,.14),transparent 30%),
+    linear-gradient(180deg,#031b14 0%,#02130f 58%,#031812 100%) !important;
+}
+.app{
+  max-width:760px !important;
+  padding:18px 14px 52px !important;
 }
 
-.app {
-  max-width: 760px !important;
-  padding: 18px 14px 55px !important;
+/* Cabecera */
+.brand{
+  position:relative !important;
+  margin:0 0 8px !important;
+  text-align:center !important;
+}
+.brand-logo{
+  width:125px !important;
+  height:105px !important;
+  object-fit:contain !important;
+  margin:0 auto 2px !important;
+  filter:drop-shadow(0 5px 13px rgba(0,0,0,.28)) !important;
+}
+.brand-seo-title{
+  color:#fff !important;
+  font-size:clamp(30px,7vw,46px) !important;
+  line-height:1.04 !important;
+  letter-spacing:-1.5px !important;
+  margin:5px auto 10px !important;
+  max-width:700px !important;
+  font-weight:950 !important;
+  text-shadow:0 4px 20px rgba(0,0,0,.25) !important;
+}
+.tagline{
+  color:#dce8df !important;
+  font-size:12px !important;
+  font-weight:900 !important;
+  letter-spacing:2px !important;
 }
 
-/* CABECERA */
-.brand {
-  margin-bottom: 8px !important;
+/* Mascota + bocadillo */
+.af-mascot{
+  width:100% !important;
+  max-width:650px !important;
+  min-height:155px !important;
+  margin:9px auto 14px !important;
+  padding:0 4px !important;
+  gap:8px !important;
+}
+.af-mascot-img{
+  width:155px !important;
+  height:155px !important;
+  max-width:38vw !important;
+  filter:drop-shadow(0 0 9px rgba(99,197,29,.32))
+         drop-shadow(0 12px 18px rgba(0,0,0,.42)) !important;
+}
+.af-mascot-bubble{
+  flex:1 1 auto !important;
+  max-width:390px !important;
+  padding:14px 17px !important;
+  border:2px solid #63c51d !important;
+  border-radius:21px !important;
+  background:#fff !important;
+  color:#172033 !important;
+  box-shadow:0 10px 28px rgba(0,0,0,.28) !important;
+  font-size:16px !important;
+  line-height:1.28 !important;
+}
+.af-mascot-bubble strong{color:#2f9e44 !important}
+
+/* Buscador blanco protagonista */
+.search-card{
+  background:#fff !important;
+  border:1px solid rgba(255,255,255,.9) !important;
+  border-radius:28px !important;
+  padding:20px !important;
+  box-shadow:0 18px 42px rgba(0,0,0,.30) !important;
+  backdrop-filter:none !important;
+}
+.field{margin-bottom:15px !important}
+label{
+  color:#6b7787 !important;
+  font-size:11px !important;
+  font-weight:900 !important;
+  letter-spacing:1px !important;
+}
+select{
+  height:54px !important;
+  border:1px solid #dce4df !important;
+  border-radius:15px !important;
+  background:#f9fbfa !important;
+  color:#172033 !important;
+  font-size:16px !important;
+}
+.search-button{
+  height:55px !important;
+  border-radius:16px !important;
+  background:linear-gradient(135deg,#62d11b,#29ad3e) !important;
+  box-shadow:0 9px 22px rgba(49,168,61,.28) !important;
+  font-size:17px !important;
+  font-weight:900 !important;
+}
+.location-button{
+  height:51px !important;
+  border-radius:15px !important;
+  background:#eaf7ec !important;
+  border:1px solid #d7eddb !important;
+  color:#277d36 !important;
+  font-size:14px !important;
+  font-weight:900 !important;
 }
 
-.brand-logo {
-  width: 155px !important;
-  height: 100px !important;
-  object-fit: contain !important;
-  margin: 0 auto 2px !important;
-  filter: drop-shadow(0 7px 16px rgba(0,0,0,.38)) !important;
+/* Ciudades */
+.af-home-cities{
+  margin:25px 0 5px !important;
+  padding:0 2px !important;
+}
+.af-home-cities-head{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:10px !important;
+  margin:0 2px 12px !important;
+}
+.af-home-cities-title{
+  color:#fff !important;
+  font-size:21px !important;
+  font-weight:950 !important;
+  white-space:nowrap !important;
+}
+.af-cities-mark{
+  background:#63d51d !important;
+  box-shadow:0 0 12px rgba(99,213,29,.28) !important;
+}
+.af-home-cities-all{
+  color:#70dd2a !important;
+  font-size:13px !important;
+  font-weight:900 !important;
+}
+.af-home-city-list{
+  display:grid !important;
+  grid-template-columns:repeat(2,1fr) !important;
+  gap:10px !important;
+}
+.af-home-city{
+  min-height:72px !important;
+  padding:10px 13px !important;
+  background:#fff !important;
+  border:1px solid rgba(255,255,255,.8) !important;
+  border-radius:18px !important;
+  color:#172033 !important;
+  box-shadow:0 8px 22px rgba(0,0,0,.22) !important;
+}
+.af-home-city svg{
+  stroke:#657486 !important;
 }
 
-.brand-seo-title {
-  max-width: 690px !important;
-  margin: 4px auto 9px !important;
-  color: #fff !important;
-  font-size: clamp(31px, 7vw, 49px) !important;
-  line-height: 1.03 !important;
-  letter-spacing: -1.8px !important;
-  font-weight: 950 !important;
-  text-shadow: 0 5px 18px rgba(0,0,0,.30) !important;
+/* Contenido SEO */
+.seo-content{
+  background:rgba(6,29,22,.88) !important;
+  border:1px solid rgba(99,197,29,.12) !important;
+  color:#cbd8d0 !important;
+  box-shadow:0 10px 30px rgba(0,0,0,.16) !important;
+}
+.seo-content h1,.seo-content h2{color:#fff !important}
+.seo-content p,.seo-content li{color:#c2d0c7 !important}
+.seo-note{color:#94a99d !important}
+.seo-keyword{
+  background:rgba(255,255,255,.055) !important;
+  border-color:rgba(99,197,29,.16) !important;
+  color:#9bea5d !important;
+}
+.legal-footer{color:#84988d !important}
+.legal-footer a{color:#70dd2a !important}
+
+/* Resultados siguen siendo claros y legibles */
+.loading,.summary,.station,.option-card,.error{
+  color:#172033 !important;
 }
 
-.tagline {
-  color: #dbe9df !important;
-  font-size: 12px !important;
-  font-weight: 900 !important;
-  letter-spacing: 2px !important;
-}
-
-/* MASCOTA + BOCADILLO */
-.af-mascot {
-  width: min(100%, 690px) !important;
-  min-height: 175px !important;
-  margin: 11px auto 13px !important;
-  padding: 0 2px !important;
-  gap: 10px !important;
-}
-
-.af-mascot-img {
-  width: 175px !important;
-  height: 170px !important;
-  max-width: 37vw !important;
-  filter:
-    drop-shadow(0 0 8px rgba(99,197,29,.40))
-    drop-shadow(0 14px 20px rgba(0,0,0,.42)) !important;
-}
-
-.af-mascot-bubble {
-  flex: 1 1 auto !important;
-  max-width: 420px !important;
-  padding: 16px 18px !important;
-  border: 2px solid #63d51d !important;
-  border-radius: 23px !important;
-  background: #fff !important;
-  color: #172033 !important;
-  box-shadow:
-    0 10px 28px rgba(0,0,0,.30),
-    0 0 18px rgba(99,197,29,.10) !important;
-  font-size: 17px !important;
-  line-height: 1.25 !important;
-}
-
-.af-mascot-bubble strong {
-  color: #2f9e44 !important;
-}
-
-/* BUSCADOR */
-.search-card {
-  padding: 21px !important;
-  border-radius: 28px !important;
-  background: rgba(255,255,255,.985) !important;
-  border: 1px solid rgba(255,255,255,.80) !important;
-  box-shadow:
-    0 20px 50px rgba(0,0,0,.30),
-    0 0 0 1px rgba(99,197,29,.04) !important;
-  backdrop-filter: none !important;
-}
-
-.field {
-  margin-bottom: 15px !important;
-}
-
-label {
-  color: #687586 !important;
-  font-size: 11px !important;
-  font-weight: 900 !important;
-  letter-spacing: 1px !important;
-}
-
-select {
-  height: 55px !important;
-  border: 1px solid #dce4df !important;
-  border-radius: 16px !important;
-  background: #f9fbfa !important;
-  color: #172033 !important;
-  font-size: 16px !important;
-}
-
-select:focus {
-  border-color: #63c51d !important;
-  box-shadow: 0 0 0 3px rgba(99,197,29,.13) !important;
-}
-
-.search-button {
-  height: 57px !important;
-  border-radius: 17px !important;
-  background: linear-gradient(135deg,#63d51d 0%,#24aa40 100%) !important;
-  color: #fff !important;
-  font-size: 17px !important;
-  font-weight: 900 !important;
-  box-shadow: 0 10px 22px rgba(49,168,61,.28) !important;
-}
-
-.location-button {
-  height: 51px !important;
-  margin-top: 10px !important;
-  border-radius: 16px !important;
-  background: #eaf7ed !important;
-  border: 1px solid #d7ebdc !important;
-  color: #287c35 !important;
-  font-size: 14px !important;
-  font-weight: 900 !important;
-}
-
-/* CIUDADES */
-.af-home-cities {
-  max-width: 760px !important;
-  margin: 27px auto 8px !important;
-  padding: 0 2px !important;
-}
-
-.af-home-cities-head {
-  margin: 0 2px 13px !important;
-}
-
-.af-home-cities-title {
-  color: #fff !important;
-  font-size: clamp(19px, 4.5vw, 26px) !important;
-  font-weight: 950 !important;
-}
-
-.af-cities-mark {
-  width: 7px !important;
-  height: 29px !important;
-  border-radius: 99px !important;
-  background: #35c451 !important;
-  box-shadow: 0 0 13px rgba(53,196,81,.35) !important;
-}
-
-.af-home-cities-all {
-  color: #70e42b !important;
-  font-size: 14px !important;
-  font-weight: 900 !important;
-}
-
-.af-home-city-list {
-  grid-template-columns: repeat(2, 1fr) !important;
-  gap: 10px !important;
-}
-
-.af-home-city {
-  min-height: 76px !important;
-  padding: 10px 14px !important;
-  border-radius: 18px !important;
-  background: rgba(255,255,255,.985) !important;
-  border: 1px solid rgba(255,255,255,.72) !important;
-  color: #172033 !important;
-  box-shadow: 0 8px 22px rgba(0,0,0,.22) !important;
-}
-
-.af-home-city svg {
-  stroke: #657487 !important;
-}
-
-/* CONTENIDO INFORMATIVO */
-.seo-content {
-  background: rgba(7, 30, 22, .90) !important;
-  color: #d4e2d9 !important;
-  border: 1px solid rgba(99,197,29,.12) !important;
-  box-shadow: 0 10px 30px rgba(0,0,0,.18) !important;
-}
-
-.seo-content h1,
-.seo-content h2 {
-  color: #fff !important;
-}
-
-.seo-content p,
-.seo-content li {
-  color: #c5d2ca !important;
-}
-
-.seo-note {
-  color: #91a79a !important;
-}
-
-.seo-keyword {
-  background: rgba(255,255,255,.055) !important;
-  border-color: rgba(99,197,29,.15) !important;
-  color: #9aeb61 !important;
-}
-
-.legal-footer {
-  color: #879a90 !important;
-}
-
-.legal-footer a {
-  color: #73df30 !important;
-}
-
-/* MÓVIL — proporciones parecidas a la referencia */
-@media (max-width: 520px) {
-  .app {
-    padding: 12px 12px 48px !important;
+/* Móvil: composición similar a la referencia */
+@media(max-width:520px){
+  .app{padding:13px 11px 45px !important}
+  .brand-logo{
+    width:116px !important;
+    height:91px !important;
   }
-
-  .brand-logo {
-    width: 132px !important;
-    height: 88px !important;
+  .brand-seo-title{
+    font-size:29px !important;
+    line-height:1.05 !important;
+    letter-spacing:-1px !important;
+    margin-top:4px !important;
   }
-
-  .brand-seo-title {
-    font-size: 30px !important;
-    line-height: 1.04 !important;
-    letter-spacing: -1.2px !important;
-    margin-top: 2px !important;
+  .tagline{
+    font-size:10.5px !important;
+    letter-spacing:1.35px !important;
   }
-
-  .tagline {
-    font-size: 10.5px !important;
-    letter-spacing: 1.45px !important;
+  .af-mascot{
+    min-height:122px !important;
+    margin:8px auto 12px !important;
+    gap:4px !important;
   }
-
-  .af-mascot {
-    min-height: 125px !important;
-    margin: 8px auto 12px !important;
-    gap: 5px !important;
+  .af-mascot-img{
+    width:125px !important;
+    height:122px !important;
+    max-width:35vw !important;
   }
-
-  .af-mascot-img {
-    width: 125px !important;
-    height: 125px !important;
-    max-width: 34vw !important;
+  .af-mascot-bubble{
+    max-width:250px !important;
+    padding:11px 12px !important;
+    border-radius:18px !important;
+    font-size:13px !important;
   }
-
-  .af-mascot-bubble {
-    max-width: 245px !important;
-    padding: 11px 12px !important;
-    border-radius: 18px !important;
-    font-size: 13px !important;
+  .search-card{
+    padding:16px !important;
+    border-radius:24px !important;
   }
-
-  .search-card {
-    padding: 16px !important;
-    border-radius: 23px !important;
+  .search-button{
+    height:53px !important;
+    font-size:16px !important;
   }
-
-  .search-button {
-    height: 54px !important;
+  .location-button{height:49px !important}
+  .af-home-cities{
+    margin-top:22px !important;
   }
-
-  .location-button {
-    height: 50px !important;
+  .af-home-cities-title{font-size:18px !important}
+  .af-home-cities-all{font-size:11px !important}
+  .af-home-city{
+    min-height:66px !important;
+    padding:9px 10px !important;
+    gap:8px !important;
+    font-size:14px !important;
   }
-
-  .af-home-cities {
-    margin-top: 24px !important;
-  }
-
-  .af-home-cities-title {
-    font-size: 18px !important;
-  }
-
-  .af-home-cities-all {
-    font-size: 12px !important;
-  }
-
-  .af-home-city {
-    min-height: 67px !important;
-    font-size: 14px !important;
+  .af-home-city svg{
+    width:34px !important;
+    height:34px !important;
+    flex-basis:34px !important;
   }
 }
 </style>
