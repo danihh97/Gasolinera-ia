@@ -785,6 +785,174 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
 }
 </style>
 
+
+<style id="ahorrafuel-ranking-fix">
+/* Corrección de legibilidad del ranking sobre el fondo oscuro */
+.summary{color:#172033 !important;background:rgba(255,255,255,.98) !important;}
+.summary-main{color:#172033 !important;}
+.summary-info{color:#687385 !important;}
+.station{color:#172033 !important;background:rgba(255,255,255,.98) !important;}
+.station-name{color:#172033 !important;}
+.position{color:#8993a3 !important;}
+.station-info{color:#707b8d !important;}
+.price-unit{color:#8993a3 !important;}
+@media(max-width:520px){
+  .station{padding:17px 15px !important;}
+  .station-top{align-items:flex-start !important;}
+  .station-name{font-size:16px !important;line-height:1.25 !important;}
+  .price{font-size:23px !important;}
+  .price-badge{font-size:10px !important;}
+}
+</style>
+
+
+<style id="ahorrafuel-ranking-v9">
+/* V9 — ranking rediseñado para móvil: contraste fuerte y estructura estable */
+.results .summary,
+.results .station {
+  color: #172033 !important;
+  background: #ffffff !important;
+  opacity: 1 !important;
+  filter: none !important;
+  text-shadow: none !important;
+}
+
+.results .summary {
+  border-radius: 22px !important;
+  padding: 20px 18px !important;
+  margin: 0 0 14px !important;
+  border: 1px solid #e8ecea !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,.16) !important;
+}
+.results .summary-main {
+  color: #172033 !important;
+  font-size: 18px !important;
+  line-height: 1.3 !important;
+  font-weight: 900 !important;
+}
+.results .summary-info {
+  color: #667085 !important;
+  font-size: 14px !important;
+  line-height: 1.65 !important;
+}
+
+.results .station {
+  position: relative !important;
+  overflow: hidden !important;
+  border: 1px solid #e5e9e7 !important;
+  border-radius: 22px !important;
+  padding: 18px !important;
+  margin: 0 0 14px !important;
+  box-shadow: 0 8px 24px rgba(0,0,0,.14) !important;
+}
+.results .station-top {
+  display: grid !important;
+  grid-template-columns: minmax(0,1fr) auto !important;
+  align-items: start !important;
+  gap: 12px !important;
+}
+.results .position {
+  display: inline-flex !important;
+  align-items: center !important;
+  min-height: 28px !important;
+  padding: 5px 9px !important;
+  margin: 0 0 8px !important;
+  border-radius: 999px !important;
+  background: #edf7e8 !important;
+  color: #327b31 !important;
+  font-size: 11px !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+  letter-spacing: .35px !important;
+  white-space: nowrap !important;
+}
+.results .station-name {
+  display: block !important;
+  color: #172033 !important;
+  font-size: 18px !important;
+  line-height: 1.22 !important;
+  font-weight: 900 !important;
+  letter-spacing: -.25px !important;
+  overflow-wrap: anywhere !important;
+}
+.results .price-wrap {
+  min-width: 104px !important;
+  text-align: right !important;
+}
+.results .price {
+  color: #2f9e44 !important;
+  font-size: 28px !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  white-space: nowrap !important;
+}
+.results .price.good { color: #2f9e44 !important; }
+.results .price.medium { color: #d28b00 !important; }
+.results .price.bad { color: #d64545 !important; }
+.results .price-unit {
+  color: #7b8492 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+}
+.results .price-badge {
+  display: inline-block !important;
+  margin-top: 7px !important;
+  padding: 5px 8px !important;
+  border-radius: 999px !important;
+  font-size: 10px !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+  white-space: nowrap !important;
+}
+.results .price-badge.good { background:#e8f7df !important; color:#287c2e !important; }
+.results .price-badge.bad { background:#fff0f0 !important; color:#c62828 !important; }
+.results .price-badge.medium { background:#fff7db !important; color:#9a6b00 !important; }
+.results .station-info {
+  color: #687385 !important;
+  margin-top: 13px !important;
+  padding-top: 12px !important;
+  border-top: 1px solid #edf0ef !important;
+  font-size: 14px !important;
+  line-height: 1.55 !important;
+  overflow-wrap: anywhere !important;
+}
+.results .distance {
+  color: #287c2e !important;
+  margin-top: 10px !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+}
+.results .map-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 44px !important;
+  margin-top: 14px !important;
+  padding: 9px 14px !important;
+  border-radius: 13px !important;
+  background: #edf9e9 !important;
+  color: #287c2e !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  text-decoration: none !important;
+}
+
+@media(max-width:520px){
+  .results .station { padding: 16px !important; border-radius: 20px !important; }
+  .results .station-top { grid-template-columns: minmax(0,1fr) auto !important; gap: 8px !important; }
+  .results .station-name { font-size: 17px !important; }
+  .results .price-wrap { min-width: 96px !important; }
+  .results .price { font-size: 25px !important; }
+  .results .station-info { font-size: 13.5px !important; }
+}
+@media(max-width:370px){
+  .results .station-top { grid-template-columns: 1fr !important; }
+  .results .price-wrap { text-align:left !important; min-width:0 !important; }
+  .results .price { font-size: 24px !important; }
+  .results .price-badge { margin-top: 5px !important; }
+}
+</style>
+
 </head>
 
 <body>
