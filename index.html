@@ -16,6 +16,12 @@
   <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512x512.png">
   <link rel="apple-touch-icon" sizes="192x192" href="/favicon-192x192.png">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#31A83D">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="AhorraFuel">
 
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://ahorrafuel.es/">
@@ -2135,6 +2141,20 @@ function escapeHtml(
   <a href="/condiciones-de-uso.html">Condiciones de uso</a>
 </div>
 
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("/service-worker.js", { scope: "/" })
+      .then(function () {
+        console.log("AhorraFuel PWA: Service Worker activo");
+      })
+      .catch(function (error) {
+        console.warn("AhorraFuel PWA: error al registrar Service Worker", error);
+      });
+  });
+}
+</script>
 </body>
 
 </html>
