@@ -1260,6 +1260,32 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
 }
 </style>
 
+
+<style id="ahorrafuel-ranking-province">
+.af-ranking-province{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  margin:-6px 0 11px;
+  padding:7px 11px;
+  border-radius:10px;
+  background:#f2f8f1;
+  color:#687385;
+  font-size:12px;
+  line-height:1.2;
+}
+.af-ranking-province strong{
+  color:#287c2e;
+  font-weight:900;
+}
+@media(max-width:520px){
+  .af-ranking-province{
+    font-size:12px;
+    margin-top:-5px;
+  }
+}
+</style>
+
 </head>
 <body>
 <div aria-labelledby="cookieTitle" aria-modal="true" class="cookie-overlay" id="cookieOverlay" role="dialog">
@@ -2313,6 +2339,16 @@ document.addEventListener("click", function(event) {
      * - Provincia: orden por precio (1 = más barata).
      * Mostramos las 5 primeras y dejamos el resto detrás de "Ver todas".
      */
+    // Nombre visible de la provincia que se está consultando.
+    // En búsqueda por ubicación, "provincia" ya fue resuelta automáticamente.
+    const provinciaNombre = (() => {
+      const select = document.getElementById("province");
+      const option = select && Array.from(select.options).find(
+        opt => opt.value === provincia
+      );
+      return option ? option.textContent.trim() : provincia;
+    })();
+
     window.__afTotalEstaciones = estaciones.length;
     const rankingVisible = estaciones.slice(0, 5);
     const rankingExtra = estaciones.slice(5);
@@ -2321,6 +2357,10 @@ document.addEventListener("click", function(event) {
       <div class="af-ranking-head">
         <div class="af-ranking-title">
           ${ubicacionUsuario ? "Ranking de gasolineras cerca de ti" : "Ranking de gasolineras más baratas"}
+        </div>
+        <div class="af-ranking-province">
+          ${ubicacionUsuario ? "Provincia de " : "Buscando en "}
+          <strong>${escapeHtml(provinciaNombre)}</strong>
         </div>
         <div class="af-ranking-fuel">
           <span>Combustible</span>
