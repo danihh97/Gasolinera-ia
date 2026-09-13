@@ -340,12 +340,6 @@
       line-height:1.05;
       text-transform:uppercase;
     }
-    .af-rank-brand-icon{
-      display:block;
-      font-size:25px;
-      line-height:1;
-      margin-bottom:4px;
-    }
     .af-rank-main{min-width:0}
     .af-rank-name{
       font-size:15px;
@@ -1983,7 +1977,7 @@ async function buscar() {
 
     results.innerHTML += `
       <div class="af-ranking-title">
-        ${ubicacionUsuario ? "🏆 Ranking de gasolineras cerca de ti" : "🏆 Ranking de gasolineras más baratas"}
+        ${ubicacionUsuario ? "Ranking de gasolineras cerca de ti" : "Ranking de gasolineras más baratas"}
       </div>
     `;
 
@@ -2003,23 +1997,14 @@ async function buscar() {
       const direccion = escapeHtml(estacion.direccion);
       const localidad = escapeHtml(estacion.localidad);
 
-      // Marca visual sencilla sin depender de imágenes externas.
-      const nombreLower = String(estacion.nombre || "").toLowerCase();
-      let marcaIcono = "⛽";
-      if (nombreLower.includes("disa")) marcaIcono = "🟢";
-      else if (nombreLower.includes("petroprix")) marcaIcono = "🔴";
-      else if (nombreLower.includes("cepsa")) marcaIcono = "🔴";
-      else if (nombreLower.includes("bp")) marcaIcono = "🟢";
-      else if (nombreLower.includes("shell")) marcaIcono = "🟡";
-
       const distanciaHtml =
         ubicacionUsuario && estacion.distancia !== null
-          ? `<div class="af-rank-distance">🚗 ${formatearDistancia(estacion.distancia)}</div>`
+          ? `<div class="af-rank-distance">${formatearDistancia(estacion.distancia)}</div>`
           : "";
 
       const mapaHtml =
         mapa !== "#"
-          ? `<a class="af-rank-map" href="${mapa}" target="_blank" rel="noopener noreferrer">🧭 Cómo llegar</a>`
+          ? `<a class="af-rank-map" href="${mapa}" target="_blank" rel="noopener noreferrer">Cómo llegar</a>`
           : "";
 
       return `
@@ -2027,13 +2012,12 @@ async function buscar() {
           <div class="af-rank-number">${rank}</div>
 
           <div class="af-rank-brand">
-            <span class="af-rank-brand-icon">${marcaIcono}</span>
             ${nombre}
           </div>
 
           <div class="af-rank-main">
             <div class="af-rank-name">${nombre}</div>
-            <div class="af-rank-address">📍 ${direccion}${localidad ? ", " + localidad : ""}</div>
+            <div class="af-rank-address">${direccion}${localidad ? ", " + localidad : ""}</div>
             ${distanciaHtml}
           </div>
 
