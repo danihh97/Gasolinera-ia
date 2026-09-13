@@ -698,6 +698,93 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
 .af-home-cities-all{font-size:clamp(.88rem,2.4vw,1rem)!important;font-weight:700!important;white-space:nowrap!important;color:#218b48!important;text-decoration:none!important}
 @media(max-width:600px){.af-home-cities-head{gap:10px!important}.af-home-cities-title{font-size:1.08rem!important}.af-cities-mark{width:5px;height:23px}.af-home-cities-all{font-size:.82rem!important}}
 </style>
+
+<style id="ahorrafuel-home-modern-v6">
+/* V6 — diseño principal inspirado en el mockup aprobado */
+html{background:#061713}
+body{
+  background:
+    radial-gradient(circle at 50% -12%,rgba(56,145,67,.28) 0%,transparent 38%),
+    radial-gradient(circle at 10% 55%,rgba(0,110,72,.10),transparent 35%),
+    linear-gradient(180deg,#061713 0%,#071d17 52%,#061713 100%) !important;
+  color:#fff !important;
+}
+.app{max-width:980px;padding:18px 18px 55px}
+.af-topbar{
+  position:relative;display:flex;align-items:center;justify-content:space-between;
+  max-width:920px;margin:0 auto 24px;padding:2px 2px;z-index:50
+}
+.af-brand-inline{display:flex;align-items:center;gap:9px;text-decoration:none;color:#fff}
+.af-brand-inline-logo{width:48px;height:48px;object-fit:contain;filter:drop-shadow(0 4px 8px rgba(0,0,0,.35))}
+.af-brand-wordmark{font-size:25px;font-weight:900;letter-spacing:-.8px;line-height:1}
+.af-brand-wordmark span{color:#72e62a}
+.af-menu-button{width:44px;height:44px;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;border-radius:12px}
+.af-menu-button span{display:block;width:25px;height:3px;border-radius:99px;background:#fff}
+.af-menu-button:active{background:rgba(255,255,255,.08)}
+.af-menu{position:absolute;right:0;top:52px;display:none;min-width:190px;padding:8px;background:rgba(7,29,23,.98);border:1px solid rgba(255,255,255,.12);border-radius:16px;box-shadow:0 16px 40px rgba(0,0,0,.35)}
+.af-menu.open{display:grid}
+.af-menu a{padding:12px 14px;color:#fff;text-decoration:none;font-size:14px;font-weight:800;border-radius:10px}
+.af-menu a:hover{background:rgba(114,230,42,.12);color:#8cf04d}
+.brand{text-align:center;margin:0 auto 17px}
+.brand-logo{display:none}
+.brand-seo-title{font-size:clamp(30px,5vw,48px);line-height:1.02;letter-spacing:-1.7px;color:#fff;margin:0 auto 12px;max-width:850px;font-weight:950;text-shadow:0 2px 16px rgba(0,0,0,.18)}
+.tagline{font-size:13px;color:#f4f7f4;letter-spacing:2.1px;font-weight:800}
+.af-mascot{min-height:185px;width:min(100%,760px);gap:18px;margin:5px auto 15px;padding:0 8px}
+.af-mascot-img{width:185px;height:180px;max-width:31vw;filter:drop-shadow(0 13px 18px rgba(0,0,0,.34))}
+.af-mascot-bubble{flex-basis:410px;max-width:410px;padding:17px 20px;background:#fff;color:#111b35;border:3px solid #72e62a;border-radius:24px;box-shadow:0 12px 28px rgba(0,0,0,.25);font-size:18px;line-height:1.3;font-weight:850}
+.af-mascot-bubble strong{color:#31a83d}
+.af-mascot-bubble::after{left:-11px;bottom:30px;width:19px;height:19px;background:#fff;border-left:3px solid #72e62a;border-bottom:3px solid #72e62a}
+.search-card{max-width:760px;margin:0 auto;padding:23px;border-radius:26px;background:rgba(255,255,255,.98);border:1px solid rgba(255,255,255,.65);box-shadow:0 16px 45px rgba(0,0,0,.28);backdrop-filter:none}
+.field{margin-bottom:17px}
+label{font-size:12px;letter-spacing:1px;color:#667085;margin-bottom:7px}
+select{height:54px;border:1px solid #dfe5e2;border-radius:15px;background:#fafcfa;color:#121a35;font-size:16px;font-weight:600;padding:0 15px}
+select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
+.search-button{height:55px;border-radius:15px;background:linear-gradient(135deg,#68d51f,#21aa3c);font-size:17px;box-shadow:0 9px 20px rgba(49,168,61,.24)}
+.location-button{height:50px;margin-top:10px;border-radius:14px;background:#eaf8ed;border:1px solid #d8ebdd;color:#164d25;font-size:15px}
+.location-status{color:#697386}
+.af-home-cities{max-width:760px;margin:24px auto 8px;padding:0 2px}
+.af-home-cities-head{margin:0 2px 12px!important}
+.af-home-cities-title{color:#fff!important;font-size:21px!important;font-weight:900!important}
+.af-cities-mark{background:#72e62a!important;box-shadow:0 4px 12px rgba(114,230,42,.25)!important}
+.af-home-cities-all{color:#72e62a!important;font-size:14px!important}
+.af-home-city-list{grid-template-columns:repeat(4,1fr);gap:10px}
+.af-home-city{min-height:78px;background:#fff;border:0;border-radius:17px;color:#111a36;box-shadow:0 8px 22px rgba(0,0,0,.18);font-size:15px}
+.af-home-city svg{stroke:#263052}
+.results{max-width:760px;margin:22px auto 0}
+.seo-content{max-width:760px;margin:26px auto 0;background:rgba(255,255,255,.97);color:#3f4958;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.seo-content h1,.seo-content h2{color:#172033}
+.legal-footer{max-width:760px;color:#aab5b0}
+.legal-footer a{color:#72e62a}
+.af-collecting,.summary,.station,.loading,.error,.option-card{box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.best-card{box-shadow:0 12px 32px rgba(0,0,0,.3)}
+@media(max-width:700px){
+ .app{padding:14px 14px 45px}
+ .af-topbar{margin-bottom:21px}
+ .af-brand-inline-logo{width:43px;height:43px}
+ .af-brand-wordmark{font-size:22px}
+ .brand-seo-title{font-size:29px;letter-spacing:-1px;max-width:500px}
+ .tagline{font-size:11px;letter-spacing:1.35px}
+ .af-mascot{min-height:128px;gap:8px;margin:2px auto 12px;padding:0}
+ .af-mascot-img{width:122px;height:126px;max-width:34vw}
+ .af-mascot-bubble{flex-basis:260px;max-width:260px;padding:11px 12px;border-width:2px;border-radius:17px;font-size:12.5px}
+ .af-mascot-bubble::after{left:-8px;bottom:22px;width:14px;height:14px;border-width:2px}
+ .search-card{padding:17px;border-radius:21px}
+ .search-button{font-size:16px}
+ .af-home-cities{margin-top:19px}
+ .af-home-cities-title{font-size:17px!important}
+ .af-home-cities-all{font-size:12px!important}
+ .af-home-city-list{grid-template-columns:repeat(2,1fr);gap:8px}
+ .af-home-city{min-height:65px;padding:8px 11px;font-size:13px;gap:8px}
+ .af-home-city svg{width:35px;height:35px;flex-basis:35px}
+}
+@media(max-width:380px){
+ .brand-seo-title{font-size:26px}
+ .af-brand-wordmark{font-size:20px}
+ .af-mascot-img{width:104px;height:110px}
+ .af-mascot-bubble{flex-basis:220px;max-width:220px;font-size:11.5px}
+}
+</style>
+
 </head>
 
 <body>
@@ -735,20 +822,24 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
 
 <div class="app">
 
-  <div class="brand">
-
-    <img
-      class="brand-logo"
-      src="/IMG_6106.png"
-      alt="AhorraFuel"
-    >
-
-    <h1 class="brand-seo-title">Gasolineras más baratas en España</h1>
-
-    <div class="tagline">
-      ENCUENTRA · COMPARA · AHORRA
+  <header class="af-topbar">
+    <a class="af-brand-inline" href="/" aria-label="AhorraFuel inicio">
+      <img src="/IMG_6106.png" alt="AhorraFuel" class="af-brand-inline-logo">
+      <span class="af-brand-wordmark">Ahorra<span>Fuel</span></span>
+    </a>
+    <button class="af-menu-button" type="button" aria-label="Abrir menú" aria-expanded="false" onclick="toggleAfMenu()">
+      <span></span><span></span><span></span>
+    </button>
+    <div id="afMenu" class="af-menu">
+      <a href="/gasolineras-baratas.html">Ciudades</a>
+      <a href="/privacidad.html">Privacidad</a>
+      <a href="/informacion-legal.html">Información legal</a>
     </div>
+  </header>
 
+  <div class="brand">
+    <h1 class="brand-seo-title">Gasolineras más baratas en España</h1>
+    <div class="tagline">ENCUENTRA · COMPARA · AHORRA</div>
   </div>
 
 
@@ -2134,6 +2225,23 @@ function escapeHtml(
   <a href="/informacion-legal.html">Información legal</a> ·
   <a href="/condiciones-de-uso.html">Condiciones de uso</a>
 </div>
+
+<script>
+function toggleAfMenu(){
+  const menu=document.getElementById('afMenu');
+  const btn=document.querySelector('.af-menu-button');
+  if(!menu||!btn)return;
+  const open=menu.classList.toggle('open');
+  btn.setAttribute('aria-expanded',String(open));
+}
+document.addEventListener('click',function(e){
+  const menu=document.getElementById('afMenu');
+  const btn=document.querySelector('.af-menu-button');
+  if(menu && btn && menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)){
+    menu.classList.remove('open'); btn.setAttribute('aria-expanded','false');
+  }
+});
+</script>
 
 </body>
 
