@@ -721,7 +721,7 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
     color:#fff;
     opacity:1;
     visibility:visible;
-    transition:opacity .38s ease,visibility .38s ease;
+    transition:opacity .22s ease,visibility .22s ease;
   }
   #af-pwa-splash.af-splash-hide{
     opacity:0;
@@ -735,8 +735,8 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
     background:
       radial-gradient(circle at 30% 25%, rgba(99,197,29,.12), transparent 24%),
       radial-gradient(circle at 72% 65%, rgba(49,168,61,.10), transparent 26%);
-    filter:blur(28px);
-    animation:afGlow 3.8s ease-in-out infinite alternate;
+    filter:blur(18px);
+    animation:afGlow 2.2s ease-in-out infinite alternate;
   }
   .af-splash-scene{
     position:relative;
@@ -755,10 +755,10 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
     height:260px;
     object-fit:contain;
     filter:
-      drop-shadow(0 0 8px rgba(99,197,29,.55))
-      drop-shadow(0 18px 26px rgba(0,0,0,.48));
+      drop-shadow(0 0 6px rgba(99,197,29,.45))
+      drop-shadow(0 12px 20px rgba(0,0,0,.40));
     opacity:0;
-    animation:afMascotIn .55s cubic-bezier(.18,.8,.22,1) .03s forwards,
+    animation:afMascotIn .42s cubic-bezier(.18,.8,.22,1) .02s forwards,
               afMascotFloat 2.2s ease-in-out 1s infinite;
   }
   .af-splash-bubble{
@@ -770,13 +770,13 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
     border-radius:24px;
     background:#fff;
     color:#172033;
-    box-shadow:0 12px 34px rgba(0,0,0,.30),0 0 24px rgba(99,197,29,.13);
+    box-shadow:0 9px 25px rgba(0,0,0,.25),0 0 16px rgba(99,197,29,.10);
     font-size:24px;
     line-height:1.16;
     font-weight:900;
     opacity:0;
     transform:translateY(14px) scale(.9);
-    animation:afBubbleIn .4s cubic-bezier(.2,.8,.2,1) .38s forwards;
+    animation:afBubbleIn .32s cubic-bezier(.2,.8,.2,1) .25s forwards;
   }
   .af-splash-bubble::before{
     content:"";
@@ -800,7 +800,7 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
     letter-spacing:-1.5px;
     opacity:0;
     transform:translateY(8px) scale(.96);
-    animation:afBrandIn .4s ease .72s forwards;
+    animation:afBrandIn .32s ease .52s forwards;
     text-shadow:0 4px 18px rgba(0,0,0,.35);
   }
   .af-splash-brand span{color:#63d51d}
@@ -811,7 +811,7 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
     font-weight:800;
     letter-spacing:1.5px;
     opacity:0;
-    animation:afFadeIn .35s ease .88s forwards;
+    animation:afFadeIn .25s ease .68s forwards;
   }
   .af-splash-loader{
     width:250px;
@@ -822,7 +822,7 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
     border-radius:99px;
     background:rgba(255,255,255,.08);
     opacity:0;
-    animation:afFadeIn .3s ease .98s forwards;
+    animation:afFadeIn .22s ease .76s forwards;
   }
   .af-splash-loader::after{
     content:"";
@@ -832,14 +832,14 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
     border-radius:99px;
     background:linear-gradient(90deg,#63c51d,#b6ff32);
     box-shadow:0 0 14px rgba(99,197,29,.55);
-    animation:afLoad .65s ease-in-out 1.02s 1;
+    animation:afLoad .45s ease-in-out .78s 1;
   }
   .af-splash-loading{
     margin-top:10px;
     color:#b9c9bf;
     font-size:12px;
     opacity:0;
-    animation:afFadeIn .3s ease 1.02s forwards;
+    animation:afFadeIn .22s ease .78s forwards;
   }
   @keyframes afMascotIn{
     0%{opacity:0;transform:translateY(90px) scale(.72) rotate(-4deg)}
@@ -887,6 +887,19 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
 <style id="af-pwa-splash-web-hide">
   html.af-no-pwa-splash #af-pwa-splash {
     display: none !important;
+  }
+</style>
+
+
+<style id="af-pwa-splash-performance">
+  #af-pwa-splash,
+  #af-pwa-splash *,
+  .af-splash-scene {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+  #af-pwa-splash {
+    contain: paint;
   }
 </style>
 
