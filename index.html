@@ -830,7 +830,7 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
     <button class="af-menu-button" type="button" aria-label="Abrir menú" aria-expanded="false" onclick="toggleAfMenu()">
       <span></span><span></span><span></span>
     </button>
-    <div id="afMenu" class="af-menu">
+    <div id="afMenu" class="af-menu" aria-label="Menú principal">
       <a href="/">Inicio</a>
     </div>
   </header>
@@ -2225,10 +2225,18 @@ function escapeHtml(
 </div>
 
 <script>
+function ensureAfMenuOnlyInicio(){
+  const menu=document.getElementById('afMenu');
+  if(!menu)return;
+  menu.innerHTML='<a href="/">Inicio</a>';
+}
+ensureAfMenuOnlyInicio();
+
 function toggleAfMenu(){
   const menu=document.getElementById('afMenu');
   const btn=document.querySelector('.af-menu-button');
   if(!menu||!btn)return;
+  ensureAfMenuOnlyInicio();
   const open=menu.classList.toggle('open');
   btn.setAttribute('aria-expanded',String(open));
 }
