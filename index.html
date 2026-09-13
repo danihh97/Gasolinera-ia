@@ -1272,34 +1272,26 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
 .af-ranking-province{
   display:inline-flex !important;
   align-items:center !important;
-  gap:7px !important;
-  margin:7px 0 12px !important;
-  padding:7px 12px !important;
-  border:1px solid #ccecc9 !important;
-  border-radius:12px !important;
-  background:linear-gradient(135deg,#effbea,#e1f6df) !important;
-  color:#5f6c7d !important;
-  font-size:12px !important;
-  line-height:1.2 !important;
-  font-weight:700 !important;
-  box-shadow:0 3px 10px rgba(40,124,46,.06) !important;
+  gap:6px !important;
+  margin:6px 0 12px !important;
+  padding:8px 13px !important;
+  border:1px solid #b9e8b5 !important;
+  border-radius:13px !important;
+  background:linear-gradient(135deg,#e9f9e6 0%,#d5f1d2 100%) !important;
+  color:#4e6571 !important;
+  font-size:13px !important;
+  line-height:1.1 !important;
+  font-weight:800 !important;
+  box-shadow:0 3px 12px rgba(40,124,46,.10) !important;
 }
 .af-ranking-province::before{
-  content:"⌖" !important;
-  display:inline-flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  width:22px !important;
-  height:22px !important;
-  border-radius:8px !important;
-  background:#d8f4d4 !important;
-  color:#287c2e !important;
-  font-size:16px !important;
-  font-weight:900 !important;
+  content:"📍" !important;
+  font-size:14px !important;
+  line-height:1 !important;
 }
 .af-ranking-province strong{
-  color:#287c2e !important;
-  font-weight:900 !important;
+  color:#237b2c !important;
+  font-weight:950 !important;
 }
 @media(max-width:520px){
   .af-ranking-head .af-ranking-title{
@@ -1309,6 +1301,7 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
   .af-ranking-province{
     margin-top:7px !important;
     margin-bottom:10px !important;
+    font-size:13px !important;
   }
 }
 </style>
@@ -2392,8 +2385,8 @@ document.addEventListener("click", function(event) {
         <div class="af-ranking-title">
           ${ubicacionUsuario ? "Ranking de gasolineras cerca de ti" : "Ranking de gasolineras más baratas"}
         </div>
-        <div class="af-ranking-province">
-          ${ubicacionUsuario ? "Provincia de " : "Buscando en "}
+        <div class="af-ranking-province" aria-label="Provincia de la búsqueda">
+          ${ubicacionUsuario ? "Provincia: " : "Buscando en: "}
           <strong>${escapeHtml(provinciaNombre)}</strong>
         </div>
         <div class="af-ranking-fuel">
