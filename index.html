@@ -1262,27 +1262,61 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
 
 
 <style id="ahorrafuel-ranking-province">
+.af-ranking-head{
+  margin-top:18px !important;
+  margin-bottom:12px !important;
+}
+.af-ranking-head .af-ranking-title{
+  margin:0 !important;
+}
 .af-ranking-province{
-  display:inline-flex;
-  align-items:center;
-  gap:4px;
-  margin:-6px 0 11px;
-  padding:7px 11px;
-  border-radius:10px;
-  background:#f2f8f1;
-  color:#687385;
-  font-size:12px;
-  line-height:1.2;
+  display:inline-flex !important;
+  align-items:center !important;
+  gap:7px !important;
+  margin:7px 0 12px !important;
+  padding:7px 12px !important;
+  border:1px solid #ccecc9 !important;
+  border-radius:12px !important;
+  background:linear-gradient(135deg,#effbea,#e1f6df) !important;
+  color:#5f6c7d !important;
+  font-size:12px !important;
+  line-height:1.2 !important;
+  font-weight:700 !important;
+  box-shadow:0 3px 10px rgba(40,124,46,.06) !important;
+}
+.af-ranking-province::before{
+  content:"⌖" !important;
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:22px !important;
+  height:22px !important;
+  border-radius:8px !important;
+  background:#d8f4d4 !important;
+  color:#287c2e !important;
+  font-size:16px !important;
+  font-weight:900 !important;
 }
 .af-ranking-province strong{
-  color:#287c2e;
-  font-weight:900;
+  color:#287c2e !important;
+  font-weight:900 !important;
 }
 @media(max-width:520px){
-  .af-ranking-province{
-    font-size:12px;
-    margin-top:-5px;
+  .af-ranking-head .af-ranking-title{
+    font-size:20px !important;
+    line-height:1.15 !important;
   }
+  .af-ranking-province{
+    margin-top:7px !important;
+    margin-bottom:10px !important;
+  }
+}
+</style>
+
+<style id="ahorrafuel-ranking-context">
+.results > .af-ranking-head{
+  border-top:1px solid #e7ece9;
+  padding-top:16px;
 }
 </style>
 
