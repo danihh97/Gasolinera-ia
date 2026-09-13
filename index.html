@@ -337,13 +337,20 @@
       stroke-linecap:round;
       stroke-linejoin:round;
     }
+    .af-rank-number .rank-number-bg{
+      fill:#fff;
+      stroke:none;
+    }
     .af-rank-number .rank-number-text{
-      fill:currentColor;
-      font-size:23px;
+      fill:#172033;
+      font-size:24px;
       font-weight:900;
       font-family:Arial, sans-serif;
       text-anchor:middle;
       dominant-baseline:middle;
+    }
+    .af-rank-card:first-of-type .rank-number-text{
+      fill:#238a36;
     }
     .af-rank-card:first-of-type .af-rank-number{
       color:#31a83d;
@@ -432,8 +439,8 @@
         padding:11px 9px;
       }
       .af-rank-number{width:50px;height:60px;flex-basis:50px}
-      .af-rank-number svg{width:48px;height:58px}
-      .af-rank-number .rank-number-text{font-size:20px}
+      .af-rank-number svg{width:50px;height:60px}
+      .af-rank-number .rank-number-text{font-size:22px}
       .af-rank-brand{font-size:10px}
       .af-rank-brand-icon{font-size:21px}
       .af-rank-name{font-size:13px}
@@ -2021,11 +2028,12 @@ async function buscar() {
         <article class="af-rank-card">
           <div class="af-rank-number" aria-label="Puesto ${rank}">
             <svg viewBox="0 0 64 72" role="img" aria-hidden="true">
-              <path class="rank-house" d="M8 30 L32 9 L56 30" />
+              <path class="rank-house" d="M8 29 L32 9 L56 29" />
               <path class="rank-house" d="M13 27 V61 H51 V27" />
-              <path class="rank-house" d="M23 61 V45 H41 V61" />
-              <path class="rank-house" d="M26 30 H38" />
-              <text class="rank-number-text" x="32" y="39">${rank}</text>
+              <path class="rank-house" d="M24 34 H40" />
+              <path class="rank-number-bg" d="M19 39 H45 V57 H19 Z" />
+              <text class="rank-number-text" x="32" y="48">${rank}</text>
+              <path class="rank-house" d="M18 61 H46" />
             </svg>
           </div>
 <div class="af-rank-main">
