@@ -1285,7 +1285,7 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
   box-shadow:0 3px 12px rgba(40,124,46,.10) !important;
 }
 .af-ranking-province::before{
-  content:"📍" !important;
+  content:none !important;
   font-size:14px !important;
   line-height:1 !important;
 }
@@ -2386,7 +2386,7 @@ document.addEventListener("click", function(event) {
           ${ubicacionUsuario ? "Ranking de gasolineras cerca de ti" : "Ranking de gasolineras más baratas"}
         </div>
         <div class="af-ranking-province" aria-label="Provincia de la búsqueda">
-          ${ubicacionUsuario ? "Provincia: " : "Buscando en: "}
+          📍 <span>Buscando en:</span>
           <strong>${escapeHtml(provinciaNombre)}</strong>
         </div>
         <div class="af-ranking-fuel">
