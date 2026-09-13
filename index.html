@@ -883,9 +883,28 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
   }
 </style>
 
+
+<style id="af-pwa-splash-web-hide">
+  html.af-no-pwa-splash #af-pwa-splash {
+    display: none !important;
+  }
+</style>
+
 </head>
 
 <body>
+<script>
+(function () {
+  var isStandalone =
+    window.matchMedia('(display-mode: standalone)').matches ||
+    window.navigator.standalone === true;
+
+  if (!isStandalone) {
+    document.documentElement.classList.add('af-no-pwa-splash');
+  }
+})();
+</script>
+
 
 <div id="af-pwa-splash" aria-label="Bienvenido a AhorraFuel">
   <div class="af-splash-scene">
