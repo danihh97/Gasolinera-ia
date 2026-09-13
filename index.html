@@ -400,6 +400,18 @@
 
 
     /* =========================
+       COMBUSTIBLE DEL RANKING
+    ========================= */
+    .af-ranking-head{margin-top:18px;margin-bottom:12px}
+    .af-ranking-head .af-ranking-title{margin:0 0 12px}
+    .af-ranking-fuel{background:#fff;border:1px solid #e5eae7;border-radius:18px;padding:12px;box-shadow:0 5px 18px rgba(23,32,51,.045)}
+    .af-ranking-fuel>span{display:block;margin:0 0 8px 2px;color:#687385;font-size:11px;font-weight:900;letter-spacing:.5px;text-transform:uppercase}
+    .af-ranking-fuel-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+    .af-ranking-fuel-btn{min-height:43px;border:1px solid #e0e5e8;border-radius:12px;background:#f5f7f8;color:#287c2e;font-size:13px;font-weight:900;cursor:pointer}
+    .af-ranking-fuel-btn.active{background:#172033;border-color:#172033;color:#fff;box-shadow:0 5px 12px rgba(23,32,51,.13)}
+    @media(max-width:520px){.af-ranking-fuel-btn{min-height:44px;font-size:12px}}
+
+    /* =========================
        RANKING MODERNO
     ========================= */
     .af-ranking-title{
@@ -1147,20 +1159,7 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
           <option value="49">Zamora</option><option value="50">Zaragoza</option><option value="51">Ceuta</option><option value="52">Melilla</option>
         </select>
       </div>
-
-      <div class="field fuel-field">
-        <label>Combustible</label>
-        <div class="fuel-tabs" role="tablist" aria-label="Tipo de combustible">
-          <button type="button" class="fuel-btn active" data-fuel="95">Gasolina 95</button>
-          <button type="button" class="fuel-btn" data-fuel="98">Gasolina 98</button>
-          <button type="button" class="fuel-btn" data-fuel="diesel">Diésel</button>
-        </div>
-        <select id="fuel" class="af-hidden-select" aria-hidden="true" tabindex="-1">
-          <option value="95" selected>Gasolina 95</option>
-          <option value="98">Gasolina 98</option>
-          <option value="diesel">Diésel</option>
-        </select>
-      </div>
+</div>
 
       <button id="searchButton" class="search-button" type="button" onclick="buscar()">
         Buscar gasolineras
@@ -1184,6 +1183,11 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
         Buscar por ubicación
       </button>
       <div id="locationStatus" class="location-status" aria-live="polite"></div>
+      <select id="fuel" class="af-hidden-select" aria-hidden="true" tabindex="-1">
+        <option value="95" selected>Gasolina 95</option>
+        <option value="98">Gasolina 98</option>
+        <option value="diesel">Diésel</option>
+      </select>
     </div>
 
   </section>
@@ -1658,7 +1662,28 @@ async function buscar() {
 
 
     /* =========================
-       CALCULAR DISTANCIAS
+       /* =========================
+   CAMBIO DE COMBUSTIBLE DESDE EL RANKING
+========================= */
+document.addEventListener("click", function(event) {
+  const fuelButton = event.target.closest(".af-ranking-fuel-btn");
+  if (!fuelButton) return;
+
+  const fuel = fuelButton.dataset.fuel;
+  const fuelSelect = document.getElementById("fuel");
+  if (!fuelSelect || !fuel) return;
+
+  fuelSelect.value = fuel;
+  document.querySelectorAll(".af-ranking-fuel-btn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.fuel === fuel);
+  });
+
+  if (modoBusqueda === "cerca" || document.getElementById("province")?.value) {
+    buscar();
+  }
+});
+
+CALCULAR DISTANCIAS
     ========================= */
 
     if (ubicacionUsuario) {
@@ -2142,8 +2167,18 @@ async function buscar() {
     const rankingExtra = estaciones.slice(5);
 
     results.innerHTML += `
-      <div class="af-ranking-title">
-        ${ubicacionUsuario ? "Ranking de gasolineras cerca de ti" : "Ranking de gasolineras más baratas"}
+      <div class="af-ranking-head">
+        <div class="af-ranking-title">
+          ${ubicacionUsuario ? "Ranking de gasolineras cerca de ti" : "Ranking de gasolineras más baratas"}
+        </div>
+        <div class="af-ranking-fuel">
+          <span>Combustible</span>
+          <div class="af-ranking-fuel-tabs" role="tablist" aria-label="Cambiar combustible">
+            <button type="button" class="af-ranking-fuel-btn ${producto === "95" ? "active" : ""}" data-fuel="95">Gasolina 95</button>
+            <button type="button" class="af-ranking-fuel-btn ${producto === "98" ? "active" : ""}" data-fuel="98">Gasolina 98</button>
+            <button type="button" class="af-ranking-fuel-btn ${producto === "diesel" ? "active" : ""}" data-fuel="diesel">Diésel</button>
+          </div>
+        </div>
       </div>
     `;
 
