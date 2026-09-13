@@ -1233,6 +1233,33 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
 }
 </style>
 
+
+<style id="ahorrafuel-results-in-search-position">
+.af-search-unified.af-search-hidden{
+  display:none !important;
+}
+.af-search-unified + .results{
+  margin-top:0 !important;
+}
+.results.af-results-active{
+  scroll-margin-top:12px;
+}
+.af-results-back{
+  display:flex;
+  justify-content:flex-end;
+  margin:0 0 10px;
+}
+.af-results-back button{
+  border:0;
+  background:transparent;
+  color:#287c2e;
+  font-size:12px;
+  font-weight:800;
+  cursor:pointer;
+  padding:5px 2px;
+}
+</style>
+
 </head>
 <body>
 <div aria-labelledby="cookieTitle" aria-modal="true" class="cookie-overlay" id="cookieOverlay" role="dialog">
@@ -1325,7 +1352,8 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
 <option value="diesel">Diésel</option>
 </select>
 </div>
-</section></div>
+</section>
+<div class="results" id="results"></div></div>
 <section aria-label="Ciudades más buscadas" class="af-home-cities">
 <div class="af-home-cities-head">
 <h2 class="af-home-cities-title"><span aria-hidden="true" class="af-cities-mark"></span>Ciudades más buscadas</h2>
@@ -1350,7 +1378,7 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
 </a>
 </div>
 </section>
-<div class="results" id="results"></div>
+
 <section aria-label="Información sobre AhorraFuel" class="seo-content">
 <h2>Compara las gasolineras más baratas</h2>
 <p>AhorraFuel es un comparador de precios de carburantes pensado para ayudarte a encontrar dónde repostar más barato en España. Selecciona tu combustible, elige tu provincia y compara las opciones disponibles antes de repostar.</p>
@@ -1538,6 +1566,12 @@ async function buscar() {
 
   const producto =
     document.getElementById("fuel").value;
+
+  // Al iniciar una búsqueda válida, sustituimos el buscador por los resultados
+  // en exactamente el mismo lugar de la página.
+  if (typeof window.mostrarResultadosEnLugarBuscador === "function") {
+    window.mostrarResultadosEnLugarBuscador();
+  }
 
   const button =
     document.getElementById("searchButton");
@@ -2602,5 +2636,27 @@ function escapeHtml(
 
 })();
 </script>
+
+<script id="ahorrafuel-search-view-helper">
+(function(){
+  window.mostrarResultadosEnLugarBuscador = function(){
+    const search = document.querySelector(".af-search-unified");
+    const results = document.getElementById("results");
+    if (!search || !results) return;
+    search.classList.add("af-search-hidden");
+    results.classList.add("af-results-active");
+  };
+
+  window.mostrarBuscador = function(){
+    const search = document.querySelector(".af-search-unified");
+    const results = document.getElementById("results");
+    if (!search || !results) return;
+    search.classList.remove("af-search-hidden");
+    results.classList.remove("af-results-active");
+    search.scrollIntoView({behavior:"smooth", block:"start"});
+  };
+})();
+</script>
+
 </body>
 </html>
