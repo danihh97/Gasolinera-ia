@@ -758,7 +758,7 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
       drop-shadow(0 0 8px rgba(99,197,29,.55))
       drop-shadow(0 18px 26px rgba(0,0,0,.48));
     opacity:0;
-    animation:afMascotIn .9s cubic-bezier(.18,.8,.22,1) .05s forwards,
+    animation:afMascotIn .55s cubic-bezier(.18,.8,.22,1) .03s forwards,
               afMascotFloat 2.2s ease-in-out 1s infinite;
   }
   .af-splash-bubble{
@@ -776,7 +776,7 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
     font-weight:900;
     opacity:0;
     transform:translateY(14px) scale(.9);
-    animation:afBubbleIn .55s cubic-bezier(.2,.8,.2,1) .72s forwards;
+    animation:afBubbleIn .4s cubic-bezier(.2,.8,.2,1) .38s forwards;
   }
   .af-splash-bubble::before{
     content:"";
@@ -800,7 +800,7 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
     letter-spacing:-1.5px;
     opacity:0;
     transform:translateY(8px) scale(.96);
-    animation:afBrandIn .55s ease 1.35s forwards;
+    animation:afBrandIn .4s ease .72s forwards;
     text-shadow:0 4px 18px rgba(0,0,0,.35);
   }
   .af-splash-brand span{color:#63d51d}
@@ -811,7 +811,7 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
     font-weight:800;
     letter-spacing:1.5px;
     opacity:0;
-    animation:afFadeIn .45s ease 1.62s forwards;
+    animation:afFadeIn .35s ease .88s forwards;
   }
   .af-splash-loader{
     width:250px;
@@ -822,7 +822,7 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
     border-radius:99px;
     background:rgba(255,255,255,.08);
     opacity:0;
-    animation:afFadeIn .35s ease 1.72s forwards;
+    animation:afFadeIn .3s ease .98s forwards;
   }
   .af-splash-loader::after{
     content:"";
@@ -832,14 +832,14 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
     border-radius:99px;
     background:linear-gradient(90deg,#63c51d,#b6ff32);
     box-shadow:0 0 14px rgba(99,197,29,.55);
-    animation:afLoad 1.1s ease-in-out 1.78s infinite;
+    animation:afLoad .65s ease-in-out 1.02s 1;
   }
   .af-splash-loading{
     margin-top:10px;
     color:#b9c9bf;
     font-size:12px;
     opacity:0;
-    animation:afFadeIn .35s ease 1.78s forwards;
+    animation:afFadeIn .3s ease 1.02s forwards;
   }
   @keyframes afMascotIn{
     0%{opacity:0;transform:translateY(90px) scale(.72) rotate(-4deg)}
@@ -2363,11 +2363,11 @@ if ("serviceWorker" in navigator) {
 
   // La animación dura unos 2,7 s y luego entra directamente en la web.
   window.addEventListener("load", function () {
-    window.setTimeout(hideAhorraFuelSplash, 2750);
+    window.setTimeout(hideAhorraFuelSplash, 1500);
   });
 
   // Seguridad: nunca bloquear la aplicación por la pantalla de bienvenida.
-  window.setTimeout(hideAhorraFuelSplash, 5000);
+  window.setTimeout(hideAhorraFuelSplash, 2500);
 })();
 </script>
 
