@@ -184,6 +184,127 @@
       font-size: 13px;
     }
 
+
+    /* =========================
+       BUSCADOR CLARO
+    ========================= */
+    .af-search-heading{
+      margin:0 0 18px;
+    }
+    .af-search-heading h2{
+      margin:0;
+      color:#172033;
+      font-size:21px;
+      font-weight:900;
+    }
+    .af-search-heading p{
+      margin:5px 0 0;
+      color:#687385;
+      font-size:13px;
+      line-height:1.45;
+    }
+    .af-search-method{
+      padding:16px;
+      border:1px solid #e7ece9;
+      border-radius:18px;
+      background:#fbfcfb;
+    }
+    .af-search-method-title{
+      display:flex;
+      align-items:center;
+      gap:11px;
+      margin-bottom:14px;
+    }
+    .af-search-method-title strong{
+      display:block;
+      color:#172033;
+      font-size:15px;
+      font-weight:900;
+    }
+    .af-search-method-title small{
+      display:block;
+      margin-top:3px;
+      color:#7a8493;
+      font-size:12px;
+      line-height:1.35;
+    }
+    .af-method-number,
+    .af-method-icon{
+      width:34px;
+      height:34px;
+      flex:0 0 34px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:50%;
+      background:#eaf8e6;
+      color:#287c2e;
+      font-size:15px;
+      font-weight:900;
+    }
+    .af-method-icon{
+      border-radius:10px;
+      background:#eaf8e6;
+      font-size:22px;
+      line-height:1;
+    }
+    .af-search-method .field{
+      margin-bottom:13px;
+    }
+    .af-search-method label{
+      margin-bottom:6px;
+      font-size:11px;
+      letter-spacing:.4px;
+    }
+    .af-search-method .search-button{
+      margin-top:2px;
+    }
+    .af-search-divider{
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin:14px 0;
+      color:#9aa3ae;
+      font-size:12px;
+      font-weight:800;
+      text-transform:uppercase;
+    }
+    .af-search-divider::before,
+    .af-search-divider::after{
+      content:"";
+      height:1px;
+      background:#e4e9e6;
+      flex:1;
+    }
+    .af-search-divider span{
+      padding:0 12px;
+    }
+    .af-location-method{
+      background:#f7fbf6;
+      border-color:#dcebdc;
+    }
+    .af-location-method .af-search-method-title{
+      margin-bottom:11px;
+    }
+    .af-location-method .location-button{
+      margin-top:0;
+      height:52px;
+      border:0;
+      border-radius:14px;
+      background:#e8f7e5;
+      color:#287c2e;
+      font-size:15px;
+      font-weight:900;
+      box-shadow:none;
+    }
+    .af-location-method .location-button:hover{
+      background:#def2d9;
+    }
+    .af-location-method .location-status{
+      margin-top:9px;
+    }
+
     /* RESULTADOS */
 
     .results {
@@ -909,9 +1030,6 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
 .fuel-tabs{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-bottom:12px}
 .fuel-btn{height:50px;border:0;border-radius:15px;background:#e3e7eb;color:#1683ef;font-size:15px;font-weight:850;cursor:pointer}
 .fuel-btn.active{background:#172033;color:#fff;box-shadow:0 7px 17px rgba(23,32,51,.18)}
-.sort-tabs{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:0 0 12px}
-.sort-btn{min-height:48px;border:1px solid #dce2e7;border-radius:15px;background:#fff;color:#172033;font-size:14px;font-weight:900;cursor:pointer;box-shadow:0 5px 15px rgba(23,32,51,.05)}
-.sort-btn.active{background:#63c51d;color:#fff;border-color:#63c51d;box-shadow:0 7px 17px rgba(99,197,29,.2)}
 .af-hidden-select{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 .af-home-search .search-button{height:53px;border-radius:14px;background:linear-gradient(135deg,#63c51d,#31a83d);box-shadow:0 7px 16px rgba(49,168,61,.18);font-size:16px}
 .af-home-search .location-button{height:48px;margin-top:9px;border-radius:14px;background:#f5f8f6;border:1px solid #dfe6e2;color:#287c2e;font-size:14px}
@@ -991,52 +1109,83 @@ select{height:52px;border:1px solid #dfe5e2;border-radius:14px;background:#f9fbf
   </section>
 
   <section class="search-card af-home-search" aria-label="Buscar gasolineras en España">
-    <div class="field province-field">
-      <label for="province">📍 PROVINCIA</label>
-      <select id="province">
-        <option value="" selected disabled>Selecciona tu provincia</option>
-        <option value="01">Álava</option><option value="02">Albacete</option><option value="03">Alicante</option>
-        <option value="04">Almería</option><option value="05">Ávila</option><option value="06">Badajoz</option>
-        <option value="07">Baleares</option><option value="08">Barcelona</option><option value="09">Burgos</option>
-        <option value="10">Cáceres</option><option value="11">Cádiz</option><option value="12">Castellón</option>
-        <option value="13">Ciudad Real</option><option value="14">Córdoba</option><option value="15">A Coruña</option>
-        <option value="16">Cuenca</option><option value="17">Girona</option><option value="18">Granada</option>
-        <option value="19">Guadalajara</option><option value="20">Guipúzcoa</option><option value="21">Huelva</option>
-        <option value="22">Huesca</option><option value="23">Jaén</option><option value="24">León</option>
-        <option value="25">Lleida</option><option value="26">La Rioja</option><option value="27">Lugo</option>
-        <option value="28">Madrid</option><option value="29">Málaga</option><option value="30">Murcia</option>
-        <option value="31">Navarra</option><option value="32">Ourense</option><option value="33">Asturias</option>
-        <option value="34">Palencia</option><option value="35">Las Palmas</option><option value="36">Pontevedra</option>
-        <option value="37">Salamanca</option><option value="38">Santa Cruz de Tenerife</option><option value="39">Cantabria</option>
-        <option value="40">Segovia</option><option value="41">Sevilla</option><option value="42">Soria</option>
-        <option value="43">Tarragona</option><option value="44">Teruel</option><option value="45">Toledo</option>
-        <option value="46">Valencia</option><option value="47">Valladolid</option><option value="48">Vizcaya</option>
-        <option value="49">Zamora</option><option value="50">Zaragoza</option><option value="51">Ceuta</option><option value="52">Melilla</option>
-      </select>
+
+    <div class="af-search-heading">
+      <h2>Buscar gasolineras</h2>
+      <p>Elige cómo quieres encontrar los mejores precios.</p>
     </div>
 
-    <div class="field fuel-field">
-      <label>⛽ COMBUSTIBLE</label>
-      <div class="fuel-tabs" role="tablist" aria-label="Tipo de combustible">
-        <button type="button" class="fuel-btn active" data-fuel="95">Gasolina 95</button>
-        <button type="button" class="fuel-btn" data-fuel="98">Gasolina 98</button>
-        <button type="button" class="fuel-btn" data-fuel="diesel">Diésel</button>
+    <div class="af-search-method">
+      <div class="af-search-method-title">
+        <span class="af-method-number">1</span>
+        <div>
+          <strong>Buscar por provincia</strong>
+          <small>Compara los precios de una provincia</small>
+        </div>
       </div>
-      <select id="fuel" class="af-hidden-select" aria-hidden="true" tabindex="-1">
-        <option value="95" selected>Gasolina 95</option>
-        <option value="98">Gasolina 98</option>
-        <option value="diesel">Diésel</option>
-      </select>
+
+      <div class="field province-field">
+        <label for="province">Provincia</label>
+        <select id="province">
+          <option value="" selected disabled>Selecciona tu provincia</option>
+          <option value="01">Álava</option><option value="02">Albacete</option><option value="03">Alicante</option>
+          <option value="04">Almería</option><option value="05">Ávila</option><option value="06">Badajoz</option>
+          <option value="07">Baleares</option><option value="08">Barcelona</option><option value="09">Burgos</option>
+          <option value="10">Cáceres</option><option value="11">Cádiz</option><option value="12">Castellón</option>
+          <option value="13">Ciudad Real</option><option value="14">Córdoba</option><option value="15">A Coruña</option>
+          <option value="16">Cuenca</option><option value="17">Girona</option><option value="18">Granada</option>
+          <option value="19">Guadalajara</option><option value="20">Guipúzcoa</option><option value="21">Huelva</option>
+          <option value="22">Huesca</option><option value="23">Jaén</option><option value="24">León</option>
+          <option value="25">Lleida</option><option value="26">La Rioja</option><option value="27">Lugo</option>
+          <option value="28">Madrid</option><option value="29">Málaga</option><option value="30">Murcia</option>
+          <option value="31">Navarra</option><option value="32">Ourense</option><option value="33">Asturias</option>
+          <option value="34">Palencia</option><option value="35">Las Palmas</option><option value="36">Pontevedra</option>
+          <option value="37">Salamanca</option><option value="38">Santa Cruz de Tenerife</option><option value="39">Cantabria</option>
+          <option value="40">Segovia</option><option value="41">Sevilla</option><option value="42">Soria</option>
+          <option value="43">Tarragona</option><option value="44">Teruel</option><option value="45">Toledo</option>
+          <option value="46">Valencia</option><option value="47">Valladolid</option><option value="48">Vizcaya</option>
+          <option value="49">Zamora</option><option value="50">Zaragoza</option><option value="51">Ceuta</option><option value="52">Melilla</option>
+        </select>
+      </div>
+
+      <div class="field fuel-field">
+        <label>Combustible</label>
+        <div class="fuel-tabs" role="tablist" aria-label="Tipo de combustible">
+          <button type="button" class="fuel-btn active" data-fuel="95">Gasolina 95</button>
+          <button type="button" class="fuel-btn" data-fuel="98">Gasolina 98</button>
+          <button type="button" class="fuel-btn" data-fuel="diesel">Diésel</button>
+        </div>
+        <select id="fuel" class="af-hidden-select" aria-hidden="true" tabindex="-1">
+          <option value="95" selected>Gasolina 95</option>
+          <option value="98">Gasolina 98</option>
+          <option value="diesel">Diésel</option>
+        </select>
+      </div>
+
+      <button id="searchButton" class="search-button" type="button" onclick="buscar()">
+        Buscar gasolineras
+      </button>
     </div>
 
-    <div class="sort-tabs" role="tablist" aria-label="Orden de resultados">
-      <button type="button" class="sort-btn active" id="sortCheap">💰 Más baratas</button>
+    <div class="af-search-divider">
+      <span>o</span>
     </div>
 
-    <button id="searchButton" class="search-button" type="button" onclick="buscar()">🔎 Buscar gasolineras</button>
+    <div class="af-search-method af-location-method">
+      <div class="af-search-method-title">
+        <span class="af-method-icon" aria-hidden="true">⌖</span>
+        <div>
+          <strong>Buscar por ubicación</strong>
+          <small>Usa tu ubicación para encontrar las gasolineras más cercanas</small>
+        </div>
+      </div>
 
-    <button id="locationButton" class="location-button" type="button" onclick="usarUbicacion()">📍 Cerca de mí</button>
-    <div id="locationStatus" class="location-status" aria-live="polite"></div>
+      <button id="locationButton" class="location-button" type="button" onclick="usarUbicacion()">
+        Buscar por ubicación
+      </button>
+      <div id="locationStatus" class="location-status" aria-live="polite"></div>
+    </div>
+
   </section>
 
 
@@ -1163,7 +1312,7 @@ function usarUbicacion() {
   }
 
   button.disabled = true;
-  button.textContent = "📍 Obteniendo ubicación...";
+  button.textContent = "Obteniendo ubicación...";
   status.textContent = "Permite el acceso a tu ubicación para buscar gasolineras cerca de ti.";
 
   navigator.geolocation.getCurrentPosition(
@@ -1176,7 +1325,7 @@ function usarUbicacion() {
       };
 
       button.disabled = false;
-      button.textContent = "📍 Cerca de mí";
+      button.textContent = "Buscar por ubicación";
 
       status.textContent =
         "Ubicación obtenida. Buscando las gasolineras más cercanas...";
@@ -1193,7 +1342,7 @@ function usarUbicacion() {
       modoBusqueda = "provincia";
 
       button.disabled = false;
-      button.textContent = "📍 Cerca de mí";
+      button.textContent = "Buscar por ubicación";
 
       if (error && error.code === 1) {
         status.textContent =
@@ -2301,32 +2450,6 @@ function escapeHtml(
 (function(){
   const fuel=document.getElementById('fuel');
   const fuelButtons=document.querySelectorAll('.fuel-btn');
-  const cheap=document.getElementById('sortCheap');
-  function setSort(active){
-    cheap.classList.toggle('active',active==='cheap');
-  }
-  fuelButtons.forEach(btn=>btn.addEventListener('click',()=>{
-    fuel.value=btn.dataset.fuel;
-    fuelButtons.forEach(b=>b.classList.toggle('active',b===btn));
-
-    // Al cambiar de combustible, actualizar automáticamente tanto
-    // la búsqueda por provincia como "Cerca de mí".
-    const provincia = document.getElementById('province')?.value;
-    if (provincia || modoBusqueda === "cerca") {
-      buscar();
-    }
-  }));
-
-  cheap.addEventListener('click',()=>{
-    setSort('cheap');
-    modoBusqueda = "provincia";
-    ubicacionUsuario = null;
-
-    const status=document.getElementById('locationStatus');
-    if(status) status.textContent='';
-
-    buscar();
-  });
 
 
 })();
