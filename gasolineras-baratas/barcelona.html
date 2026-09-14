@@ -443,6 +443,126 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
  .af-mascot-bubble-secondary{font-size:11px !important;}
 }
 </style>
+<style id="af-results-polish-v13">
+/* V13 — misma estructura, resultados más compactos y legibles en móvil */
+.results .status{
+  background:#fff !important;
+  color:#172033 !important;
+  border:1px solid #e8ecea !important;
+  border-radius:18px !important;
+  padding:13px 16px !important;
+  margin:0 0 12px !important;
+  min-height:0 !important;
+  box-shadow:0 7px 20px rgba(0,0,0,.12) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:10px !important;
+  flex-wrap:wrap !important;
+}
+.results .status .count{
+  color:#172033 !important;
+  font-size:14px !important;
+  line-height:1.3 !important;
+  font-weight:850 !important;
+  margin:0 !important;
+}
+.results .status .updated{
+  color:#707b8d !important;
+  font-size:12px !important;
+  line-height:1.35 !important;
+  margin:0 !important;
+}
+.results .highlight{
+  display:grid !important;
+  grid-template-columns:minmax(0,1fr) auto !important;
+  gap:14px !important;
+  align-items:center !important;
+  background:linear-gradient(135deg,#ffffff 0%,#f6fff1 100%) !important;
+  color:#172033 !important;
+  border:1px solid #dcefd1 !important;
+  border-radius:22px !important;
+  padding:16px 17px !important;
+  margin:0 0 12px !important;
+  min-height:0 !important;
+  box-shadow:0 9px 25px rgba(23,32,51,.12) !important;
+}
+.results .highlight > div:first-child{min-width:0 !important;}
+.results .highlight-label{
+  color:#287c2e !important;
+  -webkit-text-fill-color:#287c2e !important;
+  font-size:11px !important;
+  line-height:1.2 !important;
+  font-weight:950 !important;
+  letter-spacing:.8px !important;
+  text-transform:uppercase !important;
+  margin:0 0 7px !important;
+}
+.results .highlight-name{
+  color:#172033 !important;
+  -webkit-text-fill-color:#172033 !important;
+  font-size:20px !important;
+  line-height:1.15 !important;
+  font-weight:950 !important;
+  margin:0 !important;
+  overflow-wrap:anywhere !important;
+}
+.results .highlight-address{
+  color:#687385 !important;
+  -webkit-text-fill-color:#687385 !important;
+  font-size:12.5px !important;
+  line-height:1.35 !important;
+  margin-top:5px !important;
+}
+.results .highlight-price{
+  color:#287c2e !important;
+  -webkit-text-fill-color:#287c2e !important;
+  font-size:27px !important;
+  line-height:1 !important;
+  font-weight:950 !important;
+  white-space:nowrap !important;
+  text-align:right !important;
+}
+.results .highlight .maps-btn{
+  margin-top:8px !important;
+  padding:7px 10px !important;
+  font-size:11.5px !important;
+  border-radius:10px !important;
+}
+.results .station{
+  background:#fff !important;
+  color:#172033 !important;
+  border:1px solid #e5e9e7 !important;
+  border-radius:20px !important;
+  padding:15px 16px !important;
+  margin:0 0 10px !important;
+  box-shadow:0 7px 20px rgba(0,0,0,.11) !important;
+}
+.results .station-top{gap:10px !important;}
+.results .rank{color:#172033 !important;}
+.results .rank .rank-number{background:#eef1f4 !important;color:#172033 !important;}
+.results .address{color:#687385 !important;font-size:12.5px !important;margin-top:7px !important;}
+.results .meta{color:#8490a0 !important;font-size:11.5px !important;margin-top:6px !important;}
+.results .maps-btn{padding:7px 10px !important;font-size:11.5px !important;border-radius:10px !important;}
+@media(max-width:520px){
+  .results .status{padding:12px 14px !important;gap:5px 10px !important;}
+  .results .status .count{font-size:13px !important;}
+  .results .status .updated{font-size:11.5px !important;}
+  .results .highlight{grid-template-columns:minmax(0,1fr) auto !important;gap:10px !important;padding:15px !important;border-radius:20px !important;}
+  .results .highlight-label{font-size:10.5px !important;}
+  .results .highlight-name{font-size:18px !important;}
+  .results .highlight-address{font-size:12px !important;}
+  .results .highlight-price{font-size:24px !important;}
+  .results .highlight .maps-btn{font-size:11px !important;padding:7px 9px !important;}
+  .results .station{padding:14px !important;border-radius:19px !important;}
+  .results .station-name{font-size:17px !important;}
+  .results .price{font-size:24px !important;}
+}
+@media(max-width:370px){
+  .results .highlight{grid-template-columns:1fr !important;}
+  .results .highlight-price{text-align:left !important;font-size:25px !important;}
+}
+</style>
 </head>
 <body>
 <div class="app"><header class="af-topbar"><a aria-label="AhorraFuel inicio" class="af-brand-inline" href="/"><img alt="AhorraFuel" class="af-brand-inline-logo" src="/IMG_6106.png"/><span class="af-brand-wordmark">Ahorra<span>Fuel</span></span></a><button aria-expanded="false" aria-label="Abrir menú" class="af-menu-button" onclick="toggleAfMenu()" type="button"><span></span><span></span><span></span></button><div aria-label="Menú principal" class="af-menu" id="afMenu"><a href="/">Inicio</a></div></header>
