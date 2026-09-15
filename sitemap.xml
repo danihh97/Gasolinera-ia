@@ -1,12 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
+  <!-- Página principal -->
   <url>
     <loc>https://ahorrafuel.es/</loc>
   </url>
 
+  <!-- Índice de ciudades -->
   <url>
-    <loc>https://ahorrafuel.es/gasolineras-baratas/madrid.html</loc>
+    <loc>https://ahorrafuel.es/gasolineras-baratas.html</loc>
+  </url>
+
+  <!-- Ciudades -->
+  <url>
+    <loc>https://ahorrafuel.es/gasolineras-baratas/a-coruna.html</loc>
+  </url>
+
+  <url>
+    <loc>https://ahorrafuel.es/gasolineras-baratas/alicante.html</loc>
   </url>
 
   <url>
@@ -14,11 +25,67 @@
   </url>
 
   <url>
-    <loc>https://ahorrafuel.es/gasolineras-baratas/zaragoza.html</loc>
+    <loc>https://ahorrafuel.es/gasolineras-baratas/bilbao.html</loc>
+  </url>
+
+  <url>
+    <loc>https://ahorrafuel.es/gasolineras-baratas/cordoba.html</loc>
+  </url>
+
+  <url>
+    <loc>https://ahorrafuel.es/gasolineras-baratas/gijon.html</loc>
+  </url>
+
+  <url>
+    <loc>https://ahorrafuel.es/gasolineras-baratas/granada.html</loc>
   </url>
 
   <url>
     <loc>https://ahorrafuel.es/gasolineras-baratas/las-palmas.html</loc>
+  </url>
+
+  <url>
+    <loc>https://ahorrafuel.es/gasolineras-baratas/madrid.html</loc>
+  </url>
+
+  <url>
+    <loc>https://ahorrafuel.es/gasolineras-baratas/malaga.html</loc>
+  </url>
+
+  <url>
+    <loc>https://ahorrafuel.es/gasolineras-baratas/murcia.html</loc>
+  </url>
+
+  <url>
+    <loc>https://ahorrafuel.es/gasolineras-baratas/palma.html</loc>
+  </url>
+
+  <url>
+    <loc>https://ahorrafuel.es/gasolineras-baratas/pamplona.html</loc>
+  </url>
+
+  <url>
+    <loc>https://ahorrafuel.es/gasolineras-baratas/santa-cruz-de-tenerife.html</loc>
+  </url>
+
+  <url>
+    <loc>https://ahorrafuel.es/gasolineras-baratas/sevilla.html</loc>
+  </url>
+
+  <url>
+    <loc>https://ahorrafuel.es/gasolineras-baratas/valencia.html</loc>
+  </url>
+
+  <url>
+    <loc>https://ahorrafuel.es/gasolineras-baratas/valladolid.html</loc>
+  </url>
+
+  <url>
+    <loc>https://ahorrafuel.es/gasolineras-baratas/vigo.html</loc>
+  </url>
+
+  <url>
+    <loc>https://ahorrafuel.es/gasolineras-baratas/zaragoza.html</loc>
   </url>
 
 </urlset>
