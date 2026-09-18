@@ -1002,16 +1002,23 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
 
 
 <style id="ahorrafuel-pwa-install-style">
-#afPwaInstallCard{display:none;margin:16px auto;max-width:720px;border:1px solid rgba(39,201,116,.28);border-radius:18px;padding:16px 18px;background:linear-gradient(135deg,rgba(12,45,35,.98),rgba(6,23,19,.98));box-shadow:0 8px 28px rgba(0,0,0,.18)}
-#afPwaInstallCard .af-pwa-inner{display:flex;align-items:center;gap:14px}
-#afPwaInstallCard .af-pwa-icon{width:46px;height:46px;min-width:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:#27c974;color:#061713;font-size:24px;font-weight:800}
-#afPwaInstallCard .af-pwa-text{flex:1}
-#afPwaInstallCard .af-pwa-title{font-size:18px;font-weight:800;color:#fff;margin:0 0 5px}
-#afPwaInstallCard .af-pwa-subtitle{font-size:13.5px;line-height:1.45;color:rgba(255,255,255,.82);margin:0}
-#afPwaInstallButton{border:0;border-radius:12px;padding:11px 15px;background:#27c974;color:#061713;font-weight:800;cursor:pointer;white-space:nowrap}
-#afPwaIosHelp{display:none;margin-top:12px;padding:12px 13px;border-radius:12px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.84);font-size:13px;line-height:1.45}
-#afPwaIosHelp strong{color:#fff}
-@media(max-width:560px){#afPwaInstallCard{margin:14px 12px;padding:14px}#afPwaInstallCard .af-pwa-inner{align-items:flex-start;flex-wrap:wrap}#afPwaInstallCard .af-pwa-icon{width:42px;height:42px;min-width:42px}#afPwaInstallCard .af-pwa-title{font-size:16px}#afPwaInstallCard .af-pwa-subtitle{font-size:12.5px}#afPwaInstallCard .af-pwa-text{min-width:calc(100% - 58px)}#afPwaInstallButton{margin-top:9px;width:100%}}
+#afPwaInstallCard{display:none;position:relative;overflow:hidden;margin:18px auto 20px;max-width:760px;border:1px solid rgba(39,201,116,.32);border-radius:24px;padding:20px;background:radial-gradient(circle at 88% 18%,rgba(39,201,116,.20),transparent 30%),linear-gradient(135deg,#f4fff9 0%,#e9fff5 52%,#e9fbff 100%);box-shadow:0 12px 35px rgba(6,23,19,.14);color:#061713}
+#afPwaInstallCard:before{content:"";position:absolute;width:150px;height:150px;right:-70px;bottom:-85px;border-radius:50%;background:rgba(39,201,116,.12)}
+#afPwaInstallCard .af-pwa-inner{position:relative;z-index:1;display:grid;grid-template-columns:58px 1fr auto;align-items:center;gap:15px}
+#afPwaInstallCard .af-pwa-icon{width:58px;height:58px;border-radius:18px;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#27c974,#0aa85b);color:#fff;font-size:30px;font-weight:900;box-shadow:0 8px 18px rgba(10,168,91,.25)}
+#afPwaInstallCard .af-pwa-text{min-width:0}
+#afPwaInstallCard .af-pwa-badge{display:inline-block;margin:0 0 6px;padding:5px 10px;border-radius:999px;background:rgba(39,201,116,.14);color:#07864a;font-size:11px;font-weight:900;letter-spacing:.5px}
+#afPwaInstallCard .af-pwa-title{font-size:22px;line-height:1.1;font-weight:900;color:#061713;margin:0 0 6px}
+#afPwaInstallCard .af-pwa-title span{color:#0aa85b}
+#afPwaInstallCard .af-pwa-subtitle{font-size:14px;line-height:1.45;color:#29423b;margin:0}
+#afPwaInstallCard .af-pwa-benefits{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:8px 18px;margin:15px 0 14px 73px;color:#183a30;font-size:12.5px;font-weight:700}
+#afPwaInstallCard .af-pwa-benefits span{display:inline-flex;align-items:center;gap:5px}
+#afPwaInstallButton{position:relative;z-index:1;border:0;border-radius:14px;padding:13px 18px;min-height:48px;background:linear-gradient(135deg,#16b866,#07964f);color:#fff;font-size:14px;font-weight:900;box-shadow:0 8px 18px rgba(7,150,79,.24);cursor:pointer;white-space:nowrap;transition:transform .15s ease,box-shadow .15s ease}
+#afPwaInstallButton:hover{transform:translateY(-1px);box-shadow:0 10px 22px rgba(7,150,79,.30)}
+#afPwaIosHelp{position:relative;z-index:1;display:none;margin-top:14px;padding:13px 15px;border-radius:15px;background:rgba(255,255,255,.72);border:1px solid rgba(6,23,19,.08);color:#29423b;font-size:13px;line-height:1.5}
+#afPwaIosHelp strong{color:#061713}
+#afPwaInstallCard .af-pwa-bottom{position:relative;z-index:1;text-align:center;margin:2px 0 0;color:#5d7b71;font-size:11.5px}
+@media(max-width:650px){#afPwaInstallCard{margin:15px 12px 18px;padding:17px;border-radius:21px}#afPwaInstallCard .af-pwa-inner{grid-template-columns:48px 1fr;gap:12px}#afPwaInstallCard .af-pwa-icon{width:48px;height:48px;border-radius:15px;font-size:25px}#afPwaInstallCard .af-pwa-title{font-size:19px}#afPwaInstallCard .af-pwa-subtitle{font-size:13px}#afPwaInstallButton{grid-column:1/-1;width:100%;margin-top:2px}#afPwaInstallCard .af-pwa-benefits{margin:13px 0 13px;gap:7px 13px;font-size:12px}}
 </style>
 
 </head>
@@ -1205,14 +1212,21 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
       <div class="af-pwa-inner">
         <div class="af-pwa-icon" aria-hidden="true">⌂</div>
         <div class="af-pwa-text">
-          <p class="af-pwa-title">Lleva AhorraFuel contigo</p>
-          <p class="af-pwa-subtitle">Instala la app en tu móvil y consulta rápidamente las gasolineras más baratas cuando lo necesites.</p>
+          <div class="af-pwa-badge">GRATIS · RÁPIDA · SIEMPRE A MANO</div>
+          <p class="af-pwa-title">Instala <span>AhorraFuel</span></p>
+          <p class="af-pwa-subtitle">Consulta las gasolineras más baratas directamente desde la pantalla de inicio de tu móvil.</p>
         </div>
-        <button id="afPwaInstallButton" type="button">Instalar app</button>
+        <button id="afPwaInstallButton" type="button">＋ Instalar app</button>
       </div>
+      <div class="af-pwa-benefits" aria-label="Ventajas de instalar AhorraFuel">
+        <span>⚡ Acceso rápido</span>
+        <span>📍 Siempre a mano</span>
+        <span>⛽ Precios al momento</span>
+      </div>
+      <div class="af-pwa-bottom">Sin buscar la web cada vez · Abre AhorraFuel como una app</div>
       <div id="afPwaIosHelp">
         <strong>¿Tienes iPhone?</strong><br>
-        En Safari, pulsa el botón <strong>Compartir</strong> <span aria-hidden="true">□↑</span> y elige <strong>“Añadir a pantalla de inicio”</strong>. Después pulsa <strong>“Añadir”</strong>.
+        En Safari, pulsa <strong>Compartir</strong> <span aria-hidden="true">□↑</span> y selecciona <strong>“Añadir a pantalla de inicio”</strong>. Después pulsa <strong>“Añadir”</strong>.
       </div>
     </div>
 
