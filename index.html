@@ -1006,8 +1006,8 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
 #afPwaInstallCard .af-pwa-inner{display:flex;align-items:center;gap:14px}
 #afPwaInstallCard .af-pwa-icon{width:46px;height:46px;min-width:46px;border-radius:13px;display:flex;align-items:center;justify-content:center;background:#27c974;color:#061713;font-size:24px;font-weight:800}
 #afPwaInstallCard .af-pwa-text{flex:1}
-#afPwaInstallCard .af-pwa-title{font-size:17px;font-weight:800;color:#fff;margin:0 0 4px}
-#afPwaInstallCard .af-pwa-subtitle{font-size:13px;line-height:1.35;color:rgba(255,255,255,.76);margin:0}
+#afPwaInstallCard .af-pwa-title{font-size:18px;font-weight:800;color:#fff;margin:0 0 5px}
+#afPwaInstallCard .af-pwa-subtitle{font-size:13.5px;line-height:1.45;color:rgba(255,255,255,.82);margin:0}
 #afPwaInstallButton{border:0;border-radius:12px;padding:11px 15px;background:#27c974;color:#061713;font-weight:800;cursor:pointer;white-space:nowrap}
 #afPwaIosHelp{display:none;margin-top:12px;padding:12px 13px;border-radius:12px;background:rgba(255,255,255,.06);color:rgba(255,255,255,.84);font-size:13px;line-height:1.45}
 #afPwaIosHelp strong{color:#fff}
@@ -1018,18 +1018,6 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
 
 <body>
 
-<div id="afPwaInstallCard" aria-live="polite">
-  <div class="af-pwa-inner">
-    <div class="af-pwa-icon">+</div>
-    <div class="af-pwa-text">
-      <p class="af-pwa-title">Instala AhorraFuel</p>
-      <p class="af-pwa-subtitle">Ten los precios de las gasolineras siempre a mano.</p>
-    </div>
-    <button id="afPwaInstallButton" type="button">Instalar AhorraFuel</button>
-  </div>
-  <div id="afPwaIosHelp">
-    <strong>En iPhone:</strong> pulsa <strong>Compartir</strong> en Safari y después selecciona <strong>“Añadir a pantalla de inicio”</strong>.
-  </div>
 </div>
 
 
@@ -1212,6 +1200,21 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
       id="locationStatus"
       class="location-status"
     ></div>
+
+    <div id="afPwaInstallCard" aria-live="polite">
+      <div class="af-pwa-inner">
+        <div class="af-pwa-icon" aria-hidden="true">⌂</div>
+        <div class="af-pwa-text">
+          <p class="af-pwa-title">Lleva AhorraFuel contigo</p>
+          <p class="af-pwa-subtitle">Instala la app en tu móvil y consulta rápidamente las gasolineras más baratas cuando lo necesites.</p>
+        </div>
+        <button id="afPwaInstallButton" type="button">Instalar app</button>
+      </div>
+      <div id="afPwaIosHelp">
+        <strong>¿Tienes iPhone?</strong><br>
+        En Safari, pulsa el botón <strong>Compartir</strong> <span aria-hidden="true">□↑</span> y elige <strong>“Añadir a pantalla de inicio”</strong>. Después pulsa <strong>“Añadir”</strong>.
+      </div>
+    </div>
 
   </div>
 
