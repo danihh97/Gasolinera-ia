@@ -1,0 +1,25 @@
+{
+  "name": "AhorraFuel",
+  "short_name": "AhorraFuel",
+  "description": "Compara los precios de las gasolineras y encuentra las opciones más baratas cerca de ti.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#061713",
+  "theme_color": "#061713",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
