@@ -1002,6 +1002,8 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
 
 
 <style id="ahorrafuel-pwa-install-style">
+.af-pwa-install-wrap{width:100%;max-width:760px;margin:0 auto;}
+
 #afPwaInstallCard{display:none;position:relative;overflow:hidden;margin:18px auto 20px;max-width:760px;border:1px solid rgba(39,201,116,.32);border-radius:24px;padding:20px;background:radial-gradient(circle at 88% 18%,rgba(39,201,116,.20),transparent 30%),linear-gradient(135deg,#f4fff9 0%,#e9fff5 52%,#e9fbff 100%);box-shadow:0 12px 35px rgba(6,23,19,.14);color:#061713}
 #afPwaInstallCard:before{content:"";position:absolute;width:150px;height:150px;right:-70px;bottom:-85px;border-radius:50%;background:rgba(39,201,116,.12)}
 #afPwaInstallCard .af-pwa-inner{position:relative;z-index:1;display:grid;grid-template-columns:58px 1fr auto;align-items:center;gap:15px}
@@ -1208,7 +1210,12 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
       class="location-status"
     ></div>
 
-    <div id="afPwaInstallCard" aria-live="polite">
+        </div>
+
+  </div>
+
+  <div class="af-pwa-install-wrap">
+<div id="afPwaInstallCard" aria-live="polite">
       <div class="af-pwa-inner">
         <div class="af-pwa-icon" aria-hidden="true">⌂</div>
         <div class="af-pwa-text">
@@ -1228,8 +1235,6 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
         <strong>¿Tienes iPhone?</strong><br>
         En Safari, pulsa <strong>Compartir</strong> <span aria-hidden="true">□↑</span> y selecciona <strong>“Añadir a pantalla de inicio”</strong>. Después pulsa <strong>“Añadir”</strong>.
       </div>
-    </div>
-
   </div>
 
 
