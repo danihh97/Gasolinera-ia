@@ -1279,7 +1279,6 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
 
 
 <script>
-<script>
 /* AhorraFuel · Eventos GA4 para la PWA */
 window.afEsPWA = function () {
   return (
@@ -1306,7 +1305,6 @@ window.afRegistrarAperturaPWA = function () {
 window.addEventListener("appinstalled", function () {
   window.afEnviarEvento("instalacion_pwa", { origen: "navegador" });
 });
-</script>
 (function(){
   const KEY='ahorrafuel_cookie_consent_v2';
   const GA_ID='G-WYPKB4XJYZ';
@@ -2726,9 +2724,6 @@ if ("serviceWorker" in navigator) {
 
   window.addEventListener("appinstalled",function(){
     card.style.display="none";
-    if(typeof window.afEnviarEvento==="function"){
-      window.afEnviarEvento("instalacion_pwa",{origen:"navegador"});
-    }
   });
 
   window.addEventListener("load",function(){
