@@ -1603,8 +1603,6 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
     </div>
   </div>
   <button id="afPwaInstallButton" type="button">⇩&nbsp; Instalar AhorraFuel</button>
-  <p class="af-pwa-note">Acceso directo desde tu móvil · Mejor experiencia</p>
-  <div class="af-pwa-install-hint">Pulsa <strong>Instalar AhorraFuel</strong> y te mostraremos los pasos según tu dispositivo.</div>
 
   <div id="afPwaInstallModal" class="af-pwa-modal" aria-hidden="true">
     <div class="af-pwa-modal-backdrop"></div>
@@ -3078,6 +3076,25 @@ if ("serviceWorker" in navigator) {
 }
 </script>
 
+
+
+<script id="ahorrafuel-pwa-after-results">
+(function(){
+  function placePwaAfterResults(){
+    const results = document.getElementById("results");
+    const pwaWrap = document.querySelector(".af-pwa-install-wrap");
+    if(!results || !pwaWrap) return;
+    if(results.nextElementSibling !== pwaWrap){
+      results.parentNode.insertBefore(pwaWrap, results.nextSibling);
+    }
+  }
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", placePwaAfterResults);
+  }else{
+    placePwaAfterResults();
+  }
+})();
+</script>
 
 <script id="ahorrafuel-pwa-install">
 (function(){
