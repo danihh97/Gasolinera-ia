@@ -3115,7 +3115,19 @@ if ("serviceWorker" in navigator) {
     const ua=window.navigator.userAgent||"";
     return /safari/i.test(ua)&&!/crios|fxios|edgios|chrome|android/i.test(ua);
   }
-  function showCard(){card.style.display=isStandalone()?"none":"block";}
+  const PWA_INSTALL_STARTED_KEY="ahorrafuel_pwa_install_started";
+
+  function installStarted(){
+    try{return localStorage.getItem(PWA_INSTALL_STARTED_KEY)==="1";}catch(e){return false;}
+  }
+
+  function markInstallStarted(){
+    try{localStorage.setItem(PWA_INSTALL_STARTED_KEY,"1");}catch(e){}
+  }
+
+  function showCard(){
+    card.style.display=(isStandalone()||installStarted())?"none":"block";
+  }
   function openModal(type){
     if(!modal||!content)return;
     if(type==='ios'){
@@ -3148,16 +3160,24 @@ if ("serviceWorker" in navigator) {
     if(deferredPrompt){
       deferredPrompt.prompt();
       const result=await deferredPrompt.userChoice;
-      if(result&&result.outcome==="accepted"&&typeof window.afEnviarEvento==="function") window.afEnviarEvento("instalacion_pwa",{origen:"navegador"});
+      if(result&&result.outcome==="accepted"){
+        markInstallStarted();
+        card.style.display="none";
+        if(typeof window.afEnviarEvento==="function") window.afEnviarEvento("instalacion_pwa",{origen:"navegador"});
+      }
       deferredPrompt=null;
       return;
     }
     if(isIOS()&&isSafari()){
       openModal('ios');
+      markInstallStarted();
+      card.style.display="none";
       if(typeof window.afEnviarEvento==="function") window.afEnviarEvento("inicio_instalacion_pwa",{origen:"ios"});
       return;
     }
     openModal(isAndroid()?'android':'generic');
+    markInstallStarted();
+    card.style.display="none";
     if(typeof window.afEnviarEvento==="function") window.afEnviarEvento("inicio_instalacion_pwa",{origen:isAndroid()?'android':'otro'});
   });
 
