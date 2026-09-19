@@ -1003,7 +1003,7 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
 
 <style id="ahorrafuel-pwa-install-style">
 .af-pwa-install-wrap{width:100%;max-width:980px;margin:22px auto 24px}
-#afPwaInstallCard{display:block;position:relative;overflow:hidden;border:1px solid rgba(39,201,116,.35);border-radius:26px;padding:24px 26px 16px;background:radial-gradient(circle at 80% 38%,rgba(39,201,116,.20),transparent 27%),radial-gradient(circle at 98% 100%,rgba(61,181,255,.16),transparent 30%),linear-gradient(135deg,#f5fffa 0%,#eafff5 50%,#eafaff 100%);box-shadow:0 14px 38px rgba(6,23,19,.13);color:#071a3d}
+#afPwaInstallCard{display:none;position:relative;overflow:hidden;border:1px solid rgba(39,201,116,.35);border-radius:26px;padding:24px 26px 16px;background:radial-gradient(circle at 80% 38%,rgba(39,201,116,.20),transparent 27%),radial-gradient(circle at 98% 100%,rgba(61,181,255,.16),transparent 30%),linear-gradient(135deg,#f5fffa 0%,#eafff5 50%,#eafaff 100%);box-shadow:0 14px 38px rgba(6,23,19,.13);color:#071a3d}
 #afPwaInstallCard:after{content:"";position:absolute;width:270px;height:270px;right:-110px;top:-100px;border-radius:50%;background:rgba(39,201,116,.08)}
 #afPwaInstallCard .af-pwa-layout{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.18fr) 280px;gap:10px;align-items:center}
 #afPwaInstallCard .af-pwa-badge{display:inline-flex;margin:0 0 8px;padding:6px 11px;border-radius:999px;background:rgba(39,201,116,.15);color:#07884b;font-size:10.5px;font-weight:900;letter-spacing:.5px}
@@ -1364,30 +1364,6 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
 }
 </style>
 
-<style id="af-pwa-button-layout-fix">
-#afPwaInstallCard #afPwaInstallButton{
-  display:flex;
-  width:100%;
-  box-sizing:border-box;
-  margin:4px 0 0;
-}
-@media(max-width:700px){
-  #afPwaInstallCard{
-    padding:20px 16px 16px;
-  }
-  #afPwaInstallCard .af-pwa-layout{
-    grid-template-columns:1fr;
-    gap:8px;
-  }
-  #afPwaInstallCard .af-pwa-phone-area{
-    min-height:220px;
-  }
-  #afPwaInstallCard .af-pwa-title{
-    font-size:32px;
-  }
-}
-</style>
-
 </head>
 
 <body>
@@ -1579,73 +1555,69 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
 
   </div>
 
-  <div
-    id="results"
-    class="results"
-  ></div>
-
   <div class="af-pwa-install-wrap">
-  <div id="afPwaInstallCard" aria-live="polite">
-    <div class="af-pwa-layout">
-      <div>
-        <div class="af-pwa-badge">TU APP DE GASOLINERAS · GRATIS</div>
-        <h2 class="af-pwa-title">Instala <span>AhorraFuel</span></h2>
-        <p class="af-pwa-subtitle">Las gasolineras más baratas, siempre a mano desde tu móvil.</p>
-        <div class="af-pwa-benefits">
-          <span><i class="af-pwa-icon-speed" aria-hidden="true"></i> Acceso rápido</span>
-          <span><i class="af-pwa-icon-pin" aria-hidden="true"></i> Siempre a mano</span>
-          <span><i class="af-pwa-icon-chart" aria-hidden="true"></i> Precios actualizados</span>
-        </div>
-      </div>
-
-      <div class="af-pwa-phone-area" aria-hidden="true">
-        <div class="af-pwa-glow"></div>
-        <div class="af-pwa-arrow">↘</div>
-        <div class="af-pwa-speech">Llévala<br>contigo</div>
-
-        <div class="af-pwa-phone">
-          <div class="af-pwa-screen">
-            <div class="af-mini-site-head">
-              <img src="/IMG_6106.png" alt="">
-              <div class="af-mini-brand">Ahorra<span>Fuel</span></div>
-              <div class="af-mini-menu"><span></span><span></span><span></span></div>
-            </div>
-            <div class="af-mini-hero">
-              <strong>Gasolineras más baratas<br>en España</strong>
-              <small>ENCUENTRA · COMPARA · AHORRA</small>
-            </div>
-            <div class="af-mini-search-card">
-              <label>📍 PROVINCIA</label>
-              <div class="af-mini-select">Selecciona tu provincia <b>⌄</b></div>
-              <label>⛽ COMBUSTIBLE</label>
-              <div class="af-mini-select">Gasolina 95 <b>⌄</b></div>
-              <div class="af-mini-search-btn">⌕&nbsp; Buscar gasolineras</div>
-              <div class="af-mini-near-btn">⌖&nbsp; Buscar cerca de mí</div>
-            </div>
-            <div class="af-mini-cities-title">Ciudades más buscadas</div>
-            <div class="af-mini-cities">
-              <span>Madrid</span><span>Barcelona</span>
-              <span>Zaragoza</span><span>Las Palmas</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="af-pwa-download">⇩</div>
+<div id="afPwaInstallCard" aria-live="polite">
+  <div class="af-pwa-layout">
+    <div>
+      <div class="af-pwa-badge">TU APP DE GASOLINERAS · GRATIS</div>
+      <h2 class="af-pwa-title">Instala <span>AhorraFuel</span></h2>
+      <p class="af-pwa-subtitle">Las gasolineras más baratas, siempre a mano desde tu móvil.</p>
+      <div class="af-pwa-benefits">
+        <span><i class="af-pwa-icon-speed" aria-hidden="true"></i> Acceso rápido</span>
+        <span><i class="af-pwa-icon-pin" aria-hidden="true"></i> Siempre a mano</span>
+        <span><i class="af-pwa-icon-chart" aria-hidden="true"></i> Precios actualizados</span>
       </div>
     </div>
-
-    <button id="afPwaInstallButton" type="button">⇩&nbsp; Instalar AhorraFuel</button>
-
-    <div id="afPwaInstallModal" class="af-pwa-modal" aria-hidden="true">
-      <div class="af-pwa-modal-backdrop"></div>
-      <div class="af-pwa-modal-box" role="dialog" aria-modal="true" aria-labelledby="afPwaModalTitle">
-        <button id="afPwaModalClose" class="af-pwa-modal-close" type="button" aria-label="Cerrar">×</button>
-        <div id="afPwaModalContent"></div>
+    <div class="af-pwa-phone-area" aria-hidden="true">
+      <div class="af-pwa-glow"></div>
+      <div class="af-pwa-arrow">↘</div>
+      <div class="af-pwa-speech">Llévala<br>contigo</div>
+      <div class="af-pwa-phone">
+        <div class="af-pwa-screen">
+          <div class="af-mini-site-head">
+            <img src="/IMG_6106.png" alt="">
+            <div class="af-mini-brand">Ahorra<span>Fuel</span></div>
+            <div class="af-mini-menu"><span></span><span></span><span></span></div>
+          </div>
+          <div class="af-mini-hero">
+            <strong>Gasolineras más baratas<br>en España</strong>
+            <small>ENCUENTRA · COMPARA · AHORRA</small>
+          </div>
+          <div class="af-mini-search-card">
+            <label>📍 PROVINCIA</label>
+            <div class="af-mini-select">Selecciona tu provincia <b>⌄</b></div>
+            <label>⛽ COMBUSTIBLE</label>
+            <div class="af-mini-select">Gasolina 95 <b>⌄</b></div>
+            <div class="af-mini-search-btn">⌕&nbsp; Buscar gasolineras</div>
+            <div class="af-mini-near-btn">⌖&nbsp; Buscar cerca de mí</div>
+          </div>
+          <div class="af-mini-cities-title">Ciudades más buscadas</div>
+          <div class="af-mini-cities">
+            <span>Madrid</span><span>Barcelona</span>
+            <span>Zaragoza</span><span>Las Palmas</span>
+          </div>
+        </div>
       </div>
+      </div>
+      <div class="af-pwa-download">⇩</div>
+    </div>
+  </div>
+  <button id="afPwaInstallButton" type="button">⇩&nbsp; Instalar AhorraFuel</button>
+
+  <div id="afPwaInstallModal" class="af-pwa-modal" aria-hidden="true">
+    <div class="af-pwa-modal-backdrop"></div>
+    <div class="af-pwa-modal-box" role="dialog" aria-modal="true" aria-labelledby="afPwaModalTitle">
+      <button id="afPwaModalClose" class="af-pwa-modal-close" type="button" aria-label="Cerrar">×</button>
+      <div id="afPwaModalContent"></div>
     </div>
   </div>
 </div>
 
+
+  <div
+    id="results"
+    class="results"
+  ></div>
 
 <section class="af-home-cities" aria-label="Ciudades más buscadas">
   <div class="af-home-cities-head">
@@ -3106,7 +3078,23 @@ if ("serviceWorker" in navigator) {
 
 
 
-
+<script id="ahorrafuel-pwa-after-results">
+(function(){
+  function placePwaAfterResults(){
+    const results = document.getElementById("results");
+    const pwaWrap = document.querySelector(".af-pwa-install-wrap");
+    if(!results || !pwaWrap) return;
+    if(results.nextElementSibling !== pwaWrap){
+      results.parentNode.insertBefore(pwaWrap, results.nextSibling);
+    }
+  }
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", placePwaAfterResults);
+  }else{
+    placePwaAfterResults();
+  }
+})();
+</script>
 
 <script id="ahorrafuel-pwa-install">
 (function(){
@@ -3127,19 +3115,7 @@ if ("serviceWorker" in navigator) {
     const ua=window.navigator.userAgent||"";
     return /safari/i.test(ua)&&!/crios|fxios|edgios|chrome|android/i.test(ua);
   }
-  const PWA_INSTALL_STARTED_KEY="ahorrafuel_pwa_install_started";
-
-  function installStarted(){
-    try{return localStorage.getItem(PWA_INSTALL_STARTED_KEY)==="1";}catch(e){return false;}
-  }
-
-  function markInstallStarted(){
-    try{localStorage.setItem(PWA_INSTALL_STARTED_KEY,"1");}catch(e){}
-  }
-
-  function showCard(){
-    card.style.display=(isStandalone()||installStarted())?"none":"block";
-  }
+  function showCard(){card.style.display=isStandalone()?"none":"block";}
   function openModal(type){
     if(!modal||!content)return;
     if(type==='ios'){
@@ -3172,24 +3148,16 @@ if ("serviceWorker" in navigator) {
     if(deferredPrompt){
       deferredPrompt.prompt();
       const result=await deferredPrompt.userChoice;
-      if(result&&result.outcome==="accepted"){
-        markInstallStarted();
-        card.style.display="none";
-        if(typeof window.afEnviarEvento==="function") window.afEnviarEvento("instalacion_pwa",{origen:"navegador"});
-      }
+      if(result&&result.outcome==="accepted"&&typeof window.afEnviarEvento==="function") window.afEnviarEvento("instalacion_pwa",{origen:"navegador"});
       deferredPrompt=null;
       return;
     }
     if(isIOS()&&isSafari()){
       openModal('ios');
-      markInstallStarted();
-      card.style.display="none";
       if(typeof window.afEnviarEvento==="function") window.afEnviarEvento("inicio_instalacion_pwa",{origen:"ios"});
       return;
     }
     openModal(isAndroid()?'android':'generic');
-    markInstallStarted();
-    card.style.display="none";
     if(typeof window.afEnviarEvento==="function") window.afEnviarEvento("inicio_instalacion_pwa",{origen:isAndroid()?'android':'otro'});
   });
 
