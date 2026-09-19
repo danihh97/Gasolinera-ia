@@ -1225,6 +1225,115 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
 }
 </style>
 
+
+<style id="af-pwa-platform-fix">
+#afPwaInstallCard .af-pwa-platform{min-width:0;}
+#afPwaInstallCard .af-pwa-platform > div:last-child{min-width:0;flex:1;}
+#afPwaInstallCard .af-pwa-platform strong{display:block!important;margin:0!important;font-size:13px!important;line-height:1.2!important;color:#102d51!important;}
+#afPwaInstallCard .af-pwa-platform small{display:block!important;margin:3px 0 0!important;font-size:10px!important;line-height:1.35!important;color:#5c7387!important;white-space:normal!important;overflow-wrap:anywhere!important;}
+#afPwaInstallCard .af-pwa-android span:not(.af-generic-phone-icon){display:none!important;}
+#afPwaInstallCard .af-generic-phone-icon{display:block;width:14px;height:22px;border:2px solid currentColor;border-radius:4px;position:relative;box-sizing:border-box;}
+#afPwaInstallCard .af-generic-phone-icon::after{content:"";position:absolute;width:3px;height:3px;border-radius:50%;background:currentColor;left:50%;bottom:2px;transform:translateX(-50%);}
+@media(max-width:720px){
+  #afPwaInstallCard .af-pwa-platforms{grid-template-columns:1fr!important;gap:0!important;padding:9px 11px!important;margin-top:12px!important;}
+  #afPwaInstallCard .af-pwa-platform{padding:8px 2px!important;gap:10px!important;}
+  #afPwaInstallCard .af-pwa-platform+.af-pwa-platform{border-left:0!important;border-top:1px solid #d7e4e9!important;}
+  #afPwaInstallCard .af-pwa-platform-icon{width:32px!important;height:32px!important;flex:0 0 32px!important;}
+  #afPwaInstallCard .af-pwa-platform strong{font-size:13px!important;}
+  #afPwaInstallCard .af-pwa-platform small{font-size:10.5px!important;line-height:1.3!important;}
+}
+</style>
+
+
+<style id="af-pwa-install-instructions-final">
+.af-pwa-platforms{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:0!important;
+  width:100%!important;
+  box-sizing:border-box!important;
+  margin:14px 0 0!important;
+  padding:8px 12px!important;
+  border-radius:16px!important;
+  background:rgba(255,255,255,.96)!important;
+  border:1px solid #dce9e3!important;
+}
+.af-pwa-platform{
+  display:flex!important;
+  align-items:center!important;
+  width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+  gap:11px!important;
+  padding:9px 2px!important;
+  color:#102d51!important;
+}
+.af-pwa-platform + .af-pwa-platform{
+  border-left:0!important;
+  border-top:1px solid #d7e4e9!important;
+}
+.af-pwa-platform-icon{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:34px!important;
+  height:34px!important;
+  min-width:34px!important;
+  flex:0 0 34px!important;
+  box-sizing:border-box!important;
+  border-radius:10px!important;
+  background:#e9fff4!important;
+  color:#08a95a!important;
+}
+.af-pwa-platform-text{
+  display:block!important;
+  min-width:0!important;
+  flex:1 1 auto!important;
+}
+.af-pwa-platform-text strong{
+  display:block!important;
+  margin:0!important;
+  color:#102d51!important;
+  font-size:13px!important;
+  line-height:1.2!important;
+  font-weight:900!important;
+}
+.af-pwa-platform-text small{
+  display:block!important;
+  margin:3px 0 0!important;
+  color:#5c7387!important;
+  font-size:10.5px!important;
+  line-height:1.35!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+.af-generic-phone-icon{
+  display:block!important;
+  position:relative!important;
+  width:14px!important;
+  height:22px!important;
+  box-sizing:border-box!important;
+  border:2px solid currentColor!important;
+  border-radius:4px!important;
+}
+.af-generic-phone-icon:after{
+  content:""!important;
+  position:absolute!important;
+  width:3px!important;
+  height:3px!important;
+  left:50%!important;
+  bottom:2px!important;
+  transform:translateX(-50%)!important;
+  border-radius:50%!important;
+  background:currentColor!important;
+}
+@media(max-width:720px){
+  .af-pwa-platforms{margin-top:12px!important;padding:7px 11px!important}
+  .af-pwa-platform{padding:9px 1px!important;gap:10px!important}
+  .af-pwa-platform-text strong{font-size:13px!important}
+  .af-pwa-platform-text small{font-size:10.5px!important}
+}
+</style>
 </head>
 
 <body>
@@ -1465,14 +1574,20 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
   </div>
   <button id="afPwaInstallButton" type="button">⇩&nbsp; Instalar AhorraFuel</button>
   <p class="af-pwa-note">Acceso directo desde tu móvil · Mejor experiencia</p>
-  <div class="af-pwa-platforms">
+  <div class="af-pwa-platforms" aria-label="Instrucciones de instalación">
     <div class="af-pwa-platform">
-      <div class="af-pwa-platform-icon af-pwa-apple" aria-hidden="true"><span class="af-generic-phone-icon"></span></div>
-      <div><strong>iPhone</strong><small>Compartir → “Añadir a pantalla de inicio”</small></div>
+      <div class="af-pwa-platform-icon" aria-hidden="true"><span class="af-generic-phone-icon"></span></div>
+      <div class="af-pwa-platform-text">
+        <strong>iPhone</strong>
+        <small>Safari → Compartir → “Añadir a pantalla de inicio”</small>
+      </div>
     </div>
     <div class="af-pwa-platform">
-      <div class="af-pwa-platform-icon af-pwa-android" aria-hidden="true"><span></span></div>
-      <div><strong>Android</strong><small>Pulsa instalar y listo</small></div>
+      <div class="af-pwa-platform-icon" aria-hidden="true"><span class="af-generic-phone-icon"></span></div>
+      <div class="af-pwa-platform-text">
+        <strong>Android</strong>
+        <small>Pulsa “Instalar” y listo</small>
+      </div>
     </div>
   </div>
   <div id="afPwaIosHelp">
