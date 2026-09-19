@@ -1002,25 +1002,64 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
 
 
 <style id="ahorrafuel-pwa-install-style">
-.af-pwa-install-wrap{width:100%;max-width:760px;margin:0 auto;}
-
-#afPwaInstallCard{display:none;position:relative;overflow:hidden;margin:18px auto 20px;max-width:760px;border:1px solid rgba(39,201,116,.32);border-radius:24px;padding:20px;background:radial-gradient(circle at 88% 18%,rgba(39,201,116,.20),transparent 30%),linear-gradient(135deg,#f4fff9 0%,#e9fff5 52%,#e9fbff 100%);box-shadow:0 12px 35px rgba(6,23,19,.14);color:#061713}
-#afPwaInstallCard:before{content:"";position:absolute;width:150px;height:150px;right:-70px;bottom:-85px;border-radius:50%;background:rgba(39,201,116,.12)}
-#afPwaInstallCard .af-pwa-inner{position:relative;z-index:1;display:grid;grid-template-columns:58px 1fr auto;align-items:center;gap:15px}
-#afPwaInstallCard .af-pwa-icon{width:58px;height:58px;border-radius:18px;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#27c974,#0aa85b);color:#fff;font-size:30px;font-weight:900;box-shadow:0 8px 18px rgba(10,168,91,.25)}
-#afPwaInstallCard .af-pwa-text{min-width:0}
-#afPwaInstallCard .af-pwa-badge{display:inline-block;margin:0 0 6px;padding:5px 10px;border-radius:999px;background:rgba(39,201,116,.14);color:#07864a;font-size:11px;font-weight:900;letter-spacing:.5px}
-#afPwaInstallCard .af-pwa-title{font-size:22px;line-height:1.1;font-weight:900;color:#061713;margin:0 0 6px}
-#afPwaInstallCard .af-pwa-title span{color:#0aa85b}
-#afPwaInstallCard .af-pwa-subtitle{font-size:14px;line-height:1.45;color:#29423b;margin:0}
-#afPwaInstallCard .af-pwa-benefits{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:8px 18px;margin:15px 0 14px 73px;color:#183a30;font-size:12.5px;font-weight:700}
-#afPwaInstallCard .af-pwa-benefits span{display:inline-flex;align-items:center;gap:5px}
-#afPwaInstallButton{position:relative;z-index:1;border:0;border-radius:14px;padding:13px 18px;min-height:48px;background:linear-gradient(135deg,#16b866,#07964f);color:#fff;font-size:14px;font-weight:900;box-shadow:0 8px 18px rgba(7,150,79,.24);cursor:pointer;white-space:nowrap;transition:transform .15s ease,box-shadow .15s ease}
-#afPwaInstallButton:hover{transform:translateY(-1px);box-shadow:0 10px 22px rgba(7,150,79,.30)}
-#afPwaIosHelp{position:relative;z-index:1;display:none;margin-top:14px;padding:13px 15px;border-radius:15px;background:rgba(255,255,255,.72);border:1px solid rgba(6,23,19,.08);color:#29423b;font-size:13px;line-height:1.5}
-#afPwaIosHelp strong{color:#061713}
-#afPwaInstallCard .af-pwa-bottom{position:relative;z-index:1;text-align:center;margin:2px 0 0;color:#5d7b71;font-size:11.5px}
-@media(max-width:650px){#afPwaInstallCard{margin:15px 12px 18px;padding:17px;border-radius:21px}#afPwaInstallCard .af-pwa-inner{grid-template-columns:48px 1fr;gap:12px}#afPwaInstallCard .af-pwa-icon{width:48px;height:48px;border-radius:15px;font-size:25px}#afPwaInstallCard .af-pwa-title{font-size:19px}#afPwaInstallCard .af-pwa-subtitle{font-size:13px}#afPwaInstallButton{grid-column:1/-1;width:100%;margin-top:2px}#afPwaInstallCard .af-pwa-benefits{margin:13px 0 13px;gap:7px 13px;font-size:12px}}
+.af-pwa-install-wrap{width:100%;max-width:980px;margin:22px auto 24px}
+#afPwaInstallCard{display:none;position:relative;overflow:hidden;border:1px solid rgba(39,201,116,.35);border-radius:26px;padding:24px 26px 16px;background:radial-gradient(circle at 80% 38%,rgba(39,201,116,.20),transparent 27%),radial-gradient(circle at 98% 100%,rgba(61,181,255,.16),transparent 30%),linear-gradient(135deg,#f5fffa 0%,#eafff5 50%,#eafaff 100%);box-shadow:0 14px 38px rgba(6,23,19,.13);color:#071a3d}
+#afPwaInstallCard:after{content:"";position:absolute;width:270px;height:270px;right:-110px;top:-100px;border-radius:50%;background:rgba(39,201,116,.08)}
+#afPwaInstallCard .af-pwa-layout{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.18fr) 280px;gap:10px;align-items:center}
+#afPwaInstallCard .af-pwa-badge{display:inline-flex;margin:0 0 8px;padding:6px 11px;border-radius:999px;background:rgba(39,201,116,.15);color:#07884b;font-size:10.5px;font-weight:900;letter-spacing:.5px}
+#afPwaInstallCard .af-pwa-title{margin:0;font-size:clamp(30px,4vw,46px);line-height:.98;letter-spacing:-1.5px;font-weight:950;color:#071a3d}
+#afPwaInstallCard .af-pwa-title span{color:#09a85a}
+#afPwaInstallCard .af-pwa-subtitle{max-width:590px;margin:10px 0 15px;color:#355273;font-size:15px;line-height:1.4}
+#afPwaInstallCard .af-pwa-benefits{display:flex;flex-wrap:wrap;gap:7px 13px;margin:0 0 16px}
+#afPwaInstallCard .af-pwa-benefits span{display:inline-flex;align-items:center;gap:6px;color:#102d51;font-size:12px;font-weight:800}
+#afPwaInstallCard .af-pwa-benefits i{display:inline-flex;align-items:center;justify-content:center;width:27px;height:27px;border-radius:50%;background:#fff;color:#08a95a;font-style:normal;box-shadow:0 4px 10px rgba(6,23,19,.08)}
+#afPwaInstallButton{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:12px 20px;border:0;border-radius:14px;background:linear-gradient(135deg,#13bd68,#079b52);color:#fff;font-size:15px;font-weight:900;box-shadow:0 8px 18px rgba(7,155,82,.23);cursor:pointer;white-space:nowrap}
+#afPwaInstallCard .af-pwa-note{margin:9px 0 0;color:#688174;font-size:11px}
+#afPwaInstallCard .af-pwa-phone-area{position:relative;min-height:255px;display:flex;justify-content:center;align-items:center}
+#afPwaInstallCard .af-pwa-glow{position:absolute;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle,#54e79a 0%,rgba(76,228,147,.20) 45%,rgba(76,228,147,0) 72%)}
+#afPwaInstallCard .af-pwa-phone{position:relative;z-index:2;width:137px;height:258px;padding:7px;border-radius:27px;background:linear-gradient(145deg,#1b2738,#050b14);box-shadow:0 20px 28px rgba(6,23,19,.24);transform:rotate(7deg)}
+#afPwaInstallCard .af-pwa-phone:before{content:"";position:absolute;top:8px;left:50%;transform:translateX(-50%);width:52px;height:15px;border-radius:12px;background:#050b14;z-index:4}
+#afPwaInstallCard .af-pwa-screen{width:100%;height:100%;overflow:hidden;border-radius:21px;background:#f6fbfa}
+#afPwaInstallCard .af-pwa-screen-head{display:flex;align-items:center;gap:5px;padding:20px 8px 7px;background:#fff}
+#afPwaInstallCard .af-pwa-screen-head img{width:21px;height:21px;object-fit:contain}
+#afPwaInstallCard .af-pwa-screen-brand{font-size:9.5px;font-weight:900;color:#0c2348}.af-pwa-screen-brand span{color:#08a95a}
+#afPwaInstallCard .af-pwa-screen-select{margin:5px 7px;padding:6px 7px;border-radius:7px;background:#fff;border:1px solid #dbe7ed;font-size:7px;color:#173355}
+#afPwaInstallCard .af-pwa-screen-search{margin:6px 7px;padding:7px;border-radius:7px;background:#0bb463;color:#fff;text-align:center;font-size:6.5px;font-weight:900}
+#afPwaInstallCard .af-pwa-screen-results{margin:8px 7px;font-size:7.5px;font-weight:900;color:#102d51}
+#afPwaInstallCard .af-pwa-price{display:flex;justify-content:space-between;margin:4px 7px;padding:6px;border-radius:7px;background:#fff;border:1px solid #e3ecef;font-size:6.5px;color:#355273}
+#afPwaInstallCard .af-pwa-price b{color:#08a95a;font-size:7.5px}
+#afPwaInstallCard .af-pwa-download{position:absolute;z-index:3;right:8%;bottom:20px;width:48px;height:48px;display:flex;align-items:center;justify-content:center;border-radius:15px;background:#fff;color:#08a95a;font-size:24px;box-shadow:0 8px 18px rgba(6,23,19,.15);transform:rotate(-7deg)}
+#afPwaInstallCard .af-pwa-arrow{position:absolute;z-index:3;left:7%;top:31%;color:#0bb463;font-size:34px;font-weight:900;transform:rotate(-20deg)}
+#afPwaInstallCard .af-pwa-speech{position:absolute;z-index:4;right:0;top:6%;padding:7px 9px;border-radius:11px;background:#fff;color:#102d51;font-size:10px;font-weight:900;box-shadow:0 6px 15px rgba(6,23,19,.11);transform:rotate(-4deg)}
+#afPwaInstallCard .af-pwa-platforms{position:relative;z-index:3;display:grid;grid-template-columns:1fr 1fr;margin-top:14px;padding:10px 13px;border-radius:16px;background:rgba(255,255,255,.80);border:1px solid rgba(7,38,60,.07)}
+#afPwaInstallCard .af-pwa-platform{display:flex;align-items:center;gap:9px;padding:2px 12px;color:#102d51}
+#afPwaInstallCard .af-pwa-platform+.af-pwa-platform{border-left:1px solid #d7e4e9}
+#afPwaInstallCard .af-pwa-platform-icon{display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:9px;background:#e9fff4;color:#08a95a;font-size:16px;font-weight:900}
+#afPwaInstallCard .af-pwa-platform strong{display:block;font-size:12px}
+#afPwaInstallCard .af-pwa-platform small{display:block;margin-top:2px;font-size:10.5px;line-height:1.25;color:#5c7387}
+#afPwaIosHelp{position:relative;z-index:4;display:none;margin-top:12px;padding:12px 14px;border-radius:14px;background:#fff;border:1px solid rgba(6,23,19,.08);color:#29423b;font-size:13px;line-height:1.45}
+@media(max-width:720px){
+ .af-pwa-install-wrap{margin:16px 12px 20px}
+ #afPwaInstallCard{padding:18px 15px 13px;border-radius:22px}
+ #afPwaInstallCard .af-pwa-layout{grid-template-columns:minmax(0,1fr) 125px;gap:3px;align-items:center}
+ #afPwaInstallCard .af-pwa-badge{font-size:9px;padding:5px 8px;white-space:nowrap}
+ #afPwaInstallCard .af-pwa-title{font-size:28px;letter-spacing:-.8px}
+ #afPwaInstallCard .af-pwa-subtitle{font-size:12.5px;line-height:1.38;margin:8px 0 11px}
+ #afPwaInstallCard .af-pwa-benefits{display:block;margin-bottom:11px}
+ #afPwaInstallCard .af-pwa-benefits span{display:flex;font-size:10.5px;margin:4px 0}
+ #afPwaInstallCard .af-pwa-benefits i{width:23px;height:23px;font-size:11px}
+ #afPwaInstallButton{grid-column:1/-1;width:100%;min-height:49px;font-size:14px;margin-top:2px}
+ #afPwaInstallCard .af-pwa-note{grid-column:1/-1;text-align:center;margin:8px 0 0}
+ #afPwaInstallCard .af-pwa-phone-area{min-height:225px}
+ #afPwaInstallCard .af-pwa-phone{width:111px;height:210px}
+ #afPwaInstallCard .af-pwa-glow{width:190px;height:190px}
+ #afPwaInstallCard .af-pwa-arrow{left:0;top:30%;font-size:27px}
+ #afPwaInstallCard .af-pwa-speech{right:-1px;top:4%;font-size:9px;padding:6px 8px}
+ #afPwaInstallCard .af-pwa-download{width:42px;height:42px;right:2%;bottom:13px;font-size:21px}
+ #afPwaInstallCard .af-pwa-platforms{grid-template-columns:1fr;gap:0;margin-top:12px;padding:8px 10px}
+ #afPwaInstallCard .af-pwa-platform{padding:5px 1px}
+ #afPwaInstallCard .af-pwa-platform+.af-pwa-platform{border-left:0;border-top:1px solid #d7e4e9}
+}
 </style>
 
 </head>
@@ -1216,26 +1255,56 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
 
   <div class="af-pwa-install-wrap">
 <div id="afPwaInstallCard" aria-live="polite">
-      <div class="af-pwa-inner">
-        <div class="af-pwa-icon" aria-hidden="true">⌂</div>
-        <div class="af-pwa-text">
-          <div class="af-pwa-badge">GRATIS · RÁPIDA · SIEMPRE A MANO</div>
-          <p class="af-pwa-title">Instala <span>AhorraFuel</span></p>
-          <p class="af-pwa-subtitle">Consulta las gasolineras más baratas directamente desde la pantalla de inicio de tu móvil.</p>
+  <div class="af-pwa-layout">
+    <div>
+      <div class="af-pwa-badge">TU APP DE GASOLINERAS · GRATIS</div>
+      <h2 class="af-pwa-title">Instala <span>AhorraFuel</span></h2>
+      <p class="af-pwa-subtitle">Las gasolineras más baratas, siempre a mano desde tu móvil.</p>
+      <div class="af-pwa-benefits">
+        <span><i>⚡</i> Acceso rápido</span>
+        <span><i>⌖</i> Siempre a mano</span>
+        <span><i>▥</i> Precios actualizados</span>
+      </div>
+    </div>
+    <div class="af-pwa-phone-area" aria-hidden="true">
+      <div class="af-pwa-glow"></div>
+      <div class="af-pwa-arrow">↘</div>
+      <div class="af-pwa-speech">Llévala<br>contigo</div>
+      <div class="af-pwa-phone">
+        <div class="af-pwa-screen">
+          <div class="af-pwa-screen-head">
+            <img src="/favicon-192x192.png" alt="">
+            <div class="af-pwa-screen-brand">Ahorra<span>Fuel</span></div>
+          </div>
+          <div class="af-pwa-screen-select">⌖ Las Palmas　⌄</div>
+          <div class="af-pwa-screen-select">⛽ Gasolina 95　⌄</div>
+          <div class="af-pwa-screen-search">⌕ Buscar gasolineras</div>
+          <div class="af-pwa-screen-results">Gasolineras más baratas</div>
+          <div class="af-pwa-price"><span>Plenergy</span><b>1,459 €/L</b></div>
+          <div class="af-pwa-price"><span>Disa</span><b>1,472 €/L</b></div>
+          <div class="af-pwa-price"><span>Shell</span><b>1,489 €/L</b></div>
         </div>
-        <button id="afPwaInstallButton" type="button">＋ Instalar app</button>
       </div>
-      <div class="af-pwa-benefits" aria-label="Ventajas de instalar AhorraFuel">
-        <span>⚡ Acceso rápido</span>
-        <span>📍 Siempre a mano</span>
-        <span>⛽ Precios al momento</span>
-      </div>
-      <div class="af-pwa-bottom">Sin buscar la web cada vez · Abre AhorraFuel como una app</div>
-      <div id="afPwaIosHelp">
-        <strong>¿Tienes iPhone?</strong><br>
-        En Safari, pulsa <strong>Compartir</strong> <span aria-hidden="true">□↑</span> y selecciona <strong>“Añadir a pantalla de inicio”</strong>. Después pulsa <strong>“Añadir”</strong>.
-      </div>
+      <div class="af-pwa-download">⇩</div>
+    </div>
   </div>
+  <button id="afPwaInstallButton" type="button">⇩&nbsp; Instalar AhorraFuel</button>
+  <p class="af-pwa-note">Acceso directo desde tu móvil · Mejor experiencia</p>
+  <div class="af-pwa-platforms">
+    <div class="af-pwa-platform">
+      <div class="af-pwa-platform-icon"></div>
+      <div><strong>iPhone</strong><small>Compartir → “Añadir a pantalla de inicio”</small></div>
+    </div>
+    <div class="af-pwa-platform">
+      <div class="af-pwa-platform-icon">●</div>
+      <div><strong>Android</strong><small>Pulsa instalar y listo</small></div>
+    </div>
+  </div>
+  <div id="afPwaIosHelp">
+    <strong>¿Tienes iPhone?</strong><br>
+    En Safari, pulsa <strong>Compartir</strong> y selecciona <strong>“Añadir a pantalla de inicio”</strong>. Después pulsa <strong>“Añadir”</strong>.
+  </div>
+</div>
 
 
   <div
