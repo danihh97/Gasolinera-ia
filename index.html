@@ -1559,8 +1559,7 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
 <div id="afPwaInstallCard" aria-live="polite">
   <div class="af-pwa-layout">
     <div>
-      <div class="af-pwa-badge">TU APP DE GASOLINERAS · GRATIS</div>
-      <h2 class="af-pwa-title">Instala <span>AhorraFuel</span></h2>
+      <h2 class="af-pwa-title">Instala <span>AhorraFuel</span>,<br>tu app de gasolineras gratis</h2>
       <p class="af-pwa-subtitle">Las gasolineras más baratas, siempre a mano desde tu móvil.</p>
       <div class="af-pwa-benefits">
         <span><i class="af-pwa-icon-speed" aria-hidden="true"></i> Acceso rápido</span>
@@ -3128,6 +3127,7 @@ if ("serviceWorker" in navigator) {
   const close=document.getElementById("afPwaModalClose");
   if(!card||!button)return;
   let deferredPrompt=null;
+  let installEventSent=false;
 
   function isStandalone(){
     return (window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches)||window.navigator.standalone===true;
@@ -3171,7 +3171,9 @@ if ("serviceWorker" in navigator) {
     if(deferredPrompt){
       deferredPrompt.prompt();
       const result=await deferredPrompt.userChoice;
-      if(result&&result.outcome==="accepted"&&typeof window.afEnviarEvento==="function") window.afEnviarEvento("instalacion_pwa",{origen:"navegador"});
+      if(result&&result.outcome==="accepted"){
+        card.style.display="none";
+      }
       deferredPrompt=null;
       return;
     }
@@ -3187,7 +3189,14 @@ if ("serviceWorker" in navigator) {
   if(close)close.addEventListener('click',closeModal);
   if(modal)modal.addEventListener('click',function(e){if(e.target.classList.contains('af-pwa-modal-backdrop'))closeModal();});
   document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
-  window.addEventListener("appinstalled",function(){card.style.display="none";closeModal();});
+  window.addEventListener("appinstalled",function(){
+    card.style.display="none";
+    closeModal();
+    if(!installEventSent&&typeof window.afEnviarEvento==="function"){
+      installEventSent=true;
+      window.afEnviarEvento("instalacion_pwa",{origen:"navegador"});
+    }
+  });
   window.addEventListener("load",function(){if(isStandalone())card.style.display="none";else showCard();});
 })();
 </script>
