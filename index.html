@@ -1364,6 +1364,30 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
 }
 </style>
 
+<style id="af-pwa-button-layout-fix">
+#afPwaInstallCard #afPwaInstallButton{
+  display:flex;
+  width:100%;
+  box-sizing:border-box;
+  margin:4px 0 0;
+}
+@media(max-width:700px){
+  #afPwaInstallCard{
+    padding:20px 16px 16px;
+  }
+  #afPwaInstallCard .af-pwa-layout{
+    grid-template-columns:1fr;
+    gap:8px;
+  }
+  #afPwaInstallCard .af-pwa-phone-area{
+    min-height:220px;
+  }
+  #afPwaInstallCard .af-pwa-title{
+    font-size:32px;
+  }
+}
+</style>
+
 </head>
 
 <body>
@@ -1561,59 +1585,63 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
   ></div>
 
   <div class="af-pwa-install-wrap">
-<div id="afPwaInstallCard" aria-live="polite">
-  <div class="af-pwa-layout">
-    <div>
-      <div class="af-pwa-badge">TU APP DE GASOLINERAS · GRATIS</div>
-      <h2 class="af-pwa-title">Instala <span>AhorraFuel</span></h2>
-      <p class="af-pwa-subtitle">Las gasolineras más baratas, siempre a mano desde tu móvil.</p>
-      <div class="af-pwa-benefits">
-        <span><i class="af-pwa-icon-speed" aria-hidden="true"></i> Acceso rápido</span>
-        <span><i class="af-pwa-icon-pin" aria-hidden="true"></i> Siempre a mano</span>
-        <span><i class="af-pwa-icon-chart" aria-hidden="true"></i> Precios actualizados</span>
-      </div>
-    </div>
-    <div class="af-pwa-phone-area" aria-hidden="true">
-      <div class="af-pwa-glow"></div>
-      <div class="af-pwa-arrow">↘</div>
-      <div class="af-pwa-speech">Llévala<br>contigo</div>
-      <div class="af-pwa-phone">
-        <div class="af-pwa-screen">
-          <div class="af-mini-site-head">
-            <img src="/IMG_6106.png" alt="">
-            <div class="af-mini-brand">Ahorra<span>Fuel</span></div>
-            <div class="af-mini-menu"><span></span><span></span><span></span></div>
-          </div>
-          <div class="af-mini-hero">
-            <strong>Gasolineras más baratas<br>en España</strong>
-            <small>ENCUENTRA · COMPARA · AHORRA</small>
-          </div>
-          <div class="af-mini-search-card">
-            <label>📍 PROVINCIA</label>
-            <div class="af-mini-select">Selecciona tu provincia <b>⌄</b></div>
-            <label>⛽ COMBUSTIBLE</label>
-            <div class="af-mini-select">Gasolina 95 <b>⌄</b></div>
-            <div class="af-mini-search-btn">⌕&nbsp; Buscar gasolineras</div>
-            <div class="af-mini-near-btn">⌖&nbsp; Buscar cerca de mí</div>
-          </div>
-          <div class="af-mini-cities-title">Ciudades más buscadas</div>
-          <div class="af-mini-cities">
-            <span>Madrid</span><span>Barcelona</span>
-            <span>Zaragoza</span><span>Las Palmas</span>
-          </div>
+  <div id="afPwaInstallCard" aria-live="polite">
+    <div class="af-pwa-layout">
+      <div>
+        <div class="af-pwa-badge">TU APP DE GASOLINERAS · GRATIS</div>
+        <h2 class="af-pwa-title">Instala <span>AhorraFuel</span></h2>
+        <p class="af-pwa-subtitle">Las gasolineras más baratas, siempre a mano desde tu móvil.</p>
+        <div class="af-pwa-benefits">
+          <span><i class="af-pwa-icon-speed" aria-hidden="true"></i> Acceso rápido</span>
+          <span><i class="af-pwa-icon-pin" aria-hidden="true"></i> Siempre a mano</span>
+          <span><i class="af-pwa-icon-chart" aria-hidden="true"></i> Precios actualizados</span>
         </div>
       </div>
-      </div>
-      <div class="af-pwa-download">⇩</div>
-    </div>
-  </div>
-  <button id="afPwaInstallButton" type="button">⇩&nbsp; Instalar AhorraFuel</button>
 
-  <div id="afPwaInstallModal" class="af-pwa-modal" aria-hidden="true">
-    <div class="af-pwa-modal-backdrop"></div>
-    <div class="af-pwa-modal-box" role="dialog" aria-modal="true" aria-labelledby="afPwaModalTitle">
-      <button id="afPwaModalClose" class="af-pwa-modal-close" type="button" aria-label="Cerrar">×</button>
-      <div id="afPwaModalContent"></div>
+      <div class="af-pwa-phone-area" aria-hidden="true">
+        <div class="af-pwa-glow"></div>
+        <div class="af-pwa-arrow">↘</div>
+        <div class="af-pwa-speech">Llévala<br>contigo</div>
+
+        <div class="af-pwa-phone">
+          <div class="af-pwa-screen">
+            <div class="af-mini-site-head">
+              <img src="/IMG_6106.png" alt="">
+              <div class="af-mini-brand">Ahorra<span>Fuel</span></div>
+              <div class="af-mini-menu"><span></span><span></span><span></span></div>
+            </div>
+            <div class="af-mini-hero">
+              <strong>Gasolineras más baratas<br>en España</strong>
+              <small>ENCUENTRA · COMPARA · AHORRA</small>
+            </div>
+            <div class="af-mini-search-card">
+              <label>📍 PROVINCIA</label>
+              <div class="af-mini-select">Selecciona tu provincia <b>⌄</b></div>
+              <label>⛽ COMBUSTIBLE</label>
+              <div class="af-mini-select">Gasolina 95 <b>⌄</b></div>
+              <div class="af-mini-search-btn">⌕&nbsp; Buscar gasolineras</div>
+              <div class="af-mini-near-btn">⌖&nbsp; Buscar cerca de mí</div>
+            </div>
+            <div class="af-mini-cities-title">Ciudades más buscadas</div>
+            <div class="af-mini-cities">
+              <span>Madrid</span><span>Barcelona</span>
+              <span>Zaragoza</span><span>Las Palmas</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="af-pwa-download">⇩</div>
+      </div>
+    </div>
+
+    <button id="afPwaInstallButton" type="button">⇩&nbsp; Instalar AhorraFuel</button>
+
+    <div id="afPwaInstallModal" class="af-pwa-modal" aria-hidden="true">
+      <div class="af-pwa-modal-backdrop"></div>
+      <div class="af-pwa-modal-box" role="dialog" aria-modal="true" aria-labelledby="afPwaModalTitle">
+        <button id="afPwaModalClose" class="af-pwa-modal-close" type="button" aria-label="Cerrar">×</button>
+        <div id="afPwaModalContent"></div>
+      </div>
     </div>
   </div>
 </div>
