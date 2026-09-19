@@ -1004,7 +1004,7 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
 <style id="ahorrafuel-pwa-install-style">
 .af-pwa-install-wrap{width:100%;max-width:980px;margin:22px auto 24px}
 #afPwaInstallCard.af-pwa-installed{display:none!important}
-#afPwaInstallCard{display:none;position:relative;overflow:hidden;border:1px solid rgba(39,201,116,.35);border-radius:26px;padding:24px 26px 16px;background:radial-gradient(circle at 80% 38%,rgba(39,201,116,.20),transparent 27%),radial-gradient(circle at 98% 100%,rgba(61,181,255,.16),transparent 30%),linear-gradient(135deg,#f5fffa 0%,#eafff5 50%,#eafaff 100%);box-shadow:0 14px 38px rgba(6,23,19,.13);color:#071a3d}
+#afPwaInstallCard{display:block;position:relative;overflow:hidden;border:1px solid rgba(39,201,116,.35);border-radius:26px;padding:24px 26px 16px;background:radial-gradient(circle at 80% 38%,rgba(39,201,116,.20),transparent 27%),radial-gradient(circle at 98% 100%,rgba(61,181,255,.16),transparent 30%),linear-gradient(135deg,#f5fffa 0%,#eafff5 50%,#eafaff 100%);box-shadow:0 14px 38px rgba(6,23,19,.13);color:#071a3d}
 #afPwaInstallCard:after{content:"";position:absolute;width:270px;height:270px;right:-110px;top:-100px;border-radius:50%;background:rgba(39,201,116,.08)}
 #afPwaInstallCard .af-pwa-layout{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.18fr) 280px;gap:10px;align-items:center}
 #afPwaInstallCard .af-pwa-badge{display:inline-flex;margin:0 0 8px;padding:6px 11px;border-radius:999px;background:rgba(39,201,116,.15);color:#07884b;font-size:10.5px;font-weight:900;letter-spacing:.5px}
@@ -1601,7 +1601,6 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
       </div>
       <div class="af-pwa-download">⇩</div>
     </div>
-  </div>
   <button id="afPwaInstallButton" type="button">⇩&nbsp; Instalar AhorraFuel</button>
 
   <div id="afPwaInstallModal" class="af-pwa-modal" aria-hidden="true">
@@ -3182,7 +3181,12 @@ if ("serviceWorker" in navigator) {
   function closeModal(){if(!modal)return;modal.classList.remove('open');modal.setAttribute('aria-hidden','true');}
 
   window.addEventListener("beforeinstallprompt",function(event){
-    event.preventDefault(); deferredPrompt=event; showCard();
+    event.preventDefault();
+    deferredPrompt=event;
+    // Si el usuario desinstaló la PWA y el navegador vuelve a ofrecerla,
+    // eliminamos la marca antigua para que la tarjeta vuelva a aparecer.
+    try{localStorage.removeItem("af_pwa_instalada");}catch(e){}
+    showCard();
   });
 
   button.addEventListener("click",async function(){
@@ -3217,10 +3221,14 @@ if ("serviceWorker" in navigator) {
       window.afEnviarEvento("instalacion_pwa",{origen:"navegador"});
     }
   });
-  window.addEventListener("load",function(){
-    showCard();
-    setTimeout(showCard,300);
-    setTimeout(showCard,1200);
+  // Mostrar la tarjeta en cuanto el HTML esté disponible, sin esperar a que
+  // terminen de cargar imágenes, fuentes u otros recursos de la página.
+  showCard();
+
+  // Revalidar al volver a la página/app, sin retrasos artificiales.
+  window.addEventListener("pageshow",showCard);
+  document.addEventListener("visibilitychange",function(){
+    if(document.visibilityState === "visible") showCard();
   });
 })();
 </script>
