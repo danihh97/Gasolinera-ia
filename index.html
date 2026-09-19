@@ -1685,10 +1685,30 @@ window.afEsPWA = function () {
   );
 };
 
+window.afEventosPendientes = window.afEventosPendientes || [];
+
 window.afEnviarEvento = function (nombre, parametros = {}) {
-  if (!window.__afGA || typeof window.gtag !== "function") return false;
-  window.gtag("event", nombre, parametros);
-  return true;
+  if (window.__afGA && typeof window.gtag === "function") {
+    window.gtag("event", nombre, parametros);
+    return true;
+  }
+
+  // Si GA4 todavía no está cargado, guardamos el evento para enviarlo después.
+  window.afEventosPendientes.push({
+    nombre: nombre,
+    parametros: parametros
+  });
+  return false;
+};
+
+window.afEnviarEventosPendientes = function () {
+  if (!window.__afGA || typeof window.gtag !== "function") return;
+
+  const pendientes = window.afEventosPendientes.splice(0);
+
+  pendientes.forEach(function (evento) {
+    window.gtag("event", evento.nombre, evento.parametros);
+  });
 };
 
 window.afRegistrarAperturaPWA = function () {
@@ -1720,7 +1740,10 @@ window.addEventListener("appinstalled", function () {
   function loadGA(){
     if(window.__afGA)return; window.__afGA=true;
     window.dataLayer=window.dataLayer||[]; function gtag(){dataLayer.push(arguments)} window.gtag=gtag;
-    gtag('js',new Date()); gtag('config',GA_ID); window.afRegistrarAperturaPWA();
+    gtag('js',new Date()); gtag('config',GA_ID);
+    window.afRegistrarAperturaPWA();
+    window.afEnviarEventosPendientes();
+
     const s=document.createElement('script'); s.async=true; s.src='https://www.googletagmanager.com/gtag/js?id='+encodeURIComponent(GA_ID); document.head.appendChild(s);
   }
   function save(analytics){write(analytics);if(analytics)loadGA();close()}
