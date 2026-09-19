@@ -1001,6 +1001,15 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
 </style>
 
 
+<style id="ahorrafuel-pwa-standalone-hide">
+/* En la PWA instalada no mostrar nunca el bloque de instalación */
+@media (display-mode: standalone), (display-mode: fullscreen), (display-mode: minimal-ui) {
+  .af-pwa-install-wrap, #afPwaInstallCard {
+    display: none !important;
+  }
+}
+</style>
+
 <style id="ahorrafuel-pwa-install-style">
 .af-pwa-install-wrap{width:100%;max-width:980px;margin:22px auto 24px}
 #afPwaInstallCard{display:none;position:relative;overflow:hidden;border:1px solid rgba(39,201,116,.35);border-radius:26px;padding:24px 26px 16px;background:radial-gradient(circle at 80% 38%,rgba(39,201,116,.20),transparent 27%),radial-gradient(circle at 98% 100%,rgba(61,181,255,.16),transparent 30%),linear-gradient(135deg,#f5fffa 0%,#eafff5 50%,#eafaff 100%);box-shadow:0 14px 38px rgba(6,23,19,.13);color:#071a3d}
@@ -3130,7 +3139,17 @@ if ("serviceWorker" in navigator) {
   let installEventSent=false;
 
   function isStandalone(){
-    return (window.matchMedia&&window.matchMedia("(display-mode: standalone)").matches)||window.navigator.standalone===true;
+    const standaloneModes = [
+      "(display-mode: standalone)",
+      "(display-mode: fullscreen)",
+      "(display-mode: minimal-ui)"
+    ];
+
+    const mediaStandalone = standaloneModes.some(function(mode){
+      return window.matchMedia && window.matchMedia(mode).matches;
+    });
+
+    return mediaStandalone || window.navigator.standalone === true;
   }
   function isIOS(){return /iphone|ipad|ipod/i.test(window.navigator.userAgent||"");}
   function isAndroid(){return /android/i.test(window.navigator.userAgent||"");}
@@ -3138,7 +3157,18 @@ if ("serviceWorker" in navigator) {
     const ua=window.navigator.userAgent||"";
     return /safari/i.test(ua)&&!/crios|fxios|edgios|chrome|android/i.test(ua);
   }
-  function showCard(){card.style.display=isStandalone()?"none":"block";}
+  function showCard(){
+    if(isStandalone()){
+      card.style.display="none";
+      const wrap=card.closest(".af-pwa-install-wrap");
+      if(wrap) wrap.style.display="none";
+      return;
+    }
+
+    const wrap=card.closest(".af-pwa-install-wrap");
+    if(wrap) wrap.style.display="block";
+    card.style.display="block";
+  }
   function openModal(type){
     if(!modal||!content)return;
     if(type==='ios'){
@@ -3197,7 +3227,22 @@ if ("serviceWorker" in navigator) {
       window.afEnviarEvento("instalacion_pwa",{origen:"navegador"});
     }
   });
-  window.addEventListener("load",function(){if(isStandalone())card.style.display="none";else showCard();});
+  function hideIfPWA(){
+    if(!isStandalone()) return false;
+    card.style.display="none";
+    const wrap=card.closest(".af-pwa-install-wrap");
+    if(wrap) wrap.style.display="none";
+    if(modal) closeModal();
+    return true;
+  }
+
+  window.addEventListener("load",function(){
+    if(!hideIfPWA()) showCard();
+  });
+
+  window.addEventListener("pageshow",function(){
+    hideIfPWA();
+  });
 })();
 </script>
 
