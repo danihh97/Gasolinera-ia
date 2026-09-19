@@ -3122,11 +3122,12 @@ if ("serviceWorker" in navigator) {
 <script id="ahorrafuel-pwa-install">
 (function(){
   const card=document.getElementById("afPwaInstallCard");
+  const wrap=document.querySelector(".af-pwa-install-wrap");
   const button=document.getElementById("afPwaInstallButton");
   const modal=document.getElementById("afPwaInstallModal");
   const content=document.getElementById("afPwaModalContent");
   const close=document.getElementById("afPwaModalClose");
-  if(!card||!button)return;
+  if(!card||!button||!wrap)return;
   let deferredPrompt=null;
   let installEventSent=false;
 
@@ -3145,6 +3146,7 @@ if ("serviceWorker" in navigator) {
   function hideCard(){
     card.classList.add("af-pwa-installed");
     card.style.display="none";
+    wrap.style.display="none";
   }
   function showCard(){
     if(isStandalone()||isInstalled()){
@@ -3152,6 +3154,7 @@ if ("serviceWorker" in navigator) {
     }else{
       card.classList.remove("af-pwa-installed");
       card.style.display="block";
+      wrap.style.display="block";
     }
   }
   function openModal(type){
