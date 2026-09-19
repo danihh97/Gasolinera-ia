@@ -1003,6 +1003,7 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
 
 <style id="ahorrafuel-pwa-install-style">
 .af-pwa-install-wrap{width:100%;max-width:980px;margin:22px auto 24px}
+#afPwaInstallCard.af-pwa-installed{display:none!important}
 #afPwaInstallCard{display:none;position:relative;overflow:hidden;border:1px solid rgba(39,201,116,.35);border-radius:26px;padding:24px 26px 16px;background:radial-gradient(circle at 80% 38%,rgba(39,201,116,.20),transparent 27%),radial-gradient(circle at 98% 100%,rgba(61,181,255,.16),transparent 30%),linear-gradient(135deg,#f5fffa 0%,#eafff5 50%,#eafaff 100%);box-shadow:0 14px 38px rgba(6,23,19,.13);color:#071a3d}
 #afPwaInstallCard:after{content:"";position:absolute;width:270px;height:270px;right:-110px;top:-100px;border-radius:50%;background:rgba(39,201,116,.08)}
 #afPwaInstallCard .af-pwa-layout{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.18fr) 280px;gap:10px;align-items:center}
@@ -3138,7 +3139,21 @@ if ("serviceWorker" in navigator) {
     const ua=window.navigator.userAgent||"";
     return /safari/i.test(ua)&&!/crios|fxios|edgios|chrome|android/i.test(ua);
   }
-  function showCard(){card.style.display=isStandalone()?"none":"block";}
+  function isInstalled(){
+    try{return localStorage.getItem("af_pwa_instalada")==="1";}catch(e){return false;}
+  }
+  function hideCard(){
+    card.classList.add("af-pwa-installed");
+    card.style.display="none";
+  }
+  function showCard(){
+    if(isStandalone()||isInstalled()){
+      hideCard();
+    }else{
+      card.classList.remove("af-pwa-installed");
+      card.style.display="block";
+    }
+  }
   function openModal(type){
     if(!modal||!content)return;
     if(type==='ios'){
@@ -3172,7 +3187,8 @@ if ("serviceWorker" in navigator) {
       deferredPrompt.prompt();
       const result=await deferredPrompt.userChoice;
       if(result&&result.outcome==="accepted"){
-        card.style.display="none";
+        try{localStorage.setItem("af_pwa_instalada","1");}catch(e){}
+        hideCard();
       }
       deferredPrompt=null;
       return;
@@ -3190,14 +3206,19 @@ if ("serviceWorker" in navigator) {
   if(modal)modal.addEventListener('click',function(e){if(e.target.classList.contains('af-pwa-modal-backdrop'))closeModal();});
   document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal();});
   window.addEventListener("appinstalled",function(){
-    card.style.display="none";
+    try{localStorage.setItem("af_pwa_instalada","1");}catch(e){}
+    hideCard();
     closeModal();
     if(!installEventSent&&typeof window.afEnviarEvento==="function"){
       installEventSent=true;
       window.afEnviarEvento("instalacion_pwa",{origen:"navegador"});
     }
   });
-  window.addEventListener("load",function(){if(isStandalone())card.style.display="none";else showCard();});
+  window.addEventListener("load",function(){
+    showCard();
+    setTimeout(showCard,300);
+    setTimeout(showCard,1200);
+  });
 })();
 </script>
 
