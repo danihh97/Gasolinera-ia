@@ -1003,7 +1003,7 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
 
 <style id="ahorrafuel-pwa-install-style">
 .af-pwa-install-wrap{width:100%;max-width:980px;margin:22px auto 24px}
-#afPwaInstallCard{display:none;position:relative;overflow:hidden;border:1px solid rgba(39,201,116,.35);border-radius:26px;padding:24px 26px 16px;background:radial-gradient(circle at 80% 38%,rgba(39,201,116,.20),transparent 27%),radial-gradient(circle at 98% 100%,rgba(61,181,255,.16),transparent 30%),linear-gradient(135deg,#f5fffa 0%,#eafff5 50%,#eafaff 100%);box-shadow:0 14px 38px rgba(6,23,19,.13);color:#071a3d}
+#afPwaInstallCard{display:block;position:relative;overflow:hidden;border:1px solid rgba(39,201,116,.35);border-radius:26px;padding:24px 26px 16px;background:radial-gradient(circle at 80% 38%,rgba(39,201,116,.20),transparent 27%),radial-gradient(circle at 98% 100%,rgba(61,181,255,.16),transparent 30%),linear-gradient(135deg,#f5fffa 0%,#eafff5 50%,#eafaff 100%);box-shadow:0 14px 38px rgba(6,23,19,.13);color:#071a3d}
 #afPwaInstallCard:after{content:"";position:absolute;width:270px;height:270px;right:-110px;top:-100px;border-radius:50%;background:rgba(39,201,116,.08)}
 #afPwaInstallCard .af-pwa-layout{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.18fr) 280px;gap:10px;align-items:center}
 #afPwaInstallCard .af-pwa-badge{display:inline-flex;margin:0 0 8px;padding:6px 11px;border-radius:999px;background:rgba(39,201,116,.15);color:#07884b;font-size:10.5px;font-weight:900;letter-spacing:.5px}
@@ -1555,6 +1555,11 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
 
   </div>
 
+  <div
+    id="results"
+    class="results"
+  ></div>
+
   <div class="af-pwa-install-wrap">
 <div id="afPwaInstallCard" aria-live="polite">
   <div class="af-pwa-layout">
@@ -1613,11 +1618,6 @@ select:focus{border-color:#63c51d;box-shadow:0 0 0 3px rgba(99,197,29,.16)}
   </div>
 </div>
 
-
-  <div
-    id="results"
-    class="results"
-  ></div>
 
 <section class="af-home-cities" aria-label="Ciudades más buscadas">
   <div class="af-home-cities-head">
@@ -3078,23 +3078,7 @@ if ("serviceWorker" in navigator) {
 
 
 
-<script id="ahorrafuel-pwa-after-results">
-(function(){
-  function placePwaAfterResults(){
-    const results = document.getElementById("results");
-    const pwaWrap = document.querySelector(".af-pwa-install-wrap");
-    if(!results || !pwaWrap) return;
-    if(results.nextElementSibling !== pwaWrap){
-      results.parentNode.insertBefore(pwaWrap, results.nextSibling);
-    }
-  }
-  if(document.readyState === "loading"){
-    document.addEventListener("DOMContentLoaded", placePwaAfterResults);
-  }else{
-    placePwaAfterResults();
-  }
-})();
-</script>
+
 
 <script id="ahorrafuel-pwa-install">
 (function(){
