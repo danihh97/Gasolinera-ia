@@ -1,6 +1,12 @@
 // api/actualizar-precios.js
 
 const REDIS_PREFIX = "ahorrafuel:estaciones:v3:";
+
+// Estaciones excluidas manualmente por no ser válidas para AhorraFuel.
+// Se utiliza IDEESS para no depender del nombre o la dirección.
+const ESTACIONES_EXCLUIDAS = new Set([
+  "9701" // MOEVE-ARROCEROS B.G.
+]);
 const REDIS_TTL = 2 * 60 * 60; // 2 horas
 
 function getRedisBaseUrl() {
@@ -145,6 +151,11 @@ function agruparPorProvincia(data) {
     const ideess = String(
       estacion["IDEESS"] || ""
     ).trim();
+
+    if (ESTACIONES_EXCLUIDAS.has(ideess)) {
+      console.log(`Estación excluida manualmente: IDEESS ${ideess}`);
+      continue;
+    }
 
     if (!ideess) {
       descartadasSinIDEESS++;

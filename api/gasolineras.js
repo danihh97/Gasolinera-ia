@@ -6,6 +6,12 @@ const LOCK_TTL = 60; // 60 segundos
 
 // v3: nueva estructura con IDEESS y filtro de venta pública
 const REDIS_PREFIX = "ahorrafuel:estaciones:v3:";
+
+// Estaciones excluidas manualmente por no ser válidas para AhorraFuel.
+// Se utiliza IDEESS para no depender del nombre o la dirección.
+const ESTACIONES_EXCLUIDAS = new Set([
+  "9701" // MOEVE-ARROCEROS B.G.
+]);
 const REDIS_LOCK_KEY = "ahorrafuel:estaciones:lock";
 
 // Caché local de la instancia de Vercel
@@ -214,6 +220,11 @@ function agruparPorProvincia(data) {
     const ideess = String(
       estacion["IDEESS"] || ""
     ).trim();
+
+    if (ESTACIONES_EXCLUIDAS.has(ideess)) {
+      console.log(`Estación excluida manualmente: IDEESS ${ideess}`);
+      continue;
+    }
 
     if (!ideess) {
       descartadasSinIDEESS++;
