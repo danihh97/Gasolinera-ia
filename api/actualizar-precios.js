@@ -1,6 +1,6 @@
 // api/actualizar-precios.js
 
-const REDIS_PREFIX = "ahorrafuel:estaciones:v2:";
+const REDIS_PREFIX = "ahorrafuel:estaciones:v3:";
 const REDIS_TTL = 2 * 60 * 60; // 2 horas
 
 function getRedisBaseUrl() {
@@ -16,6 +16,10 @@ function getRedisBaseUrl() {
 }
 
 async function redisPipeline(commands) {
+  if (!Array.isArray(commands) || commands.length === 0) {
+    return [];
+  }
+
   const baseUrl = getRedisBaseUrl();
   const token = process.env.UPSTASH_REDIS_REST_TOKEN;
 
@@ -40,12 +44,18 @@ async function redisPipeline(commands) {
     );
   }
 
-  const results = JSON.parse(text);
+  let results;
+
+  try {
+    results = JSON.parse(text);
+  } catch {
+    throw new Error(
+      `Respuesta inválida de Upstash: ${text}`
+    );
+  }
 
   if (!Array.isArray(results)) {
-    throw new Error(
-      "Respuesta inesperada de Upstash"
-    );
+    throw new Error("Respuesta inesperada de Upstash");
   }
 
   const error = results.find(
@@ -95,13 +105,65 @@ function crearLotes(commands) {
   return lotes;
 }
 
+/**
+ * Agrupa únicamente las estaciones de venta al público.
+ *
+ * NO elimina estaciones por antigüedad.
+ * Guardamos IDEESS y Remisión para poder analizarlas
+ * posteriormente.
+ */
 function agruparPorProvincia(data) {
   const provincias = new Map();
 
   const estaciones =
     data.ListaEESSPrecio || [];
 
+  let descartadasNoPublicas = 0;
+  let descartadasSinIDEESS = 0;
+  let duplicadas = 0;
+
+  const idsVistos = new Set();
+
   for (const estacion of estaciones) {
+    // -----------------------------------------
+    // 1. SOLO VENTA AL PÚBLICO GENERAL
+    // -----------------------------------------
+    const tipoVenta = String(
+      estacion["Tipo Venta"] || ""
+    )
+      .trim()
+      .toUpperCase();
+
+    if (tipoVenta !== "P") {
+      descartadasNoPublicas++;
+      continue;
+    }
+
+    // -----------------------------------------
+    // 2. IDEESS
+    // -----------------------------------------
+    const ideess = String(
+      estacion["IDEESS"] || ""
+    ).trim();
+
+    if (!ideess) {
+      descartadasSinIDEESS++;
+      continue;
+    }
+
+    // -----------------------------------------
+    // 3. EVITAR DUPLICADOS
+    // -----------------------------------------
+    if (idsVistos.has(ideess)) {
+      duplicadas++;
+      continue;
+    }
+
+    idsVistos.add(ideess);
+
+    // -----------------------------------------
+    // 4. PROVINCIA
+    // -----------------------------------------
     const provincia = String(
       estacion["IDProvincia"] || ""
     )
@@ -116,6 +178,9 @@ function agruparPorProvincia(data) {
       provincias.set(provincia, []);
     }
 
+    // -----------------------------------------
+    // 5. PRECIOS
+    // -----------------------------------------
     const precio95 = parseFloat(
       String(
         estacion["Precio Gasolina 95 E5"] || ""
@@ -134,7 +199,14 @@ function agruparPorProvincia(data) {
       ).replace(",", ".")
     );
 
+    // -----------------------------------------
+    // 6. DATOS INTERNOS
+    // -----------------------------------------
     provincias.get(provincia).push({
+      // IDEESS: solo uso interno, no se muestra
+      // al usuario en gasolineras.js.
+      id: ideess,
+
       nombre:
         estacion["Rótulo"] ||
         "Gasolinera",
@@ -184,9 +256,32 @@ function agruparPorProvincia(data) {
 
       horario:
         estacion["Horario"] ||
+        "",
+
+      // Se conserva para futuras comprobaciones.
+      tipoVenta,
+
+      remision:
+        estacion["Remisión"] ||
         ""
     });
   }
+
+  console.log(
+    `Estaciones oficiales recibidas: ${estaciones.length}`
+  );
+
+  console.log(
+    `Descartadas por venta no pública: ${descartadasNoPublicas}`
+  );
+
+  console.log(
+    `Descartadas por falta de IDEESS: ${descartadasSinIDEESS}`
+  );
+
+  console.log(
+    `Duplicadas por IDEESS: ${duplicadas}`
+  );
 
   return provincias;
 }
@@ -206,7 +301,8 @@ async function actualizarRedis(data) {
 
     const valor = {
       cacheTime,
-      fecha: data.Fecha || "",
+      fecha:
+        data.Fecha || "",
       provincia,
       estaciones
     };
@@ -231,22 +327,41 @@ async function actualizarRedis(data) {
     `Se utilizarán ${lotes.length} lotes.`
   );
 
-  for (let i = 0; i < lotes.length; i++) {
+  for (
+    let i = 0;
+    i < lotes.length;
+    i++
+  ) {
     console.log(
       `Guardando lote ${i + 1}/${lotes.length}...`
     );
 
-    await redisPipeline(lotes[i]);
+    await redisPipeline(
+      lotes[i]
+    );
+  }
+
+  let totalEstaciones = 0;
+
+  for (const estaciones of provincias.values()) {
+    totalEstaciones += estaciones.length;
   }
 
   console.log(
-    "Redis actualizado correctamente."
+    `Redis actualizado correctamente.`
+  );
+
+  console.log(
+    `Estaciones públicas válidas: ${totalEstaciones}`
   );
 
   return {
-    provincias: provincias.size,
+    provincias:
+      provincias.size,
+
     estaciones:
-      data.ListaEESSPrecio.length,
+      totalEstaciones,
+
     fecha:
       data.Fecha || ""
   };
@@ -254,7 +369,6 @@ async function actualizarRedis(data) {
 
 export default async function handler(req, res) {
   try {
-
     // Solo permitimos POST
     if (req.method !== "POST") {
       return res.status(405).json({
@@ -293,7 +407,9 @@ export default async function handler(req, res) {
       "Iniciando actualización automática..."
     );
 
-    // Descargar datos oficiales
+    // -----------------------------------------
+    // DESCARGAR DATOS OFICIALES
+    // -----------------------------------------
     const response = await fetch(
       "https://energia.serviciosmin.gob.es/ServiciosRestCarburantes/PreciosCarburantes/EstacionesTerrestres/",
       {
@@ -328,23 +444,29 @@ export default async function handler(req, res) {
       `Recibidas ${data.ListaEESSPrecio.length} estaciones.`
     );
 
+    // -----------------------------------------
+    // ACTUALIZAR REDIS
+    // -----------------------------------------
     const resultado =
       await actualizarRedis(data);
 
     return res.status(200).json({
       ok: true,
+
       mensaje:
         "Precios actualizados correctamente",
+
       fecha:
         resultado.fecha,
+
       provincias:
         resultado.provincias,
+
       estaciones:
         resultado.estaciones
     });
 
   } catch (error) {
-
     console.error(
       "ERROR ACTUALIZANDO PRECIOS:",
       error
@@ -352,6 +474,7 @@ export default async function handler(req, res) {
 
     return res.status(500).json({
       ok: false,
+
       error:
         error.message ||
         "No se pudieron actualizar los precios."
