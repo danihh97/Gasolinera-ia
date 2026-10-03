@@ -1537,3 +1537,7 @@ if ("serviceWorker" in navigator) {
 ;
 document.querySelectorAll('.seo-keyword[data-fuel],.seo-keyword[data-near]').forEach(function(b){b.addEventListener('click',function(){var c=document.querySelector('.search-card');if(b.dataset.fuel){var f=document.getElementById('fuel');if(f){f.value=b.dataset.fuel;var rr=document.querySelector('input[name="f"][value="'+b.dataset.fuel+'"]');if(rr)rr.checked=true}}if(c)c.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});var x=b.dataset.near?document.querySelector('button[onclick="usarUbicacion()"]'):document.getElementById('province');if(x)setTimeout(function(){x.focus({preventScroll:true})},350)})});
 ;(function(){var f=document.getElementById("fuel");if(!f)return;document.querySelectorAll('input[name="f"]').forEach(function(r){r.addEventListener("change",function(){f.value=r.value;f.dispatchEvent(new Event("change",{bubbles:true}))})})})();
+;(function(){var q=new URLSearchParams(location.search),c=q.get("combustible"),a=q.get("accion");if(!c&&!a)return;
+function go(){var f=document.getElementById("fuel");if(c&&f&&/^(95|98|diesel)$/.test(c)){f.value=c;var r=document.querySelector('input[name="f"][value="'+c+'"]');if(r)r.checked=true}
+if(a==="cerca"&&typeof usarUbicacion==="function")usarUbicacion();history.replaceState(null,"",location.pathname)}
+if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",go);else go()})();
