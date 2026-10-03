@@ -1,6 +1,6 @@
 // api/actualizar-precios.js
 
-const REDIS_PREFIX = "ahorrafuel:estaciones:v3:";
+const REDIS_PREFIX = "ahorrafuel:estaciones:v4:";
 
 // Estaciones excluidas manualmente por no ser válidas para AhorraFuel.
 // Se utiliza IDEESS para no depender del nombre o la dirección.
@@ -140,6 +140,22 @@ function agruparPorProvincia(data) {
       .trim()
       .toUpperCase();
 
+    const ideessDiagnostico = String(
+      estacion["IDEESS"] || ""
+    ).trim();
+
+    if (ideessDiagnostico === "15653") {
+      console.log("CANARY OIL RECIBIDA DEL MINISTERIO:", {
+        ideess: ideessDiagnostico,
+        tipoVenta,
+        provincia: estacion["IDProvincia"] || "",
+        rotulo: estacion["Rótulo"] || "",
+        precio95: estacion["Precio Gasolina 95 E5"] || "",
+        precio98: estacion["Precio Gasolina 98 E5"] || "",
+        diesel: estacion["Precio Gasoleo A"] || ""
+      });
+    }
+
     if (tipoVenta !== "P") {
       descartadasNoPublicas++;
       continue;
@@ -157,20 +173,31 @@ function agruparPorProvincia(data) {
       continue;
     }
 
-    if (!ideess) {
-      descartadasSinIDEESS++;
-      continue;
+    let idInterno = ideess;
+
+    if (!idInterno) {
+      const partesId = [
+        estacion["Rótulo"],
+        estacion["Dirección"],
+        estacion["Localidad"],
+        estacion["C.P."],
+        estacion["Latitud"],
+        estacion["Longitud (WGS84)"]
+      ].map(v => String(v || "").trim().toUpperCase());
+
+      idInterno = `SIN_IDEESS_${partesId.join("|")}`;
+      estacionesSinIDEESS++;
     }
 
     // -----------------------------------------
     // 3. EVITAR DUPLICADOS
     // -----------------------------------------
-    if (idsVistos.has(ideess)) {
+    if (idsVistos.has(idInterno)) {
       duplicadas++;
       continue;
     }
 
-    idsVistos.add(ideess);
+    idsVistos.add(idInterno);
 
     // -----------------------------------------
     // 4. PROVINCIA
@@ -216,7 +243,7 @@ function agruparPorProvincia(data) {
     provincias.get(provincia).push({
       // IDEESS: solo uso interno, no se muestra
       // al usuario en gasolineras.js.
-      id: ideess,
+      id: idInterno,
 
       nombre:
         estacion["Rótulo"] ||
@@ -287,7 +314,7 @@ function agruparPorProvincia(data) {
   );
 
   console.log(
-    `Descartadas por falta de IDEESS: ${descartadasSinIDEESS}`
+    `Estaciones públicas sin IDEESS (conservadas): ${descartadasSinIDEESS}`
   );
 
   console.log(

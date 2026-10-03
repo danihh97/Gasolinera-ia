@@ -5,22 +5,45 @@ const REDIS_TTL = 2 * 60 * 60; // 2 horas
 const LOCK_TTL = 60; // 60 segundos
 
 // v3: nueva estructura con IDEESS y filtro de venta pública
-const REDIS_PREFIX = "ahorrafuel:estaciones:v3:";
+const REDIS_PREFIX = "ahorrafuel:estaciones:v4:";
 const REDIS_LOCK_KEY = "ahorrafuel:estaciones:lock";
+
+// Estaciones excluidas manualmente de AhorraFuel.
+// Se identifican por IDEESS para no depender del nombre.
+const ESTACIONES_EXCLUIDAS = new Set([
+  "9701" // MOEVE-ARROCEROS B.G.
+]);
 
 // Caché local de la instancia de Vercel
 const localCache = new Map();
 
 function getRedisBaseUrl() {
-  const raw = process.env.UPSTASH_REDIS_REST_URL;
+  const raw = String(
+    process.env.UPSTASH_REDIS_REST_URL || ""
+  ).trim();
 
   if (!raw) {
     throw new Error("Falta UPSTASH_REDIS_REST_URL");
   }
 
-  return raw
+  // Normaliza la URL de Upstash y evita errores de URL mal formada.
+  const normalized = raw
     .replace(/\/+$/, "")
     .replace(/\/pipeline$/, "");
+
+  try {
+    const parsed = new URL(normalized);
+
+    if (!["http:", "https:"].includes(parsed.protocol)) {
+      throw new Error("El protocolo debe ser http o https");
+    }
+
+    return parsed.toString().replace(/\/+$/, "");
+  } catch (error) {
+    throw new Error(
+      `UPSTASH_REDIS_REST_URL no es válida: ${JSON.stringify(raw)}`
+    );
+  }
 }
 
 async function redisCommand(command) {
@@ -31,7 +54,17 @@ async function redisCommand(command) {
     throw new Error("Falta UPSTASH_REDIS_REST_TOKEN");
   }
 
-  const response = await fetch(url, {
+  let redisUrl;
+
+  try {
+    redisUrl = new URL(url).toString();
+  } catch {
+    throw new Error(
+      `URL de Upstash no válida: ${JSON.stringify(url)}`
+    );
+  }
+
+  const response = await fetch(redisUrl, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -75,7 +108,19 @@ async function redisPipeline(commands) {
     throw new Error("Falta UPSTASH_REDIS_REST_TOKEN");
   }
 
-  const response = await fetch(`${baseUrl}/pipeline`, {
+  let pipelineUrl;
+
+  try {
+    pipelineUrl = new URL(
+      `${baseUrl}/pipeline`
+    ).toString();
+  } catch {
+    throw new Error(
+      `URL de Pipeline de Upstash no válida: ${JSON.stringify(baseUrl)}`
+    );
+  }
+
+  const response = await fetch(pipelineUrl, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -215,27 +260,62 @@ function agruparPorProvincia(data) {
       estacion["IDEESS"] || ""
     ).trim();
 
-    if (!ideess) {
-      descartadasSinIDEESS++;
+    if (ideess === "15653") {
+      console.log("CANARY OIL detectada y conservada:", {
+        ideess,
+        rotulo: estacion["Rótulo"] || "",
+        tipoVenta,
+        provincia: estacion["IDProvincia"] || "",
+        precio95: estacion["Precio Gasolina 95 E5"] || "",
+        precio98: estacion["Precio Gasolina 98 E5"] || "",
+        diesel: estacion["Precio Gasoleo A"] || ""
+      });
+    }
+
+    // Exclusión manual: no almacenar ni servir esta estación.
+    if (ESTACIONES_EXCLUIDAS.has(ideess)) {
+      console.log(`Estación excluida manualmente: IDEESS ${ideess}`);
       continue;
     }
 
-    if (idsVistos.has(ideess)) {
+    // Conservamos las estaciones públicas aunque no tengan IDEESS.
+    let idInterno = ideess;
+
+    if (!idInterno) {
+      const partesId = [
+        estacion["Rótulo"],
+        estacion["Dirección"],
+        estacion["Localidad"],
+        estacion["C.P."],
+        estacion["Latitud"],
+        estacion["Longitud (WGS84)"]
+      ].map(v => String(v || "").trim().toUpperCase());
+
+      idInterno = `SIN_IDEESS_${partesId.join("|")}`;
+      estacionesSinIDEESS++;
+    }
+
+    if (idsVistos.has(idInterno)) {
       duplicadas++;
       continue;
     }
 
-    idsVistos.add(ideess);
+    idsVistos.add(idInterno);
 
-    const provincia = String(
+    const provinciaRaw = String(
       estacion["IDProvincia"] || ""
-    )
-      .trim()
-      .padStart(2, "0");
+    ).trim();
 
-    if (!provincia) {
+    if (!/^\d{1,2}$/.test(provinciaRaw)) {
+      console.warn("Estación pública sin provincia válida:", {
+        ideess,
+        rotulo: estacion["Rótulo"] || "",
+        provincia: estacion["IDProvincia"] || ""
+      });
       continue;
     }
+
+    const provincia = provinciaRaw.padStart(2, "0");
 
     if (!provincias.has(provincia)) {
       provincias.set(provincia, []);
@@ -261,7 +341,7 @@ function agruparPorProvincia(data) {
 
     provincias.get(provincia).push({
       // Identificador interno. No se expone al frontend.
-      id: ideess,
+      id: idInterno,
 
       nombre:
         estacion["Rótulo"] ||
@@ -333,7 +413,7 @@ function agruparPorProvincia(data) {
   );
 
   console.log(
-    `Descartadas por falta de IDEESS: ${descartadasSinIDEESS}`
+    `Estaciones públicas sin IDEESS (conservadas): ${descartadasSinIDEESS}`
   );
 
   console.log(
@@ -615,6 +695,7 @@ function prepararRespuesta(data, producto) {
 
   const estaciones =
     (data.estaciones || [])
+      .filter(estacion => !ESTACIONES_EXCLUIDAS.has(String(estacion.id || "").trim()))
       .map(estacion => {
         const precio = estacion[campoPrecio];
 
