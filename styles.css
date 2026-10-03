@@ -932,3 +932,16 @@ h1{text-shadow:0 2px 16px rgba(0,0,0,.18);font-weight:900}
 button.seo-keyword{font-family:inherit;font-size:13px;font-weight:700;color:#287c2e;text-align:left;cursor:pointer;width:100%;appearance:none;-webkit-appearance:none}
 button.seo-keyword:hover{background:#eef6ee;border-color:#c9dcc9}
 button.seo-keyword:focus-visible{outline:2px solid #287c2e;outline-offset:2px}
+/* Modo app: solo para quien tiene la PWA instalada */
+.is-app .web-only,.is-app #afPwaInstallCard,.is-app .hero .eye,.is-app .hero .lead,.is-app .trust,.is-app .art,.is-app .af-menu,.is-app .af-menu-button,.is-app header .btn.sm{display:none!important}
+.is-app{-webkit-tap-highlight-color:transparent}
+.is-app body{overscroll-behavior-y:contain}
+.is-app header .wrap{justify-content:center;height:60px}
+.is-app .hero .wrap{grid-template-columns:1fr;gap:0;padding-top:8px;padding-bottom:16px}
+.is-app h1{font-size:22px;letter-spacing:-.02em;margin:4px 0 10px;text-align:center}
+.is-app .af-mascot{margin:0 0 12px}
+.is-app .af-mascot .mas{width:84px}
+.is-app .af-mascot-bubble{font-size:14px;padding:10px 12px}
+.is-app footer{padding:20px 0 calc(24px + env(safe-area-inset-bottom,0px))}
+.is-app footer .wrap{grid-template-columns:1fr}
+.is-app #afPwaInstallButton{display:none!important}
