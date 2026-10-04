@@ -997,3 +997,23 @@ button.seo-keyword:focus-visible{outline:2px solid #287c2e;outline-offset:2px}
 #results{box-sizing:border-box;padding-left:20px;padding-right:20px}
 .is-app .hero .wrap{padding-bottom:6px}
 .is-app #results{margin-top:4px}
+
+/* ===== Utilidades de la app ===== */
+.is-app .seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:0 0 14px;padding:4px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08)}
+.is-app .seg[hidden]{display:none}
+.is-app .seg button{min-height:40px;border:0;border-radius:10px;background:transparent;color:#a9c0b6;font:700 13px system-ui,-apple-system,sans-serif;cursor:pointer}
+.is-app .seg button.on{background:#72e62a;color:#06210f}
+.is-app .insights{margin:0 0 14px;padding:16px;border-radius:18px;background:linear-gradient(135deg,rgba(114,230,42,.14),rgba(33,170,60,.08));border:1px solid rgba(114,230,42,.28);color:#fff}
+.is-app .insights[hidden]{display:none}
+.is-app .ins-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.is-app .ins-h b{font-size:15px}
+.is-app .ins-share{height:34px;padding:0 12px;border:1px solid rgba(255,255,255,.2);border-radius:10px;background:transparent;color:#fff;font:700 13px system-ui,-apple-system,sans-serif;cursor:pointer}
+.is-app .ins-t{margin:0 0 12px;font-size:15px;line-height:1.5;color:#e7f3ea}
+.is-app .ins-c{display:flex;gap:10px;flex-wrap:wrap}
+.is-app .ins-c label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:700;color:#a9c0b6}
+.is-app .ins-c select{height:40px;min-width:112px;border:1px solid rgba(255,255,255,.18);border-radius:10px;background:rgba(0,0,0,.25);color:#fff;font:600 14px system-ui,-apple-system,sans-serif;padding:0 10px}
+.is-app .ins-n{margin:10px 0 0;font-size:12px;color:#a9c0b6}.is-app .ins-n:empty{display:none}
+.af-open{margin-top:8px;font-size:13px;font-weight:800}
+.af-open::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:7px;background:currentColor}
+.af-open.on{color:#287c2e}.af-open.off{color:#b45309}
+.is-app .insights{margin:0 20px 14px}

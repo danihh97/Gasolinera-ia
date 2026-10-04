@@ -1597,3 +1597,95 @@ if(!window.__afAtajo){try{var L=JSON.parse(localStorage.getItem("af_last")||"nul
   if(L&&L.p){prov.value=L.p;var rr=L.f&&$('input[name="f"][value="'+L.f+'"]');if(rr){rr.checked=true;if(fuel)fuel.value=L.f}
   if(prov.value&&typeof buscar==="function")buscar()}}catch(e){}}
 })();
+
+;(function(){
+if(!document.documentElement.classList.contains("is-app"))return;
+var $=function(s,r){return(r||document).querySelector(s)},res=$("#results"),prov=$("#province"),fuel=$("#fuel"),sum=$(".app-summary");
+if(!res||!sum||!prov)return;
+function near(){return typeof modoBusqueda!=="undefined"&&modoBusqueda!=="provincia"}
+function rerun(){if(near()){if(typeof usarUbicacion==="function")usarUbicacion()}else if(prov.value&&typeof buscar==="function")buscar()}
+function eur(n,d){return n.toFixed(d==null?2:d).replace(".",",")}
+function num(s){return parseFloat(String(s).replace(",","."))}
+function norm(s){return String(s||"").toUpperCase().replace(/\s+/g," ").trim()}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function km(a,b,c,d){var r=Math.PI/180,x=(c-a)*r,y=(d-b)*r,h=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a*r)*Math.cos(c*r)*Math.sin(y/2)*Math.sin(y/2);return 12742*Math.asin(Math.sqrt(h))}
+var D=null,best=null,car={l:40,c:6.5};
+try{var cs=JSON.parse(localStorage.getItem("af_car")||"null");if(cs&&cs.l&&cs.c)car=cs}catch(e){}
+// Cambio rápido de combustible
+var seg=document.createElement("div");seg.className="seg";seg.hidden=true;
+seg.innerHTML=[["95","Gasolina 95"],["98","Gasolina 98"],["diesel","Diésel"]].map(function(x){return'<button type="button" data-f="'+x[0]+'">'+x[1]+'</button>'}).join("");
+sum.parentNode.insertBefore(seg,sum.nextSibling);
+seg.onclick=function(e){var b=e.target.closest("button");if(!b)return;var v=b.dataset.f,r=$('input[name="f"][value="'+v+'"]');if(!r||(fuel&&fuel.value===v))return;r.checked=true;if(fuel)fuel.value=v;try{navigator.vibrate&&navigator.vibrate(8)}catch(x){}rerun()};
+// Tarjeta de utilidad: mejor opción y ahorro
+var ins=document.createElement("div");ins.className="insights";ins.hidden=true;
+ins.innerHTML='<div class="ins-h"><b>💡 <span class="ins-title"></span></b>'+(navigator.share?'<button type="button" class="ins-share">Compartir</button>':'')+'</div><p class="ins-t"></p><div class="ins-c"><label>Depósito<select class="sl">'+[20,30,40,50,60,70,80].map(function(l){return'<option value="'+l+'">'+l+' L</option>'}).join("")+'</select></label><label class="cc">Consumo<select class="sc">'+[4,5,5.5,6,6.5,7,8,9,10,12].map(function(c){return'<option value="'+c+'">'+String(c).replace(".",",")+' L/100 km</option>'}).join("")+'</select></label></div><p class="ins-n"></p>';
+res.parentNode.insertBefore(ins,res);
+var sl=$(".sl",ins),sc=$(".sc",ins),cc=$(".cc",ins);sl.value=car.l;sc.value=car.c;
+function saveCar(){car={l:+sl.value,c:+sc.value};try{localStorage.setItem("af_car",JSON.stringify(car))}catch(e){}insights()}
+sl.onchange=sc.onchange=saveCar;
+var sb=$(".ins-share",ins);
+if(sb)sb.onclick=function(){if(!best)return;var f=$('input[name="f"]:checked'),e=best.e;navigator.share({title:"AhorraFuel",text:(f?f.nextElementSibling.textContent:"Gasolina")+": "+e.nombre+" a "+eur(e.precio,3)+" €/L en "+(e.localidad||"mi zona")+". Compara en AhorraFuel.",url:location.origin}).catch(function(){})};
+function insights(){
+  if(!D||!D.estaciones||sum.hidden){ins.hidden=true;return}
+  var L=car.l,C=car.c,es=D.estaciones.filter(function(e){return e.precio>0});if(!es.length){ins.hidden=true;return}
+  var u=near()&&typeof ubicacionUsuario!=="undefined"&&ubicacionUsuario,title,t;
+  cc.style.display=u?"":"none";
+  if(u){
+    var l=es.map(function(e){var la=num(e.latitud),lo=num(e.longitud);if(isNaN(la)||isNaN(lo))return null;var k=km(u.lat,u.lon,la,lo);return k<=30?{e:e,k:k,c:L*e.precio+2*k*1.3*C/100*e.precio}:null}).filter(Boolean);
+    if(!l.length){ins.hidden=true;return}
+    var cer=l.reduce(function(a,b){return b.k<a.k?b:a}),mej=l.reduce(function(a,b){return b.c<a.c?b:a});
+    best=mej;title="Mejor opción para ti";
+    t='<b>'+esc(mej.e.nombre)+'</b> · '+eur(mej.e.precio,3)+' €/L · a '+eur(mej.k,1)+' km<br>'+(mej===cer?'Además es la más cercana: no compensa desplazarte más.':'Ahorras <b>'+eur(cer.c-mej.c)+' €</b> frente a la más cercana, contando el viaje de ida y vuelta.')
+  }else{
+    var mn=es.reduce(function(a,b){return b.precio<a.precio?b:a}),av=es.reduce(function(s,e){return s+e.precio},0)/es.length;
+    best={e:mn};title="Ahorro por depósito";
+    t='Llenar '+L+' L en <b>'+esc(mn.nombre)+'</b> cuesta <b>'+eur(L*mn.precio)+' €</b>.<br>Ahorras <b>'+eur((av-mn.precio)*L)+' €</b> frente al precio medio.'
+  }
+  $(".ins-title",ins).textContent=title;$(".ins-t",ins).innerHTML=t;
+  $(".ins-n",ins).textContent=D.__cache?"📦 Datos guardados en tu móvil, de tu última consulta.":(u?"Estimación con distancia en línea recta ×1,3 y tu consumo.":"");
+  ins.hidden=false
+}
+// Abierta ahora / 24 h
+var DIA={L:1,M:2,X:3,J:4,V:5,S:6,D:0};
+function franjas(h,dw){var out=null,pr=false;
+  String(h||"").toUpperCase().split(/[;\n]/).forEach(function(s){
+    var m=s.match(/^\s*([LMXJVSD](?:\s*[-,]\s*[LMXJVSD])*)\s*:\s*(.*)$/);if(!m)return;pr=true;
+    var d=m[1].replace(/\s/g,""),ok;
+    if(/^[LMXJVSD]-[LMXJVSD]$/.test(d)){var a=DIA[d[0]]||7,b=DIA[d[2]]||7,w=dw||7;ok=a<=b?(w>=a&&w<=b):(w>=a||w<=b)}else ok=d.split(",").some(function(x){return DIA[x]===dw});
+    if(!ok)return;
+    if(/24\s*H/.test(m[2])){out=[[0,1440]];return}
+    var r=[],re=/(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/g,x;while((x=re.exec(m[2])))r.push([+x[1]*60+ +x[2],+x[3]*60+ +x[4]]);
+    if(r.length)out=r});
+  return out||(pr?[]:null)}
+function hhmm(m){m=m%1440;return String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0")}
+function estado(h,pv){
+  var tz=(pv==="35"||pv==="38")?"Atlantic/Canary":"Europe/Madrid",g={};
+  try{new Intl.DateTimeFormat("en-GB",{timeZone:tz,weekday:"short",hour:"2-digit",minute:"2-digit",hour12:false}).formatToParts(new Date()).forEach(function(x){g[x.type]=x.value})}catch(e){return null}
+  var dw={Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6,Sun:0}[g.weekday],mn=(+g.hour%24)*60+ +g.minute,f=franjas(h,dw);
+  if(!f)return null;if(!f.length)return{t:"Cerrada hoy",c:"off"};if(f[0][0]===0&&f[0][1]>=1440)return{t:"Abierta 24 h",c:"on"};
+  for(var i=0;i<f.length;i++){var a=f[i][0],b=f[i][1];if(a<=b?(mn>=a&&mn<b):(mn>=a||mn<b))return{t:"Abierta · hasta las "+hhmm(b),c:"on"}}
+  var nx=f.map(function(x){return x[0]}).filter(function(x){return x>mn}).sort(function(a,b){return a-b})[0];
+  return{t:nx!=null?"Cerrada · abre a las "+hhmm(nx):"Cerrada ahora",c:"off"}}
+function annotate(){
+  if(!D||!D.estaciones)return;
+  [].forEach.call(res.querySelectorAll(".station:not([data-af])"),function(c){
+    var inf=$(".station-info",c);if(!inf)return;c.setAttribute("data-af","1");
+    var nm=norm(($(".station-name",c)||{}).textContent),it=norm(inf.textContent);
+    for(var i=0;i<D.estaciones.length;i++){var e=D.estaciones[i];
+      if(e.direccion&&it.indexOf(norm(e.direccion))>-1&&nm.indexOf(norm(e.nombre))>-1){var s=estado(e.horario,D.provincia);if(s)inf.insertAdjacentHTML("beforeend",'<div class="af-open '+s.c+'">'+s.t+'</div>');break}}})}
+function onData(){insights();annotate()}
+// Datos guardados: la última consulta de cada búsqueda funciona sin conexión
+function ck(url){try{var q=new URL(url,location.origin).searchParams;return"af_c_"+q.get("provincia")+"_"+q.get("producto")}catch(e){return null}}
+function save(k,d){try{var ix=JSON.parse(localStorage.getItem("af_c_idx")||"[]").filter(function(x){return x!==k});ix.unshift(k);ix.slice(4).forEach(function(x){localStorage.removeItem(x)});localStorage.setItem("af_c_idx",JSON.stringify(ix.slice(0,4)));localStorage.setItem(k,JSON.stringify(d))}catch(e){}}
+function load(k){try{return JSON.parse(localStorage.getItem(k)||"null")}catch(e){return null}}
+var _f=window.fetch.bind(window);
+window.fetch=function(u,o){
+  var url=typeof u==="string"?u:(u&&u.url)||"",k=url.indexOf("/api/gasolineras")>-1?ck(url):null;if(!k)return _f(u,o);
+  function fb(){var c=load(k);if(!c)return null;c.__cache=true;D=c;setTimeout(onData,60);return new Response(JSON.stringify(c),{status:200,headers:{"Content-Type":"application/json"}})}
+  return _f(u,o).then(function(r){if(r.ok){r.clone().json().then(function(d){save(k,d);D=d;onData()}).catch(function(){});return r}return fb()||r},function(e){var f=fb();if(f)return f;throw e})};
+new MutationObserver(function(){
+  seg.hidden=sum.hidden;[].forEach.call(seg.children,function(b){b.classList.toggle("on",!!fuel&&b.dataset.f===fuel.value)});
+  setTimeout(onData,80)
+}).observe(res,{childList:true});
+window.__af={insights:insights,estado:estado};
+})();
