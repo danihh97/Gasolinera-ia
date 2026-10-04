@@ -1537,7 +1537,63 @@ if ("serviceWorker" in navigator) {
 ;
 document.querySelectorAll('.seo-keyword[data-fuel],.seo-keyword[data-near]').forEach(function(b){b.addEventListener('click',function(){var c=document.querySelector('.search-card');if(b.dataset.fuel){var f=document.getElementById('fuel');if(f){f.value=b.dataset.fuel;var rr=document.querySelector('input[name="f"][value="'+b.dataset.fuel+'"]');if(rr)rr.checked=true}}if(c)c.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});var x=b.dataset.near?document.querySelector('button[onclick="usarUbicacion()"]'):document.getElementById('province');if(x)setTimeout(function(){x.focus({preventScroll:true})},350)})});
 ;(function(){var f=document.getElementById("fuel");if(!f)return;document.querySelectorAll('input[name="f"]').forEach(function(r){r.addEventListener("change",function(){f.value=r.value;f.dispatchEvent(new Event("change",{bubbles:true}))})})})();
-;(function(){var q=new URLSearchParams(location.search),c=q.get("combustible"),a=q.get("accion");if(!c&&!a)return;
+;(function(){var q=new URLSearchParams(location.search),c=q.get("combustible"),a=q.get("accion");if(!c&&!a)return;window.__afAtajo=true;
 function go(){var f=document.getElementById("fuel");if(c&&f&&/^(95|98|diesel)$/.test(c)){f.value=c;var r=document.querySelector('input[name="f"][value="'+c+'"]');if(r)r.checked=true}
 if(a==="cerca"&&typeof usarUbicacion==="function")usarUbicacion();history.replaceState(null,"",location.pathname)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",go);else go()})();
+
+;(function(){
+if(!document.documentElement.classList.contains("is-app"))return;
+var $=function(s,r){return(r||document).querySelector(s)},res=$("#results"),card=$("#buscar"),prov=$("#province"),fuel=$("#fuel");
+if(!res||!card||!prov)return;
+function vib(){try{navigator.vibrate&&navigator.vibrate(8)}catch(e){}}
+function ico(p){return'<svg class="i" viewBox="0 0 24 24" aria-hidden="true">'+p+'</svg>'}
+function add(h){var d=document.createElement("div");d.innerHTML=h;var e=d.firstElementChild;document.body.appendChild(e);return e}
+function near(){return typeof modoBusqueda!=="undefined"&&modoBusqueda!=="provincia"}
+var REF='<path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7"/>';
+// Barra resumen: sustituye al formulario cuando ya hay resultados
+var sum=document.createElement("div");sum.className="app-summary";sum.hidden=true;sum.innerHTML='<div><b></b><span></span></div><button type="button">Cambiar</button>';card.parentNode.insertBefore(sum,card);
+function showForm(){card.classList.remove("is-collapsed");sum.hidden=true}
+sum.lastChild.onclick=function(){vib();showForm();card.scrollIntoView({behavior:"smooth",block:"start"})};
+// Barra de pestañas inferior
+var bar=add('<nav class="tabbar" aria-label="Navegación de la app"><button type="button" class="tab">'+ico('<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/>')+'Buscar</button><button type="button" class="tab">'+ico('<path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>')+'Cerca</button><button type="button" class="tab">'+ico('<circle cx="5" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="19" cy="12" r="1.3"/>')+'Más</button></nav>'),tabs=bar.querySelectorAll(".tab");
+function setTab(i){tabs.forEach(function(t,k){k===i?t.setAttribute("aria-current","page"):t.removeAttribute("aria-current")})}
+setTab(0);
+tabs[0].onclick=function(){vib();setTab(0);showForm();window.scrollTo({top:0,behavior:"smooth"})};
+tabs[1].onclick=function(){vib();setTab(1);if(typeof usarUbicacion==="function")usarUbicacion()};
+tabs[2].onclick=function(){vib();bg.classList.add("open");sh.classList.add("open")};
+// Hoja "Más": enlaces legales y compartir
+var legal=[].map.call(document.querySelectorAll("footer .wrap > div:nth-child(3) a"),function(a){return'<a href="'+a.getAttribute("href")+'">'+a.textContent+'</a>'}).join("");
+var bg=add('<div class="sheet-bg"></div>'),sh=add('<div class="sheet" role="dialog" aria-modal="true" aria-label="Más opciones">'+(navigator.share?'<button type="button" data-share>Compartir AhorraFuel</button>':"")+legal+'<button type="button" data-cookies>Preferencias de cookies</button><button type="button" data-close>Cerrar</button></div>');
+function closeSheet(){bg.classList.remove("open");sh.classList.remove("open")}
+bg.onclick=closeSheet;
+sh.addEventListener("click",function(e){var t=e.target.closest("button,a");if(!t)return;if(t.hasAttribute("data-close"))closeSheet();if(t.hasAttribute("data-cookies")){closeSheet();var ck=document.getElementById("cookieManage");if(ck)ck.click()}if(t.hasAttribute("data-share"))navigator.share({title:"AhorraFuel",text:"Gasolineras más baratas de España",url:location.origin}).catch(function(){})});
+// Botón actualizar en la cabecera y tirar para actualizar
+var rb=document.createElement("button");rb.type="button";rb.className="hdr-btn";rb.hidden=true;rb.setAttribute("aria-label","Actualizar precios");rb.innerHTML=ico(REF);$("header .wrap").appendChild(rb);
+function refresh(){vib();if(near()){if(typeof usarUbicacion==="function")usarUbicacion()}else if(prov.value&&typeof buscar==="function")buscar()}
+rb.onclick=refresh;
+var ptr=add('<div class="ptr" aria-hidden="true">'+ico(REF)+'</div>'),sy=0,pl=0,on=false;
+function rst(){on=false;pl=0;ptr.style.transform="";ptr.style.opacity=0;ptr.classList.remove("ready")}
+document.addEventListener("touchstart",function(e){on=!sum.hidden&&window.scrollY<=0&&e.touches.length===1&&!sh.classList.contains("open");if(on)sy=e.touches[0].clientY},{passive:true});
+document.addEventListener("touchmove",function(e){if(!on)return;pl=e.touches[0].clientY-sy;if(pl>0&&window.scrollY<=0){ptr.style.transform="translateY("+(Math.min(pl*.45,64)-60)+"px) rotate("+pl*2+"deg)";ptr.style.opacity=Math.min(pl/90,1);ptr.classList.toggle("ready",pl>110)}else rst()},{passive:true});
+document.addEventListener("touchend",function(){var go=on&&pl>110;rst();if(go)refresh()});
+// Estado de conexión y aviso de versión nueva
+var off=add('<div class="offline-pill" role="status" hidden>Sin conexión · los precios pueden no estar al día</div>');
+function net(){off.hidden=navigator.onLine}net();addEventListener("online",net);addEventListener("offline",net);
+var toast=add('<div class="toast" role="status" hidden><span>Hay una versión nueva de AhorraFuel</span><button type="button">Actualizar</button></div>');
+toast.lastChild.onclick=function(){location.reload()};
+if("serviceWorker"in navigator){var had=!!navigator.serviceWorker.controller;navigator.serviceWorker.addEventListener("controllerchange",function(){if(had)toast.hidden=false;had=true})}
+// Al aparecer resultados: se pliega el formulario y se guarda la última búsqueda (solo provincia y combustible)
+new MutationObserver(function(){
+  if(!$(".station",res))return;
+  var r=$('input[name="f"]:checked'),o=prov.selectedOptions[0];
+  sum.firstChild.firstChild.textContent=r?r.nextElementSibling.textContent:"";
+  sum.firstChild.lastChild.textContent=near()?"Cerca de ti":(o?o.text:"");
+  sum.hidden=false;card.classList.add("is-collapsed");document.documentElement.classList.add("af-has-results");var bb=document.getElementById("afMascotBubble");if(bb)bb.innerHTML='💚 <strong>¡Gracias por confiar en AhorraFuel!</strong><br>⛽ ¡Ahorra en cada repostaje! 🚗💨';rb.hidden=false;setTab(near()?1:0);
+  if(!near()){try{localStorage.setItem("af_last",JSON.stringify({p:prov.value,f:fuel?fuel.value:""}))}catch(e){}}
+}).observe(res,{childList:true});
+// Al abrir la app: repite la última búsqueda por provincia
+if(!window.__afAtajo){try{var L=JSON.parse(localStorage.getItem("af_last")||"null");
+  if(L&&L.p){prov.value=L.p;var rr=L.f&&$('input[name="f"][value="'+L.f+'"]');if(rr){rr.checked=true;if(fuel)fuel.value=L.f}
+  if(prov.value&&typeof buscar==="function")buscar()}}catch(e){}}
+})();
