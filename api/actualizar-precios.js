@@ -110,43 +110,19 @@ function agruparPorProvincia(data) {
   let duplicadas = 0;
 
   const idsVistos = new Set();
-  const diagnostico = [];
 
   for (const estacion of estaciones) {
     const tipoVenta = String(estacion["Tipo Venta"] || "").trim().toUpperCase();
     const ideess = String(estacion["IDEESS"] || "").trim();
 
-    // DIAGNÓSTICO TEMPORAL: Canary Oil (se puede borrar cuando ya no haga falta).
-    let diag = null;
-
-    if (String(estacion["Rótulo"] || "").toUpperCase().includes("CANARY OIL")) {
-      diag = {
-        ideess,
-        tipoVenta,
-        provincia: estacion["IDProvincia"] || "",
-        rotulo: estacion["Rótulo"] || "",
-        direccion: estacion["Dirección"] || "",
-        precio95: estacion["Precio Gasolina 95 E5"] || "",
-        precio98: estacion["Precio Gasolina 98 E5"] || "",
-        gasoleoA: estacion["Precio Gasoleo A"] || "",
-        guardada: false,
-        motivo: ""
-      };
-
-      diagnostico.push(diag);
-      console.log("CANARY OIL RECIBIDA DEL MINISTERIO:", diag);
-    }
-
     // 1. SOLO VENTA AL PÚBLICO GENERAL
     if (tipoVenta !== "P") {
-      if (diag) diag.motivo = "Tipo Venta distinto de P";
       descartadasNoPublicas++;
       continue;
     }
 
     // 2. IDEESS
     if (ESTACIONES_EXCLUIDAS.has(ideess)) {
-      if (diag) diag.motivo = "Excluida manualmente";
       console.log(`Estación excluida manualmente: IDEESS ${ideess}`);
       continue;
     }
@@ -169,7 +145,6 @@ function agruparPorProvincia(data) {
 
     // 3. EVITAR DUPLICADOS
     if (idsVistos.has(idInterno)) {
-      if (diag) diag.motivo = "Duplicada";
       duplicadas++;
       continue;
     }
@@ -213,7 +188,6 @@ function agruparPorProvincia(data) {
       remision: estacion["Remisión"] || ""
     });
 
-    if (diag) diag.guardada = true;
   }
 
   console.log(`Estaciones oficiales recibidas: ${estaciones.length}`);
@@ -221,11 +195,11 @@ function agruparPorProvincia(data) {
   console.log(`Estaciones públicas sin IDEESS (conservadas): ${estacionesSinIDEESS}`);
   console.log(`Duplicadas por IDEESS: ${duplicadas}`);
 
-  return { provincias, diagnostico };
+  return provincias;
 }
 
 async function actualizarRedis(data) {
-  const { provincias, diagnostico } = agruparPorProvincia(data);
+  const provincias = agruparPorProvincia(data);
   const cacheTime = Date.now();
   const commands = [];
 
@@ -268,8 +242,7 @@ async function actualizarRedis(data) {
   return {
     provincias: provincias.size,
     estaciones: totalEstaciones,
-    fecha: data.Fecha || "",
-    diagnostico
+    fecha: data.Fecha || ""
   };
 }
 
@@ -328,9 +301,7 @@ export default async function handler(req, res) {
       mensaje: "Precios actualizados correctamente",
       fecha: resultado.fecha,
       provincias: resultado.provincias,
-      estaciones: resultado.estaciones,
-      // Diagnóstico temporal de Canary Oil (se puede borrar más adelante)
-      canaryOil: resultado.diagnostico
+      estaciones: resultado.estaciones
     });
   } catch (error) {
     console.error("ERROR ACTUALIZANDO PRECIOS:", error);
