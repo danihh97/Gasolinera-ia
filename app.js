@@ -1641,7 +1641,7 @@ function insights(){
     best={e:mn};title="Ahorro por depósito";
     t='Llenar '+L+' L en <b>'+esc(mn.nombre)+'</b> cuesta <b>'+eur(L*mn.precio)+' €</b>.<br>Ahorras <b>'+eur((av-mn.precio)*L)+' €</b> frente al precio medio.'
   }
-  $(".ins-title",ins).textContent=title;$(".ins-t",ins).innerHTML=t;
+  $(".ins-title",ins).textContent=title;$(".ins-t",ins).innerHTML=t.replace(/ €/g,"\u00a0€");
   $(".ins-n",ins).textContent=D.__cache?"📦 Datos guardados en tu móvil, de tu última consulta.":(u?"Estimación con distancia en línea recta ×1,3 y tu consumo.":"");
   ins.hidden=false
 }
@@ -1688,4 +1688,44 @@ new MutationObserver(function(){
   setTimeout(onData,80)
 }).observe(res,{childList:true});
 window.__af={insights:insights,estado:estado};
+})();
+
+;(function(){
+if(!document.documentElement.classList.contains("is-app"))return;
+var $=function(s,r){return(r||document).querySelector(s)},res=$("#results"),prov=$("#province"),fuel=$("#fuel"),seg=$(".seg"),mas=$(".af-mascot"),card=$("#buscar"),stat=$("#locationStatus");
+if(!res||!prov||!seg||!mas||!card)return;
+function near(){return typeof modoBusqueda!=="undefined"&&modoBusqueda!=="provincia"}
+function vib(){try{navigator.vibrate&&navigator.vibrate(8)}catch(e){}}
+function ico(p,c){return'<svg class="i'+(c?" "+c:"")+'" viewBox="0 0 24 24" aria-hidden="true">'+p+'</svg>'}
+function add(h){var d=document.createElement("div");d.innerHTML=h;var e=d.firstElementChild;document.body.appendChild(e);return e}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function norm(s){return String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()}
+var home=document.createElement("section");home.className="home";home.setAttribute("aria-label","Buscar gasolineras");
+home.innerHTML='<div class="acts2"><button type="button" class="cta cta-near"><span class="ico">'+ico('<path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>')+'</span><span><b>Cerca de mí</b><small>Usa tu ubicación</small></span></button><button type="button" class="cta cta-prov"><span class="ico">'+ico('<path d="M9 4 3 6.5v13L9 17l6 3 6-2.5v-13L15 7 9 4zM9 4v13M15 7v13"/>')+'</span><span><b>Elegir provincia</b><small>Más de 50 provincias</small></span>'+ico('<path d="m9 6 6 6-6 6"/>',"chev")+'</button></div><p class="home-msg" role="status"></p>';
+card.parentNode.insertBefore(home,card);home.insertBefore(seg,home.firstChild);
+var bn=$(".cta-near",home),bp=$(".cta-prov",home),pt=$("b",bp),ps=$("small",bp),hm=$(".home-msg",home);
+function busy(b){b.classList.add("busy");setTimeout(function(){b.classList.remove("busy")},12000)}
+bn.onclick=function(){vib();hm.textContent="";busy(bn);if(typeof usarUbicacion==="function")usarUbicacion()};
+bp.onclick=function(){vib();openPick()};
+// Selector de provincia con buscador
+var opts=[].filter.call(prov.options,function(o){return o.value}),
+pk=add('<div class="pick-bg"></div>'),
+pp=add('<div class="pick" role="dialog" aria-modal="true" aria-label="Elegir provincia"><div class="pick-h"><b>Elige tu provincia</b><button type="button" class="pick-x" aria-label="Cerrar">✕</button></div><input class="pick-q" type="search" placeholder="Buscar provincia…" autocomplete="off"><div class="pick-l"></div></div>'),
+pq=$(".pick-q",pp),pl=$(".pick-l",pp);
+function fill(){var q=norm(pq.value);pl.innerHTML=opts.filter(function(o){return norm(o.text).indexOf(q)>-1}).map(function(o){return'<button type="button" data-v="'+o.value+'"'+(o.value===prov.value?' class="on"':'')+'>'+esc(o.text)+'</button>'}).join("")||'<p style="color:#a9c0b6;padding:14px 6px">Sin resultados</p>'}
+function openPick(){pq.value="";fill();pk.classList.add("open");pp.classList.add("open")}
+function closePick(){pk.classList.remove("open");pp.classList.remove("open");pq.blur()}
+pk.onclick=closePick;$(".pick-x",pp).onclick=closePick;pq.oninput=fill;
+pl.onclick=function(e){var b=e.target.closest("button[data-v]");if(!b)return;vib();closePick();hm.textContent="";prov.value=b.dataset.v;prov.dispatchEvent(new Event("change",{bubbles:true}));busy(bp);if(typeof buscar==="function")buscar()};
+// Estado de los botones y mensajes
+function sync(){
+  var o=prov.selectedOptions[0],n=near(),has=!!$(".station",res);
+  pt.textContent=o&&o.value?o.text:"Elegir provincia";ps.textContent=o&&o.value?(n?"Detectada por tu ubicación":"Cambiar provincia"):"Más de 50 provincias";
+  bn.classList.toggle("on",n&&has);bp.classList.toggle("on",!n&&has);
+  [].forEach.call(seg.children,function(b){b.classList.toggle("on",b.dataset.f===(fuel?fuel.value:"95"))});
+  if(has){bn.classList.remove("busy");bp.classList.remove("busy")}}
+new MutationObserver(sync).observe(res,{childList:true});
+seg.addEventListener("click",function(){setTimeout(sync,0)});
+if(stat)new MutationObserver(function(){hm.textContent=stat.textContent.trim();if(hm.textContent&&!$(".station",res)){bn.classList.remove("busy");bp.classList.remove("busy")}}).observe(stat,{childList:true,characterData:true,subtree:true});
+sync();
 })();
