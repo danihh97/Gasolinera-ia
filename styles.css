@@ -1075,3 +1075,21 @@ button.seo-keyword:focus-visible{outline:2px solid #287c2e;outline-offset:2px}
 .is-app .af-open.on{color:#72e62a}.is-app .af-open.off{color:#fbbf24}
 
 .is-app .pick-q::-webkit-search-cancel-button{-webkit-appearance:none;display:none}
+
+/* ===== Corrección de legibilidad (iPhone) ===== */
+.is-app #results .station-name,.is-app #results .station-name *,.is-app #results .summary-main,.is-app #results .summary-main *{color:#fff!important;-webkit-text-fill-color:#fff!important}
+.is-app #results .distance{color:#9be564!important;-webkit-text-fill-color:#9be564!important}
+.is-app #results .price-unit{color:#a9c0b6!important;-webkit-text-fill-color:#a9c0b6!important}
+.is-app #results .station-info,.is-app #results .summary-info{-webkit-text-fill-color:currentColor!important}
+.is-app #results .best-card{background:linear-gradient(135deg,#10251a,#163d22)!important;color:#fff!important}
+.is-app #results .best-card *{-webkit-text-fill-color:currentColor}
+.is-app #results .best-name,.is-app #results .best-price{color:#fff!important;-webkit-text-fill-color:#fff!important}
+.is-app #results .best-label{color:#a9e979!important;-webkit-text-fill-color:#a9e979!important}
+.is-app #results .best-location{color:#c7d5cb!important;-webkit-text-fill-color:#c7d5cb!important}
+html.is-app::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:rgba(6,23,19,.96);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);z-index:35;pointer-events:none}
+.is-app header{background:rgba(6,23,19,.94)}
+.is-app #results .option-card{background:rgba(255,255,255,.07)!important;color:#fff!important;border:1px solid rgba(255,255,255,.1)!important;border-radius:20px!important;box-shadow:none!important;padding:16px!important}
+.is-app #results .option-card .option-label,.is-app #results .option-card .option-label *{color:#a9e979!important;-webkit-text-fill-color:#a9e979!important}
+.is-app #results .option-card .option-price,.is-app #results .option-card .option-price *{color:#fff!important;-webkit-text-fill-color:#fff!important;font-size:28px!important;line-height:1.1}
+.is-app #results .option-card .option-name,.is-app #results .option-card .option-name *{color:#e7f3ea!important;-webkit-text-fill-color:#e7f3ea!important;font-size:15px!important}
+.is-app #results .option-card .option-distance,.is-app #results .option-card .option-distance *{color:#9be564!important;-webkit-text-fill-color:#9be564!important;font-size:14px!important}
