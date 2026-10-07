@@ -1093,3 +1093,23 @@ html.is-app::before{content:"";position:fixed;top:0;left:0;right:0;height:env(sa
 .is-app #results .option-card .option-price,.is-app #results .option-card .option-price *{color:#fff!important;-webkit-text-fill-color:#fff!important;font-size:28px!important;line-height:1.1}
 .is-app #results .option-card .option-name,.is-app #results .option-card .option-name *{color:#e7f3ea!important;-webkit-text-fill-color:#e7f3ea!important;font-size:15px!important}
 .is-app #results .option-card .option-distance,.is-app #results .option-card .option-distance *{color:#9be564!important;-webkit-text-fill-color:#9be564!important;font-size:14px!important}
+
+/* ===== Filtro por ciudad ===== */
+.is-app .cta-city{display:flex;align-items:center;gap:12px;width:100%;min-height:56px;padding:8px 14px;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(255,255,255,.06);color:#fff;font-family:inherit;text-align:left;cursor:pointer}
+.is-app .cta-city[hidden]{display:none}
+.is-app .cta-city .ico{flex:none;width:36px;height:36px;border-radius:12px;display:grid;place-items:center;background:rgba(114,230,42,.14);color:#72e62a}
+.is-app .cta-city small{display:block;font-size:12px;color:#a9c0b6;font-weight:700}
+.is-app .cta-city b{display:block;font-size:15px}
+.is-app .cta-city.on{border-color:#72e62a}
+.is-app .cta-city .chev{margin-left:auto;width:20px;height:20px;opacity:.6}
+.is-app .pick-l .n{margin-left:auto;color:#a9c0b6;font-size:13px;font-weight:600}
+
+/* ===== Campo Ciudad en la web ===== */
+label[for="citySelect"]{margin-top:12px}
+.fld em{font-style:normal;font-weight:600;opacity:.7}
+#citySelect:disabled{opacity:.55;cursor:not-allowed}
+label[for="citySelect"][hidden],#citySelect[hidden]{display:none}
+@keyframes cityIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:none}}
+.city-in{animation:cityIn .4s cubic-bezier(.2,.8,.2,1) both}
+select.city-in{box-shadow:0 0 0 3px rgba(114,230,42,.45)}
+@media(prefers-reduced-motion:reduce){.city-in{animation:none}}

@@ -1678,16 +1678,36 @@ function onData(){insights();annotate()}
 function ck(url){try{var q=new URL(url,location.origin).searchParams;return"af_c_"+q.get("provincia")+"_"+q.get("producto")}catch(e){return null}}
 function save(k,d){try{var ix=JSON.parse(localStorage.getItem("af_c_idx")||"[]").filter(function(x){return x!==k});ix.unshift(k);ix.slice(4).forEach(function(x){localStorage.removeItem(x)});localStorage.setItem("af_c_idx",JSON.stringify(ix.slice(0,4)));localStorage.setItem(k,JSON.stringify(d))}catch(e){}}
 function load(k){try{return JSON.parse(localStorage.getItem(k)||"null")}catch(e){return null}}
+var FULL=null,FULLKEY=null,cityKey=null,cityProv=null,reuse=false;
+function nk(s){return String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/\s+/g," ").trim()}
+function pretty(s){s=String(s||"").trim();var m=s.match(/^(.*?)\s*\((el|la|las|los|a|o|os|as|l'|els|les|es|sa)\)$/i);if(m)s=m[2]+(m[2].slice(-1)==="'"?"":" ")+m[1];
+  var sm={de:1,del:1,la:1,las:1,los:1,el:1,y:1,i:1,en:1,da:1,do:1,das:1,dos:1};
+  return s.toLowerCase().split(/(\s+|-)/).map(function(w,i){return/^(\s+|-)$/.test(w)||w===""?w:((i>0&&sm[w])?w:w.charAt(0).toUpperCase()+w.slice(1))}).join("")}
+function cKey(e){return nk(pretty(e.municipio||e.localidad))}
+function resp(o){return new Response(JSON.stringify(o),{status:200,headers:{"Content-Type":"application/json"}})}
+function filt(d){FULL=d;var o=d;
+  if(near()||String(d.provincia)!==cityProv)cityKey=null;
+  if(cityKey){var es=d.estaciones.filter(function(e){return cKey(e)===cityKey});o=Object.assign({},d,{estaciones:es,total:es.length})}
+  D=o;return o}
 var _f=window.fetch.bind(window);
 window.fetch=function(u,o){
   var url=typeof u==="string"?u:(u&&u.url)||"",k=url.indexOf("/api/gasolineras")>-1?ck(url):null;if(!k)return _f(u,o);
-  function fb(){var c=load(k);if(!c)return null;c.__cache=true;D=c;setTimeout(onData,60);return new Response(JSON.stringify(c),{status:200,headers:{"Content-Type":"application/json"}})}
-  return _f(u,o).then(function(r){if(r.ok){r.clone().json().then(function(d){save(k,d);D=d;onData()}).catch(function(){});return r}return fb()||r},function(e){var f=fb();if(f)return f;throw e})};
+  if(reuse&&FULL&&k===FULLKEY){reuse=false;var r0=filt(FULL);setTimeout(onData,60);return Promise.resolve(resp(r0))}
+  function fb(){var c=load(k);if(!c)return null;c.__cache=true;FULLKEY=k;var o2=filt(c);setTimeout(onData,60);return resp(o2)}
+  return _f(u,o).then(function(r){
+    if(r.ok){return r.clone().json().then(function(d){save(k,d);FULLKEY=k;var o2=filt(d);onData();return resp(o2)}).catch(function(){return r})}
+    return fb()||r},function(e){var f=fb();if(f)return f;throw e})};
+function cities(){if(!FULL||!FULL.estaciones)return null;var m={};
+  FULL.estaciones.forEach(function(e){var k=cKey(e);if(!k)return;var x=m[k]||(m[k]={key:k,label:pretty(e.municipio||e.localidad),count:0});x.count++});
+  var l=Object.keys(m).map(function(k){return m[k]}).sort(function(a,b){return a.label.localeCompare(b.label,"es")});
+  return{list:l,total:FULL.estaciones.length}}
+function setCity(k){if(!FULL)return;cityKey=k||null;cityProv=String(FULL.provincia);reuse=true;rerun()}
+function getCity(){if(!cityKey)return null;var c=cities();var x=c&&c.list.filter(function(i){return i.key===cityKey})[0];return x||null}
 new MutationObserver(function(){
   seg.hidden=sum.hidden;[].forEach.call(seg.children,function(b){b.classList.toggle("on",!!fuel&&b.dataset.f===fuel.value)});
   setTimeout(onData,80)
 }).observe(res,{childList:true});
-window.__af={insights:insights,estado:estado};
+window.__af={insights:insights,estado:estado,cities:cities,setCity:setCity,getCity:getCity};
 })();
 
 ;(function(){
@@ -1728,4 +1748,87 @@ new MutationObserver(sync).observe(res,{childList:true});
 seg.addEventListener("click",function(){setTimeout(sync,0)});
 if(stat)new MutationObserver(function(){hm.textContent=stat.textContent.trim();if(hm.textContent&&!$(".station",res)){bn.classList.remove("busy");bp.classList.remove("busy")}}).observe(stat,{childList:true,characterData:true,subtree:true});
 sync();
+})();
+
+;(function(){
+if(!document.documentElement.classList.contains("is-app")||!window.__af||!window.__af.cities)return;
+var $=function(s,r){return(r||document).querySelector(s)},res=$("#results"),acts=$(".acts2");
+if(!res||!acts)return;
+function near(){return typeof modoBusqueda!=="undefined"&&modoBusqueda!=="provincia"}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+var btn=document.createElement("button");btn.type="button";btn.className="cta-city";btn.hidden=true;
+btn.innerHTML='<span class="ico"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21h18M5 21V8l7-4 7 4v13M9 21v-6h6v6M9 11h.01M15 11h.01"/></svg></span><span><small>Ciudad</small><b>Toda la provincia</b></span><svg class="i chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>';
+acts.after(btn);
+var bg=document.createElement("div");bg.className="pick-bg";
+var pk=document.createElement("div");pk.className="pick";pk.setAttribute("role","dialog");pk.setAttribute("aria-modal","true");pk.setAttribute("aria-label","Elegir ciudad");
+pk.innerHTML='<div class="pick-h"><b>Elige tu ciudad</b><button type="button" class="pick-x" aria-label="Cerrar">✕</button></div><input class="pick-q" type="search" placeholder="Buscar ciudad..." autocomplete="off"><div class="pick-l"></div>';
+document.body.appendChild(bg);document.body.appendChild(pk);
+var q=$(".pick-q",pk),lst=$(".pick-l",pk);
+function nk(s){return String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()}
+function fill(t){var c=window.__af.cities();if(!c)return;t=nk(t);var cur=window.__af.getCity(),h="";
+  if(!t)h+='<button type="button" data-k=""'+(!cur?' class="on"':'')+'>Toda la provincia<span class="n">'+c.total+'</span></button>';
+  c.list.forEach(function(x){if(t&&nk(x.label).indexOf(t)<0)return;h+='<button type="button" data-k="'+esc(x.key)+'"'+(cur&&cur.key===x.key?' class="on"':'')+'>'+esc(x.label)+'<span class="n">'+x.count+'</span></button>'});
+  lst.innerHTML=h}
+function open(){var po=$("#province"),pn=po&&po.selectedOptions[0]&&po.value?po.selectedOptions[0].text:"";q.placeholder=pn?"Buscar ciudad en "+pn+"...":"Buscar ciudad...";q.value="";fill("");bg.classList.add("open");pk.classList.add("open")}
+function close(){bg.classList.remove("open");pk.classList.remove("open");q.blur()}
+btn.onclick=open;bg.onclick=close;$(".pick-x",pk).onclick=close;q.oninput=function(){fill(q.value)};
+lst.onclick=function(e){var b=e.target.closest("button");if(!b)return;close();window.__af.setCity(b.getAttribute("data-k")||null)};
+var ask=false;
+document.addEventListener("click",function(e){if(e.target.closest&&e.target.closest(".pick-l button[data-v]"))ask=true},true);
+function render(){var c=window.__af.cities();if(!c||c.list.length<2||near()){btn.hidden=true;return}
+  btn.hidden=false;var cur=window.__af.getCity();$("b",btn).textContent=cur?cur.label+" ("+cur.count+")":"Toda la provincia ("+c.total+")";btn.classList.toggle("on",!!cur)}
+new MutationObserver(function(){setTimeout(function(){render();
+  if(ask&&$(".station",res)){ask=false;var c=window.__af.cities();if(c&&c.list.length>1&&!near())open()}},140)}).observe(res,{childList:true});
+})();
+
+;(function(){
+// Filtro por ciudad en la web (la app instalada tiene el suyo)
+if(document.documentElement.classList.contains("is-app"))return;
+var $=function(s,r){return(r||document).querySelector(s)},prov=$("#province"),fuel=$("#fuel"),res=$("#results");
+if(!prov||!res||!prov.parentNode)return;
+function near(){return typeof modoBusqueda!=="undefined"&&modoBusqueda!=="provincia"}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function nk(s){return String(s||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/\s+/g," ").trim()}
+function pretty(s){s=String(s||"").trim();var m=s.match(/^(.*?)\s*\((el|la|las|los|a|o|os|as|l'|els|les|es|sa)\)$/i);if(m)s=m[2]+(m[2].slice(-1)==="'"?"":" ")+m[1];
+  var sm={de:1,del:1,la:1,las:1,los:1,el:1,y:1,i:1,en:1,da:1,do:1,das:1,dos:1};
+  return s.toLowerCase().split(/(\s+|-)/).map(function(w,i){return/^(\s+|-)$/.test(w)||w===""?w:((i>0&&sm[w])?w:w.charAt(0).toUpperCase()+w.slice(1))}).join("")}
+function cKey(e){return nk(pretty(e.municipio||e.localidad))}
+function resp(o){return new Response(JSON.stringify(o),{status:200,headers:{"Content-Type":"application/json"}})}
+function key(url){try{var q=new URL(url,location.origin).searchParams;return q.get("provincia")+"|"+q.get("producto")}catch(e){return null}}
+var FULL=null,FULLKEY=null,cityKey=null,cityProv=null,reuse=false,loaded=null,seq=0;
+function filt(d){FULL=d;var o=d;
+  if(near()||String(d.provincia)!==cityProv)cityKey=null;
+  if(cityKey){var es=d.estaciones.filter(function(e){return cKey(e)===cityKey});o=Object.assign({},d,{estaciones:es,total:es.length})}
+  return o}
+var _f=window.fetch.bind(window);
+window.fetch=function(u,o){
+  var url=typeof u==="string"?u:(u&&u.url)||"";if(url.indexOf("/api/gasolineras")<0)return _f(u,o);
+  var k=key(url);
+  if(reuse&&FULL&&k===FULLKEY){reuse=false;return Promise.resolve(resp(filt(FULL)))}
+  return _f(u,o).then(function(r){if(!r.ok)return r;return r.clone().json().then(function(d){FULLKEY=k;return resp(filt(d))}).catch(function(){return r})})};
+// Campo "Ciudad" bajo la provincia
+var lab=document.createElement("label");lab.className="fld";lab.htmlFor="citySelect";lab.innerHTML='Ciudad <em>(opcional)</em>';
+var sel=document.createElement("select");sel.id="citySelect";sel.disabled=true;sel.innerHTML='<option value="">Toda la provincia</option>';
+lab.hidden=sel.hidden=true;
+prov.after(lab,sel);
+function fill(d){var m={};((d&&d.estaciones)||[]).forEach(function(e){var k=cKey(e);if(!k)return;var x=m[k]||(m[k]={key:k,label:pretty(e.municipio||e.localidad),count:0});x.count++});
+  var l=Object.keys(m).map(function(k){return m[k]}).sort(function(a,b){return a.label.localeCompare(b.label,"es")}),n=d&&d.estaciones?d.estaciones.length:0;
+  sel.innerHTML='<option value="">Toda la provincia'+(n?' ('+n+')':'')+'</option>'+l.map(function(x){return'<option value="'+esc(x.key)+'">'+esc(x.label)+' ('+x.count+')</option>'}).join("");
+  var show=l.length>=2;sel.disabled=!show;
+  if(show){if(lab.hidden||sel.hidden){lab.hidden=sel.hidden=false;lab.classList.add("city-in");sel.classList.add("city-in");setTimeout(function(){lab.classList.remove("city-in");sel.classList.remove("city-in")},1500)}}else{lab.hidden=sel.hidden=true}
+  if(cityKey&&cityProv===prov.value&&l.some(function(x){return x.key===cityKey}))sel.value=cityKey;else{cityKey=null;sel.value=""}}
+function load(){var pv=prov.value,f=fuel?fuel.value:"95",id=++seq;loaded=pv;
+  if(!pv){fill(null);return}
+  _f("/api/gasolineras?provincia="+encodeURIComponent(pv)+"&producto="+encodeURIComponent(f)).then(function(r){return r.ok?r.json():null}).then(function(d){
+    if(id!==seq||!d||!d.estaciones)return;FULL=d;FULLKEY=pv+"|"+f;fill(d)}).catch(function(){})}
+prov.addEventListener("change",function(){cityKey=null;load()});
+if(fuel)fuel.addEventListener("change",function(){if(prov.value)load()});
+sel.addEventListener("change",function(){
+  cityKey=sel.value||null;cityProv=prov.value;
+  if($(".station",res)||$(".summary",res)){if(typeof modoBusqueda!=="undefined")modoBusqueda="provincia";reuse=true;if(typeof buscar==="function")buscar()}});
+new MutationObserver(function(){
+  if(near()){cityKey=null;sel.value=""}
+  if(prov.value!==loaded)load()
+}).observe(res,{childList:true});
+if(prov.value)load();
 })();
