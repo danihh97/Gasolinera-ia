@@ -81,6 +81,23 @@ window.addEventListener("appinstalled", function () {
 ;
 let ubicacionUsuario = null;
 let modoBusqueda = "provincia";
+let ordenCerca = "cercania"; // "cercania" | "precio" (solo en "Cerca de mí")
+let reordenando = false;
+let ultimosDatos = null;
+
+document.addEventListener("click", function (e) {
+  const b = e.target.closest && e.target.closest(".orden-toggle button[data-orden]");
+  if (!b) return;
+  const orden = b.getAttribute("data-orden");
+  if (orden === ordenCerca || typeof buscar !== "function") return;
+  ordenCerca = orden;
+  const y = window.scrollY;
+  reordenando = true;
+  Promise.resolve(buscar()).finally(function () {
+    reordenando = false;
+    window.scrollTo(0, y);
+  });
+});
 
 
 /* =========================
@@ -341,7 +358,7 @@ async function buscar() {
   let provincia =
     document.getElementById("province").value;
 
-  if (modoBusqueda === "cerca" && ubicacionUsuario) {
+  if (modoBusqueda === "cerca" && ubicacionUsuario && !(reordenando && provincia)) {
     try {
       provincia = await buscarCercaDeMi(provincia, document.getElementById("fuel").value);
     } catch (error) {
@@ -409,12 +426,16 @@ async function buscar() {
       encodeURIComponent(producto);
 
 
-    const response =
-      await fetch(url);
+    let response, data;
 
-
-    const data =
-      await response.json();
+    if (reordenando && ultimosDatos && ultimosDatos.url === url) {
+      response = { ok: true };
+      data = ultimosDatos.data;
+    } else {
+      response = await fetch(url);
+      data = await response.json();
+      if (response.ok) ultimosDatos = { url, data };
+    }
 
 
     if (!response.ok) {
@@ -526,10 +547,13 @@ async function buscar() {
             b.distancia === null
           ) return -1;
 
-          return (
-            a.distancia -
-            b.distancia
-          );
+          if (ordenCerca === "precio") {
+            const pa = typeof a.precio === "number" ? a.precio : Infinity;
+            const pb = typeof b.precio === "number" ? b.precio : Infinity;
+            if (pa !== pb) return pa - pb;
+          }
+
+          return a.distancia - b.distancia;
 
         }
       );
@@ -868,14 +892,9 @@ async function buscar() {
 
           ${
             ubicacionUsuario
-
-              ?
-
-              "📍 Ordenadas por cercanía"
-
-              :
-
-              "💰 Ordenadas por precio"
+              ? (ordenCerca === "precio" ? "💰 Ordenadas por precio" : "📍 Ordenadas por cercanía") +
+                `<div class="orden-toggle" role="group" aria-label="Ordenar resultados"><button type="button" data-orden="cercania" aria-pressed="${ordenCerca !== "precio"}" class="${ordenCerca !== "precio" ? "on" : ""}">📍 Más cercanas</button><button type="button" data-orden="precio" aria-pressed="${ordenCerca === "precio"}" class="${ordenCerca === "precio" ? "on" : ""}">💰 Más baratas</button></div>`
+              : "💰 Ordenadas por precio"
 
           }
 
@@ -968,7 +987,7 @@ async function buscar() {
 
         let posicion;
 
-        if (ubicacionUsuario) {
+        if (ubicacionUsuario && ordenCerca !== "precio") {
 
           posicion =
             index === 0

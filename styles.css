@@ -1113,3 +1113,8 @@ label[for="citySelect"][hidden],#citySelect[hidden]{display:none}
 .city-in{animation:cityIn .4s cubic-bezier(.2,.8,.2,1) both}
 select.city-in{box-shadow:0 0 0 3px rgba(114,230,42,.45)}
 @media(prefers-reduced-motion:reduce){.city-in{animation:none}}
+
+/* ===== Ordenar "Cerca de mí": más cercanas / más baratas ===== */
+.orden-toggle{display:flex;gap:6px;margin-top:12px;padding:4px;border-radius:14px;background:rgba(120,140,130,.18)}
+#results .orden-toggle button{flex:1;min-height:44px;border:0!important;border-radius:11px;background:transparent!important;color:inherit!important;-webkit-text-fill-color:currentColor!important;font:700 14px system-ui,-apple-system,sans-serif;cursor:pointer}
+#results .orden-toggle button.on{background:linear-gradient(135deg,#68d51f,#21aa3c)!important;color:#fff!important;-webkit-text-fill-color:#fff!important;box-shadow:0 6px 14px rgba(33,170,60,.3)}
