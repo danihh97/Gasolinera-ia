@@ -25,7 +25,17 @@ jobs:
           node-version: 20
 
       - name: Generar páginas con los precios de hoy
-        run: node scripts/generar-seo.mjs
+        run: |
+          SCRIPT=$(find . -type f -name 'generar-seo*' -not -path './.git/*' -not -path './node_modules/*' | head -n 1)
+          if [ -z "$SCRIPT" ]; then
+            echo "No encuentro el archivo generar-seo.mjs en el repositorio."
+            echo "Contenido de la carpeta scripts:"
+            ls -la scripts || true
+            exit 1
+          fi
+          echo "Usando: $SCRIPT"
+          cp "$SCRIPT" "$RUNNER_TEMP/generar-seo.mjs"
+          node "$RUNNER_TEMP/generar-seo.mjs"
 
       - name: Guardar cambios
         run: |
