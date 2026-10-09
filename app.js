@@ -1556,8 +1556,9 @@ if ("serviceWorker" in navigator) {
 ;
 document.querySelectorAll('.seo-keyword[data-fuel],.seo-keyword[data-near]').forEach(function(b){b.addEventListener('click',function(){var c=document.querySelector('.search-card');if(b.dataset.fuel){var f=document.getElementById('fuel');if(f){f.value=b.dataset.fuel;var rr=document.querySelector('input[name="f"][value="'+b.dataset.fuel+'"]');if(rr)rr.checked=true}}if(c)c.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});var x=b.dataset.near?document.querySelector('button[onclick="usarUbicacion()"]'):document.getElementById('province');if(x)setTimeout(function(){x.focus({preventScroll:true})},350)})});
 ;(function(){var f=document.getElementById("fuel");if(!f)return;document.querySelectorAll('input[name="f"]').forEach(function(r){r.addEventListener("change",function(){f.value=r.value;f.dispatchEvent(new Event("change",{bubbles:true}))})})})();
-;(function(){var q=new URLSearchParams(location.search),c=q.get("combustible"),a=q.get("accion");if(!c&&!a)return;window.__afAtajo=true;
+;(function(){var q=new URLSearchParams(location.search),c=q.get("combustible"),a=q.get("accion"),pv=q.get("provincia");if(!c&&!a&&!pv)return;window.__afAtajo=true;
 function go(){var f=document.getElementById("fuel");if(c&&f&&/^(95|98|diesel)$/.test(c)){f.value=c;var r=document.querySelector('input[name="f"][value="'+c+'"]');if(r)r.checked=true}
+if(/^\d{1,2}$/.test(pv||"")){var s=document.getElementById("province"),v=pv.padStart(2,"0");if(s&&[].some.call(s.options,function(o){return o.value===v})){s.value=v;s.dispatchEvent(new Event("change",{bubbles:true}));if(typeof buscar==="function")buscar()}}
 if(a==="cerca"&&typeof usarUbicacion==="function")usarUbicacion();history.replaceState(null,"",location.pathname)}
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",go);else go()})();
 

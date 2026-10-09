@@ -1,0 +1,33 @@
+/* Páginas SEO de AhorraFuel (provincias, ciudades y precio hoy) */
+.seo{padding-top:20px;padding-bottom:56px}
+.seo h1{font-size:clamp(28px,6vw,44px);line-height:1.1;margin:10px 0 12px}
+.seo h2{font-size:clamp(21px,4.4vw,28px);margin:34px 0 14px}
+.seo .lead{max-width:62ch}
+.crumbs{font-size:13px;color:#a9c0b6}
+.crumbs a{color:#72e62a;text-decoration:none}
+.upd{color:#a9c0b6;font-size:14px;margin:0 0 18px}
+.sumg{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));margin:8px 0 6px}
+.sumc{padding:16px;border-radius:18px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
+.sumc span{display:block;font-size:13px;font-weight:700;color:#a9c0b6}
+.sumc b{display:block;font-size:20px;margin:2px 0;color:#fff}
+.sumc small{color:#a9c0b6}
+.tw{overflow-x:auto;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:rgba(255,255,255,.04)}
+.tw table{width:100%;border-collapse:collapse;min-width:470px}
+.tw th,.tw td{padding:12px 14px;text-align:left;vertical-align:top;border-bottom:1px solid rgba(255,255,255,.08)}
+.tw th{font-size:13px;color:#a9c0b6;font-weight:700;white-space:nowrap}
+.tw tr:last-child td{border-bottom:0}
+.tw small{display:block;color:#a9c0b6;font-size:13px}
+.tw a{color:#72e62a}
+.tw .pr{font-weight:800;color:#72e62a;white-space:nowrap;font-size:17px}
+.cities{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));padding:0;margin:0;list-style:none}
+.cities a{display:block;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);text-decoration:none;color:#fff;font-weight:700}
+.cities small{display:block;color:#a9c0b6;font-weight:500;font-size:13px}
+.rk{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.rk li{display:flex;justify-content:space-between;gap:12px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)}
+.rk a{color:#fff;font-weight:700;text-decoration:none}.rk b{color:#72e62a}
+.cta-s{margin:36px 0 0;padding:24px;border-radius:22px;background:linear-gradient(135deg,#0d4a2b,#1f8a3a);text-align:center}
+.cta-s h2{margin:0 0 8px}.cta-s p{margin:0 0 16px;color:#d4efdc}
+.cta-s .btn{width:auto}
+.nota{color:#a9c0b6;font-size:14px}
+.seo .chips{margin-top:8px}
+header .btn.sm{display:inline-flex}
