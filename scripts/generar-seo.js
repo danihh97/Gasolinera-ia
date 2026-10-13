@@ -18,11 +18,13 @@ const MIN_TOTAL = Number(process.env.SEO_MIN_TOTAL || 3000);
 const EXCLUIDAS = new Set(["9701"]);
 
 const PROVINCIAS = [["01","Álava"],["02","Albacete"],["03","Alicante"],["04","Almería"],["05","Ávila"],["06","Badajoz"],["07","Baleares"],["08","Barcelona"],["09","Burgos"],["10","Cáceres"],["11","Cádiz"],["12","Castellón"],["13","Ciudad Real"],["14","Córdoba"],["15","A Coruña"],["16","Cuenca"],["17","Girona"],["18","Granada"],["19","Guadalajara"],["20","Guipúzcoa"],["21","Huelva"],["22","Huesca"],["23","Jaén"],["24","León"],["25","Lleida"],["26","La Rioja"],["27","Lugo"],["28","Madrid"],["29","Málaga"],["30","Murcia"],["31","Navarra"],["32","Ourense"],["33","Asturias"],["34","Palencia"],["35","Las Palmas"],["36","Pontevedra"],["37","Salamanca"],["38","Santa Cruz de Tenerife"],["39","Cantabria"],["40","Segovia"],["41","Sevilla"],["42","Soria"],["43","Tarragona"],["44","Teruel"],["45","Toledo"],["46","Valencia"],["47","Valladolid"],["48","Vizcaya"],["49","Zamora"],["50","Zaragoza"],["51","Ceuta"],["52","Melilla"]];
+
 const COMB = [
   { k: "95", campo: "Precio Gasolina 95 E5", nombre: "Gasolina 95" },
   { k: "98", campo: "Precio Gasolina 98 E5", nombre: "Gasolina 98" },
   { k: "diesel", campo: "Precio Gasoleo A", nombre: "Diésel" }
 ];
+
 // Ciudades que ya existían con URL plana: se mantienen para no perder posiciones.
 const LEGADO = [
   { slug: "bilbao", prov: "48", ok: k => k === "bilbao" },
@@ -31,6 +33,7 @@ const LEGADO = [
   { slug: "pamplona", prov: "31", ok: k => k.includes("pamplona") },
   { slug: "vigo", prov: "36", ok: k => k === "vigo" }
 ];
+
 const POPULARES = ["28","08","46","41","29","03","50","30","35","38","07","15"];
 const MESES = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
 
@@ -54,12 +57,14 @@ async function cargar() {
   if (!r.ok) throw new Error(`El Ministerio no responde (HTTP ${r.status})`);
   return r.json();
 }
+
 function fechaInfo(txt) {
   const m = String(txt || "").match(/(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})/);
   if (!m) { const h = new Date(); return { iso: h.toISOString().slice(0, 10), largo: "hoy" }; }
   const [, d, mo, y, h, mi] = m;
   return { iso: `${y}-${mo.padStart(2, "0")}-${d.padStart(2, "0")}`, largo: `${+d} de ${MESES[+mo - 1]} de ${y}, ${+h}:${mi} h` };
 }
+
 function agrupar(data) {
   const provs = new Map(PROVINCIAS.map(([c, n]) => [c, { code: c, name: n, slug: slug(n), est: [] }]));
   const vistos = new Set();
@@ -121,6 +126,7 @@ function pagina({ title, desc, path, h1, lead, upd, body, ld }) {
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="/seo.css">
+<link rel="stylesheet" href="/ranking.css">
 <script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@graph": ld }).replace(/</g, "\\u003c")}</script>
 </head>
 <body>
@@ -137,18 +143,24 @@ ${body.html}
 </html>
 `;
 }
+
 const migas = items => ({
   html: `<nav class="crumbs" aria-label="Migas de pan">${items.map((x, i) => x.url ? `<a href="${x.url}">${esc(x.nombre)}</a>` : `<span>${esc(x.nombre)}</span>`).join(" › ")}</nav>`,
   ld: { "@type": "BreadcrumbList", itemListElement: items.map((x, i) => ({ "@type": "ListItem", position: i + 1, name: x.nombre, item: SITE + (x.url || x.self) })) }
 });
+
+/* Ranking en tarjetas (más legible en el móvil que una tabla) */
 function tabla(l, c, titulo) {
   const filas = top(l, c.k);
   if (!filas.length) return "";
+  const medalla = ["🥇", "🥈", "🥉"];
+  const etiqueta = i => i === 0 ? "🥇 Más barata" : (medalla[i] ? `${medalla[i]} #${i + 1}` : `#${i + 1}`);
   return `<h2>${esc(titulo)}</h2>
-<div class="tw" role="region" aria-label="${esc(titulo)}" tabindex="0"><table><thead><tr><th>#</th><th>Gasolinera</th><th>€/L</th><th>Dirección</th></tr></thead><tbody>
-${filas.map((e, i) => `<tr><td>${i + 1}</td><td><b>${esc(e.nombre)}</b><small>${esc(e.mun)}${/24\s*H/i.test(e.horario) ? " · 24 h" : ""}</small></td><td class="pr">${eur(e.p[c.k])}</td><td>${esc(e.dir)}${e.cp ? ", " + esc(e.cp) : ""}<br><a href="${esc(mapa(e))}" target="_blank" rel="nofollow noopener">Cómo llegar</a></td></tr>`).join("\n")}
-</tbody></table></div>`;
+<ol class="rank" aria-label="${esc(titulo)}">
+${filas.map((e, i) => `<li class="rc${i === 0 ? " top" : ""}"><div class="rc-h"><span class="rc-b">${etiqueta(i)}</span><span class="rc-p">${eur(e.p[c.k])}<small>€/L</small></span></div><h3 class="rc-n">${esc(e.nombre)}</h3><p class="rc-a">📍 ${esc(e.dir)}${e.cp ? ", " + esc(e.cp) : ""}</p><p class="rc-m"><span>${esc(e.mun)}</span>${/24\s*H/i.test(e.horario) ? "<span>🕐 24 h</span>" : ""}</p><a class="rc-go" href="${esc(mapa(e))}" target="_blank" rel="nofollow noopener">🗺️ Cómo llegar</a></li>`).join("\n")}
+</ol>`;
 }
+
 const itemList = (l, c) => ({ "@type": "ItemList", name: `${c.nombre}: gasolineras más baratas`, itemListElement: top(l, c.k).map((e, i) => ({ "@type": "ListItem", position: i + 1, item: { "@type": "GasStation", name: e.nombre, address: { "@type": "PostalAddress", streetAddress: e.dir, addressLocality: e.mun, postalCode: e.cp, addressCountry: "ES" } } })) });
 const faqLd = faqs => ({ "@type": "FAQPage", mainEntity: faqs.map(f => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) });
 const faqHtml = faqs => `<h2>Preguntas frecuentes</h2><div class="faq">${faqs.map(f => `<details><summary>${esc(f.q)}</summary><p>${esc(f.a)}</p></details>`).join("")}</div>`;
@@ -166,6 +178,7 @@ function faqsZona(nombre, l, fecha, et) {
 
 /* ---------- páginas ---------- */
 const urlProv = p => `/gasolineras-baratas/${p.slug}.html`;
+
 function ciudades(p) {
   const m = new Map();
   for (const e of p.est) { if (!e.mkey) continue; const x = m.get(e.mkey) || { key: e.mkey, nombre: e.mun, slug: slug(e.mun), est: [] }; x.est.push(e); m.set(e.mkey, x); }
@@ -178,6 +191,7 @@ function ciudades(p) {
   }
   return out.sort((a, b) => b.est.length - a.est.length);
 }
+
 function paginaProvincia(p, cs, fecha) {
   const r95 = resumen(p.est, "95"), t95 = top(p.est, "95", 1)[0];
   const et = `en ${p.name}`;
@@ -200,6 +214,7 @@ ${faqHtml(faqs)}
     ld: [mg.ld, itemList(p.est, COMB[0]), faqLd(faqs)]
   });
 }
+
 function paginaCiudad(p, c, cs, fecha) {
   const r95 = resumen(c.est, "95"), t95 = top(c.est, "95", 1)[0];
   const et = `en ${c.nombre}`;
@@ -221,6 +236,7 @@ ${faqHtml(faqs)}
     ld: [mg.ld, itemList(c.est, COMB[0]), faqLd(faqs)]
   });
 }
+
 function paginaIndice(provs, fecha) {
   const filas = provs.map(p => { const a = resumen(p.est, "95"), d = resumen(p.est, "diesel"); return `<tr><td><a href="${urlProv(p)}">${esc(p.name)}</a></td><td class="pr">${a ? eur(a.avg) : "–"}</td><td class="pr">${d ? eur(d.avg) : "–"}</td><td>${p.est.length}</td></tr>`; }).join("\n");
   const mg = migas([{ nombre: "Inicio", url: "/" }, { nombre: "Gasolineras baratas", self: "/gasolineras-baratas.html" }]);
@@ -239,6 +255,7 @@ ${filas}
     upd: fecha.largo, body: { crumbs: mg.html, html }, ld: [mg.ld]
   });
 }
+
 function paginaNacional(provs, todas, fecha) {
   const mg = migas([{ nombre: "Inicio", url: "/" }, { nombre: "Precio de la gasolina hoy", self: "/precio-gasolina-hoy.html" }]);
   const r95 = resumen(todas, "95"), rd = resumen(todas, "diesel"), r98 = resumen(todas, "98");
@@ -264,9 +281,10 @@ ${faqHtml(faqs)}
     upd: fecha.largo, body: { crumbs: mg.html, html }, ld: [mg.ld, faqLd(faqs)]
   });
 }
+
 const sitemap = (urls, iso) => `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map(u => `  <url><loc>${SITE}${u}</loc>${u.startsWith("/privacidad") || u.startsWith("/cookies") || u.startsWith("/informacion") || u.startsWith("/condiciones") ? "" : `<lastmod>${iso}</lastmod>`}</url>`).join("\n")}
+${urls.map(u => ` <url><loc>${SITE}${u}</loc>${u.startsWith("/privacidad") || u.startsWith("/cookies") || u.startsWith("/informacion") || u.startsWith("/condiciones") ? "" : `<lastmod>${iso}</lastmod>`}</url>`).join("\n")}
 </urlset>
 `;
 
@@ -277,6 +295,7 @@ const fecha = fechaInfo(data.Fecha);
 const { provs, total } = agrupar(data);
 if (total < MIN_TOTAL) throw new Error(`Solo ${total} gasolineras públicas: no se generan las páginas para no publicar datos incompletos.`);
 for (const p of provs) PROV[p.code] = p;
+
 const escribir = async (ruta, txt) => { const f = join(OUT, ruta.replace(/^\//, "")); await mkdir(dirname(f), { recursive: true }); await writeFile(f, txt, "utf8"); };
 const urls = ["/", "/gasolineras-baratas.html", "/precio-gasolina-hoy.html"];
 let nCiudades = 0;
