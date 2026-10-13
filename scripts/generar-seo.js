@@ -206,11 +206,70 @@ function analisis(l, ref, refNombre, et) {
   return `<p class="ana">${esc(p.join(" "))}</p>`;
 }
 const kmEntre = (a, b) => { const dy = (a.lat - b.lat) * 111, dx = (a.lon - b.lon) * 111 * Math.cos((a.lat + b.lat) / 2 * Math.PI / 180); return Math.sqrt(dx * dx + dy * dy); };
-function cercanas(c, cs) {
-  if (!Number.isFinite(c.lat)) return "";
-  const l = cs.filter(x => x !== c && Number.isFinite(x.lat)).map(x => ({ x, d: kmEntre(c, x) })).sort((a, b) => a.d - b.d).slice(0, 6);
-  if (!l.length) return "";
-  return `<h2>Gasolineras baratas cerca de ${esc(c.nombre)}</h2><div class="chips">${l.map(({ x, d }) => `<a href="${x.url}">${esc(x.nombre)} · ${Math.max(1, Math.round(d))} km</a>`).join("")}</div>`;
+const MARCAS = ["REPSOL","CEPSA","MOEVE","BP","SHELL","GALP","DISA","PLENERGY","BALLENOIL","PETROPRIX","AVIA","ESCLATOIL","Q8","TAMOIL","PETRONOR","ALCAMPO","CARREFOUR","EROSKI","LECLERC","COSTCO","BONAREA","GASEXPRESS","NEXTGAS","ANDAMUR","VALCARCE","MEROIL","CAMPSA","PCAN","HAM"];
+const MARCAS_RE = MARCAS.map(m => [m, new RegExp(`(^|[^a-z0-9])${m.toLowerCase()}([^a-z0-9]|$)`)]);
+const marca = nombre => { const n = norm(nombre); const f = MARCAS_RE.find(([, r]) => r.test(n)); return f ? f[0] : null; };
+const marcaBonita = m => m.length <= 3 ? m : m[0] + m.slice(1).toLowerCase();
+const media = v => v.reduce((a, b) => a + b, 0) / v.length;
+
+function porMarca(l) {
+  const m = new Map();
+  for (const e of l) { const k = marca(e.nombre), v = e.p["95"]; if (!k || !Number.isFinite(v)) continue; const x = m.get(k) || []; x.push(v); m.set(k, x); }
+  return [...m].filter(([, v]) => v.length >= 2).map(([k, v]) => ({ m: marcaBonita(k), n: v.length, avg: media(v), min: Math.min(...v) })).sort((a, b) => a.avg - b.avg);
+}
+function tablaMarcas(l, et) {
+  const r = porMarca(l);
+  if (r.length < 2) return "";
+  return `<h2>Precio de la gasolina 95 por marca ${esc(et)}</h2>
+<div class="tw"><table><thead><tr><th>Marca</th><th>Gasolineras</th><th>Media €/L</th><th>Desde €/L</th></tr></thead><tbody>
+${r.slice(0, 8).map(x => `<tr><td>${esc(x.m)}</td><td>${x.n}</td><td class="pr">${eur(x.avg)}</td><td class="pr">${eur(x.min)}</td></tr>`).join("\n")}
+</tbody></table></div>
+<p class="nota">Solo se incluyen las marcas con al menos 2 gasolineras ${esc(et)}.</p>`;
+}
+function tablaCP(c) {
+  const m = new Map();
+  for (const e of c.est) { if (!/^\d{5}$/.test(e.cp) || !Number.isFinite(e.p["95"])) continue; const x = m.get(e.cp) || []; x.push(e.p["95"]); m.set(e.cp, x); }
+  const f = [...m].filter(([, v]) => v.length >= 2).map(([cp, v]) => ({ cp, n: v.length, avg: media(v), min: Math.min(...v) })).sort((a, b) => a.avg - b.avg).slice(0, 12);
+  if (f.length < 2) return "";
+  return `<h2>Precio de la gasolina 95 por código postal en ${esc(c.nombre)}</h2>
+<div class="tw"><table><thead><tr><th>C. postal</th><th>Gasolineras</th><th>Media €/L</th><th>Desde €/L</th></tr></thead><tbody>
+${f.map(x => `<tr><td>${x.cp}</td><td>${x.n}</td><td class="pr">${eur(x.avg)}</td><td class="pr">${eur(x.min)}</td></tr>`).join("\n")}
+</tbody></table></div>`;
+}
+function vecinas(c, cs) {
+  if (!Number.isFinite(c.lat)) return [];
+  return cs.filter(x => x !== c && Number.isFinite(x.lat)).map(x => ({ x, d: kmEntre(c, x), r: resumen(x.est, "95") })).filter(v => v.r).sort((a, b) => a.d - b.d).slice(0, 6);
+}
+function tablaCercanas(c, v) {
+  const mio = resumen(c.est, "95");
+  if (!v.length || !mio) return "";
+  return `<h2>¿Y en las ciudades cercanas a ${esc(c.nombre)}?</h2>
+<div class="tw"><table><thead><tr><th>Ciudad</th><th>Distancia</th><th>95 desde</th><th>Frente a ${esc(c.nombre)}</th></tr></thead><tbody>
+${v.map(({ x, d, r }) => { const dif = r.min - mio.min; return `<tr><td><a href="${x.url}">${esc(x.nombre)}</a></td><td>${Math.max(1, Math.round(d))} km</td><td class="pr">${eur(r.min)}</td><td class="pr">${Math.abs(dif) < 0.0005 ? "igual" : (dif < 0 ? "−" : "+") + eur(Math.abs(dif))}</td></tr>`; }).join("\n")}
+</tbody></table></div>
+<p class="nota">Precio mínimo de la gasolina 95 (€/L) en cada ciudad y diferencia con el de ${esc(c.nombre)}.</p>`;
+}
+function parrafo2(c, v, et) {
+  const l = c.est, mio = resumen(l, "95");
+  if (!mio) return "";
+  const p = [];
+  const mk = porMarca(l);
+  if (mk.length >= 2) { const a = mk[0], b = mk[mk.length - 1]; p.push(`Por marcas, la gasolina 95 sale más barata de media en ${a.m} (${eur(a.avg)} €/L, ${a.n} gasolineras) y más cara en ${b.m} (${eur(b.avg)} €/L).`); }
+  const t95 = top(l, "95", 1)[0];
+  const t24 = top(l.filter(e => /24\s*H/i.test(e.horario)), "95", 1)[0];
+  if (t24 && t95 && t24 !== t95) p.push(`Entre las gasolineras que abren 24 horas, la más barata es ${t24.nombre} (${t24.dir}), a ${eur(t24.p["95"])} €/L.`);
+  if (v.length) {
+    const mejor = v.filter(({ d, r }) => d <= 20 && r.min < mio.min - 0.015).sort((a, b) => a.r.min - b.r.min)[0];
+    if (mejor) { const dif = mio.min - mejor.r.min; p.push(`Si te desplazas a ${mejor.x.nombre}, a ${Math.max(1, Math.round(mejor.d))} km, la gasolina 95 más barata sale a ${eur(mejor.r.min)} €/L: ${eur(dif)} €/L menos, unos ${eur(dif * 50, 2)} € por depósito de 50 litros.`); }
+    else if (v.every(({ r }) => r.min >= mio.min - 0.015)) p.push(`${c.nombre} tiene la gasolina 95 más barata de su entorno: entre las ${v.length} ciudades más cercanas ninguna compensa el desplazamiento.`);
+  }
+  return p.length ? `<p class="ana">${esc(p.join(" "))}</p>` : "";
+}
+function rankCiudades(p, cs) {
+  const l = cs.map(c => ({ c, r: resumen(c.est, "95") })).filter(x => x.r && x.r.n >= 3).sort((a, b) => a.r.avg - b.r.avg);
+  if (l.length < 6) return "";
+  const li = arr => `<ol class="rk">${arr.map(x => `<li><a href="${x.c.url}">${esc(x.c.nombre)}</a><b>${eur(x.r.avg)} €/L</b></li>`).join("")}</ol>`;
+  return `<h2>Ciudades con la gasolina 95 más barata en ${esc(p.name)}</h2>${li(l.slice(0, 5))}<h2>Ciudades con la gasolina 95 más cara en ${esc(p.name)}</h2>${li(l.slice(-5).reverse())}<p class="nota">Precio medio de la gasolina 95 por ciudad, entre las ciudades con más gasolineras de la provincia.</p>`;
 }
 
 /* ---------- páginas ---------- */
@@ -242,7 +301,9 @@ function paginaProvincia(p, cs, fecha) {
   const pop = POPULARES.filter(c => c !== p.code).slice(0, 8).map(c => PROV[c]).map(q => `<a href="${urlProv(q)}">${esc(q.name)}</a>`).join("");
   const html = `${cards(p.est)}
 ${analisis(p.est, NAC["95"], "España", et)}
-${COMB.map(c => tabla(p.est, c, `${c.nombre} más barata ${et}`)).join("\n")}
+${COMB.map(c => tabla(p.est, c, `${c.nombre} ${c.k === "diesel" ? "más barato" : "más barata"} ${et}`)).join("\n")}
+${rankCiudades(p, cs)}
+${tablaMarcas(p.est, et)}
 ${lista}
 ${faqHtml(faqs)}
 <div class="cta-s"><h2>Busca por ciudad o cerca de ti</h2><p>Usa el buscador de AhorraFuel para ordenar las gasolineras de ${esc(p.name)} por precio o por distancia.</p><a class="btn p" href="/?provincia=${p.code}&amp;combustible=95#buscar">Buscar gasolineras en ${esc(p.name)}</a></div>
@@ -265,12 +326,16 @@ function paginaCiudad(p, c, cs, fecha) {
   const mg = migas([{ nombre: "Inicio", url: "/" }, { nombre: "Gasolineras baratas", url: "/gasolineras-baratas.html" }, { nombre: p.name, url: urlProv(p) }, { nombre: c.nombre, self: c.url }]);
   const otras = cs.filter(x => x !== c).slice(0, 8).map(x => `<a href="${x.url}">${esc(x.nombre)}</a>`).join("");
   const rProv = resumen(p.est, "95");
+  const v = vecinas(c, cs);
   const html = `${cards(c.est)}
 ${analisis(c.est, rProv, `la provincia de ${p.name}`, et)}
-${COMB.map(k => tabla(c.est, k, `${k.nombre} más barata ${et}`)).join("\n")}
+${parrafo2(c, v, et)}
+${COMB.map(k => tabla(c.est, k, `${k.nombre} ${k.k === "diesel" ? "más barato" : "más barata"} ${et}`)).join("\n")}
+${tablaMarcas(c.est, et)}
+${tablaCP(c)}
+${tablaCercanas(c, v)}
 ${faqHtml(faqs)}
 <div class="cta-s"><h2>Busca cerca de ti</h2><p>Ordena las gasolineras por precio o por distancia con el buscador de AhorraFuel.</p><a class="btn p" href="/?provincia=${p.code}&amp;combustible=95#buscar">Buscar gasolineras</a></div>
-${cercanas(c, cs)}
 <h2>Más gasolineras en ${esc(p.name)}</h2><div class="chips"><a href="${urlProv(p)}">Toda la provincia de ${esc(p.name)} →</a>${otras}</div>`;
   return pagina({
     title, desc, path: c.url, h1: `Gasolineras más baratas hoy ${et}`,
