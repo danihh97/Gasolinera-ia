@@ -22,7 +22,7 @@ const PROVINCIAS = [["01","Álava"],["02","Albacete"],["03","Alicante"],["04","A
 const COMB = [
   { k: "95", campo: "Precio Gasolina 95 E5", nombre: "Gasolina 95" },
   { k: "98", campo: "Precio Gasolina 98 E5", nombre: "Gasolina 98" },
-  { k: "diesel", campo: "Precio Gasoleo A", nombre: "Diésel" }
+  { k: "diesel", campo: "Precio Gasoleo A", nombre: "Diésel (gasoil)" }
 ];
 
 // Ciudades que ya existían con URL plana: se mantienen para no perder posiciones.
@@ -138,7 +138,7 @@ ${body.crumbs}
 <p class="upd">Datos oficiales actualizados el ${esc(upd)}</p>
 ${body.html}
 </main>
-<footer><div class="wrap"><div><a class="logo" href="/" style="padding:0"><span class="wm">Ahorra<span>Fuel</span></span></a><p>Compara los precios de la gasolina y el diésel en toda España.</p></div><div><h4>Explorar</h4><a href="/gasolineras-baratas.html">Gasolineras por provincia</a><a href="/precio-gasolina-hoy.html">Precio de la gasolina hoy</a></div><div><h4>Legal</h4><a href="/privacidad.html">Privacidad</a><a href="/cookies.html">Cookies</a><a href="/informacion-legal.html">Información legal</a><a href="/condiciones-de-uso.html">Condiciones de uso</a></div><div class="cp">© ${new Date().getFullYear()} AhorraFuel. Los precios pueden variar en la gasolinera; confírmalos antes de repostar.</div></div></footer>
+<footer><div class="wrap"><div><a class="logo" href="/" style="padding:0"><span class="wm">Ahorra<span>Fuel</span></span></a><p>Compara los precios de la gasolina y el gasoil en toda España.</p></div><div><h4>Explorar</h4><a href="/gasolineras-baratas.html">Gasolineras por provincia</a><a href="/precio-gasolina-hoy.html">Precio de la gasolina hoy</a></div><div><h4>Legal</h4><a href="/privacidad.html">Privacidad</a><a href="/cookies.html">Cookies</a><a href="/informacion-legal.html">Información legal</a><a href="/condiciones-de-uso.html">Condiciones de uso</a></div><div class="cp">© ${new Date().getFullYear()} AhorraFuel. Los precios pueden variar en la gasolinera; confírmalos antes de repostar.</div></div></footer>
 </body>
 </html>
 `;
@@ -175,9 +175,14 @@ const cards = (l) => `<div class="sumg">${COMB.map(c => { const r = resumen(l, c
 function faqsZona(nombre, l, fecha, et) {
   const f = [], r95 = resumen(l, "95"), rd = resumen(l, "diesel"), t95 = top(l, "95", 1)[0], td = top(l, "diesel", 1)[0];
   if (t95) f.push({ q: `¿Cuál es la gasolina 95 más barata ${et}?`, a: `Según los datos oficiales actualizados el ${fecha}, la gasolina 95 más barata ${et} está en ${t95.nombre} (${t95.dir}, ${t95.mun}) a ${eur(t95.p["95"])} €/L.` });
-  if (td) f.push({ q: `¿Dónde está el diésel más barato ${et}?`, a: `El diésel más barato ${et} figura en ${td.nombre} (${td.dir}, ${td.mun}) a ${eur(td.p.diesel)} €/L, según los datos del ${fecha}.` });
+  if (td) f.push({ q: `¿Dónde está el diésel (gasoil) más barato ${et}?`, a: `El diésel o gasoil más barato ${et} figura en ${td.nombre} (${td.dir}, ${td.mun}) a ${eur(td.p.diesel)} €/L, según los datos del ${fecha}.` });
   if (r95) f.push({ q: `¿Cuál es el precio medio de la gasolina 95 ${et}?`, a: `El precio medio de la gasolina 95 ${et} es de ${eur(r95.avg)} €/L, calculado con ${r95.n} gasolineras. Entre la más barata y la más cara hay ${eur(r95.max - r95.min)} €/L: en un depósito de 50 litros pueden ser unos ${eur((r95.max - r95.min) * 50, 2)} €.` });
-  if (rd) f.push({ q: `¿Cuánto cuesta de media el diésel ${et}?`, a: `El gasóleo A cuesta de media ${eur(rd.avg)} €/L ${et}, con precios entre ${eur(rd.min)} y ${eur(rd.max)} €/L según la gasolinera.` });
+  if (rd) f.push({ q: `¿Cuánto cuesta de media el gasoil (diésel) ${et}?`, a: `El gasóleo A cuesta de media ${eur(rd.avg)} €/L ${et}, con precios entre ${eur(rd.min)} y ${eur(rd.max)} €/L según la gasolinera.` });
+  const lc = lowCost(l);
+  if (lc) {
+    const dif = lc.otras - lc.low;
+    f.push({ q: `¿Hay gasolineras low cost ${et}?`, a: `Sí, ${et} hay ${lc.n} gasolinera${lc.n === 1 ? "" : "s"} de marcas low cost (${lc.marcas.join(", ")}). Su gasolina 95 cuesta de media ${eur(lc.low)} €/L, frente a ${eur(lc.otras)} €/L en el resto.${dif >= 0.005 ? ` Repostar en una low cost supone ahorrar unos ${eur(dif * 50, 2)} € en un depósito de 50 litros.` : " En esta zona la diferencia con el resto es mínima."}` });
+  }
   f.push({ q: "¿Cada cuánto se actualizan los precios?", a: "AhorraFuel actualiza esta página cada día con los datos oficiales publicados por el Ministerio. Los precios pueden cambiar durante el día, así que conviene confirmarlos en la gasolinera antes de repostar." });
   return f;
 }
@@ -200,7 +205,7 @@ function analisis(l, ref, refNombre, et) {
       ? `El precio medio de la gasolina 95 ${et} está un ${eur(Math.abs(d), 1)} % ${d < 0 ? "por debajo" : "por encima"} de la media de ${refNombre} (${eur(ref.avg)} €/L).`
       : `El precio medio de la gasolina 95 ${et} está en línea con la media de ${refNombre} (${eur(ref.avg)} €/L).`);
   }
-  if (rd) p.push(`El diésel cuesta de media ${eur(rd.avg)} €/L y el más barato está a ${eur(rd.min)} €/L.`);
+  if (rd) p.push(`El gasoil (diésel) cuesta de media ${eur(rd.avg)} €/L y el más barato está a ${eur(rd.min)} €/L.`);
   if (t95) p.push(`La gasolina 95 más barata ${et} es la de ${t95.nombre} (${t95.dir}), a ${eur(t95.p["95"])} €/L.`);
   if (h24) p.push(h24 === l.length ? `Todas las gasolineras ${et} abren las 24 horas.` : `${h24} de las ${l.length} gasolineras ${et} abren las 24 horas.`);
   return `<p class="ana">${esc(p.join(" "))}</p>`;
@@ -272,6 +277,19 @@ function rankCiudades(p, cs) {
   return `<h2>Ciudades con la gasolina 95 más barata en ${esc(p.name)}</h2>${li(l.slice(0, 5))}<h2>Ciudades con la gasolina 95 más cara en ${esc(p.name)}</h2>${li(l.slice(-5).reverse())}<p class="nota">Precio medio de la gasolina 95 por ciudad, entre las ciudades con más gasolineras de la provincia.</p>`;
 }
 
+/* ---------- gasolineras low cost ---------- */
+const LOWCOST = new Set(["PLENERGY","BALLENOIL","PETROPRIX","GASEXPRESS","NEXTGAS","ESCLATOIL","BONAREA","ALCAMPO","CARREFOUR","EROSKI","LECLERC","COSTCO"]);
+function lowCost(l) {
+  const lo = [], ot = [], ms = new Map();
+  for (const e of l) {
+    const v = e.p["95"]; if (!Number.isFinite(v)) continue;
+    const m = marca(e.nombre);
+    if (m && LOWCOST.has(m)) { lo.push(v); ms.set(m, (ms.get(m) || 0) + 1); } else ot.push(v);
+  }
+  if (!lo.length || !ot.length) return null;
+  return { n: lo.length, low: media(lo), otras: media(ot), marcas: [...ms].sort((a, b) => b[1] - a[1]).slice(0, 4).map(([m]) => marcaBonita(m)) };
+}
+
 /* ---------- páginas ---------- */
 const urlProv = p => `/gasolineras-baratas/${p.slug}.html`;
 
@@ -294,7 +312,7 @@ function paginaProvincia(p, cs, fecha) {
   const r95 = resumen(p.est, "95"), t95 = top(p.est, "95", 1)[0];
   const et = `en ${p.name}`;
   const title = r95 ? elige(`Gasolineras más baratas hoy en ${p.name}: 95 desde ${eur(r95.min)} €/L`, `Gasolineras baratas hoy en ${p.name}: 95 desde ${eur(r95.min)} €/L`, `Gasolineras baratas hoy en ${p.name}`) : `Gasolineras más baratas hoy en ${p.name}`;
-  const desc = `Precios hoy de gasolina 95, 98 y diésel ${et}, actualizados el ${fecha.largo}.${t95 ? ` La gasolina 95 más barata está en ${t95.mun} a ${eur(t95.p["95"])} €/L.` : ""} Compara ${p.est.length} gasolineras.`;
+  const desc = `Precios hoy de gasolina 95, 98 y gasoil (diésel) ${et}, actualizados el ${fecha.largo}.${t95 ? ` La gasolina 95 más barata está en ${t95.mun} a ${eur(t95.p["95"])} €/L.` : ""} Compara ${p.est.length} gasolineras.`;
   const faqs = faqsZona(p.name, p.est, fecha.largo, et);
   const mg = migas([{ nombre: "Inicio", url: "/" }, { nombre: "Gasolineras baratas", url: "/gasolineras-baratas.html" }, { nombre: p.name, self: urlProv(p) }]);
   const lista = cs.length ? `<h2>Gasolineras por ciudad en ${esc(p.name)}</h2><ul class="cities">${cs.slice(0, 60).map(c => { const r = resumen(c.est, "95"); return `<li><a href="${c.url}"><span>${esc(c.nombre)}</span><small>${c.est.length} gasolineras${r ? ` · 95 desde ${eur(r.min)}` : ""}</small></a></li>`; }).join("")}</ul>` : "";
@@ -310,7 +328,7 @@ ${faqHtml(faqs)}
 <h2>Otras provincias</h2><div class="chips">${pop}<a href="/gasolineras-baratas.html">Ver todas →</a><a href="/precio-gasolina-hoy.html">Precio hoy en España →</a></div>`;
   return pagina({
     title, desc, path: urlProv(p), h1: `Gasolineras más baratas hoy ${et}`,
-    lead: `Ranking de las gasolineras más baratas ${et} para gasolina 95, gasolina 98 y diésel, con datos oficiales de ${p.est.length} estaciones de servicio.`,
+    lead: `Ranking de las gasolineras más baratas ${et} para gasolina 95, gasolina 98 y gasoil (diésel), con datos oficiales de ${p.est.length} estaciones de servicio.`,
     upd: fecha.largo, body: { crumbs: mg.html, html },
     ld: [mg.ld, { "@type": "WebPage", name: title, url: SITE + urlProv(p), dateModified: fecha.iso }, itemList(p.est, COMB[0]), faqLd(faqs)]
   });
@@ -321,7 +339,7 @@ function paginaCiudad(p, c, cs, fecha) {
   const et = `en ${c.nombre}`;
   const zona = c.key === norm(p.name) ? c.nombre : `${c.nombre} (${p.name})`;
   const title = r95 ? elige(`Gasolineras más baratas hoy en ${zona}: 95 desde ${eur(r95.min)} €/L`, `Gasolineras baratas hoy en ${zona}: 95 desde ${eur(r95.min)} €/L`, `Gasolineras baratas hoy en ${c.nombre}: 95 desde ${eur(r95.min)} €/L`) : `Gasolineras más baratas hoy en ${zona}`;
-  const desc = `Compara los precios de hoy de gasolina 95, 98 y diésel ${et} (${p.name}), actualizados el ${fecha.largo}.${t95 ? ` La gasolina 95 más barata está a ${eur(t95.p["95"])} €/L.` : ""} ${c.est.length} gasolineras.`;
+  const desc = `Compara los precios de hoy de gasolina 95, 98 y gasoil (diésel) ${et} (${p.name}), actualizados el ${fecha.largo}.${t95 ? ` La gasolina 95 más barata está a ${eur(t95.p["95"])} €/L.` : ""} ${c.est.length} gasolineras.`;
   const faqs = faqsZona(c.nombre, c.est, fecha.largo, et);
   const mg = migas([{ nombre: "Inicio", url: "/" }, { nombre: "Gasolineras baratas", url: "/gasolineras-baratas.html" }, { nombre: p.name, url: urlProv(p) }, { nombre: c.nombre, self: c.url }]);
   const otras = cs.filter(x => x !== c).slice(0, 8).map(x => `<a href="${x.url}">${esc(x.nombre)}</a>`).join("");
@@ -339,7 +357,7 @@ ${faqHtml(faqs)}
 <h2>Más gasolineras en ${esc(p.name)}</h2><div class="chips"><a href="${urlProv(p)}">Toda la provincia de ${esc(p.name)} →</a>${otras}</div>`;
   return pagina({
     title, desc, path: c.url, h1: `Gasolineras más baratas hoy ${et}`,
-    lead: `Precios de gasolina 95, gasolina 98 y diésel ${et}, en la provincia de ${esc(p.name)}, con datos oficiales de ${c.est.length} estaciones de servicio.`,
+    lead: `Precios de gasolina 95, gasolina 98 y gasoil (diésel) ${et}, en la provincia de ${esc(p.name)}, con datos oficiales de ${c.est.length} estaciones de servicio.`,
     upd: fecha.largo, body: { crumbs: mg.html, html },
     ld: [mg.ld, { "@type": "WebPage", name: title, url: SITE + c.url, dateModified: fecha.iso }, itemList(c.est, COMB[0]), faqLd(faqs)]
   });
@@ -349,7 +367,7 @@ function paginaIndice(provs, fecha) {
   const filas = provs.map(p => { const a = resumen(p.est, "95"), d = resumen(p.est, "diesel"); return `<tr><td><a href="${urlProv(p)}">${esc(p.name)}</a></td><td class="pr">${a ? eur(a.avg) : "–"}</td><td class="pr">${d ? eur(d.avg) : "–"}</td><td>${p.est.length}</td></tr>`; }).join("\n");
   const mg = migas([{ nombre: "Inicio", url: "/" }, { nombre: "Gasolineras baratas", self: "/gasolineras-baratas.html" }]);
   const html = `<h2>Precio medio por provincia</h2>
-<div class="tw"><table><thead><tr><th>Provincia</th><th>Gasolina 95 (€/L)</th><th>Diésel (€/L)</th><th>Gasolineras</th></tr></thead><tbody>
+<div class="tw"><table><thead><tr><th>Provincia</th><th>Gasolina 95 (€/L)</th><th>Diésel/gasoil (€/L)</th><th>Gasolineras</th></tr></thead><tbody>
 ${filas}
 </tbody></table></div>
 <p class="nota">Precios medios calculados con las gasolineras de venta al público de cada provincia. Consulta la ficha de tu provincia para ver el ranking completo y las ciudades.</p>
@@ -357,9 +375,9 @@ ${filas}
 <div class="chips"><a href="/precio-gasolina-hoy.html">Precio de la gasolina hoy en España →</a></div>`;
   return pagina({
     title: "Gasolineras más baratas por provincia | AhorraFuel",
-    desc: `Precio medio de la gasolina 95 y el diésel en las 52 provincias de España, actualizado el ${fecha.largo}. Elige tu provincia y compara las gasolineras más baratas.`,
+    desc: `Precio medio de la gasolina 95 y el gasoil (diésel) en las 52 provincias de España, actualizado el ${fecha.largo}. Elige tu provincia y compara las gasolineras más baratas.`,
     path: "/gasolineras-baratas.html", h1: "Gasolineras más baratas por provincia",
-    lead: "Elige tu provincia para ver el ranking de gasolineras más baratas en gasolina 95, gasolina 98 y diésel, y las ciudades con más estaciones.",
+    lead: "Elige tu provincia para ver el ranking de gasolineras más baratas en gasolina 95, gasolina 98 y gasoil (diésel), y las ciudades con más estaciones.",
     upd: fecha.largo, body: { crumbs: mg.html, html }, ld: [mg.ld]
   });
 }
@@ -367,24 +385,27 @@ ${filas}
 function paginaNacional(provs, todas, fecha) {
   const mg = migas([{ nombre: "Inicio", url: "/" }, { nombre: "Precio de la gasolina hoy", self: "/precio-gasolina-hoy.html" }]);
   const r95 = resumen(todas, "95"), rd = resumen(todas, "diesel"), r98 = resumen(todas, "98");
+  const peninsula = provs.filter(p => !["35", "38", "51", "52"].includes(p.code)).flatMap(p => p.est);
   const rank = (k, asc) => provs.map(p => ({ p, r: resumen(p.est, k) })).filter(x => x.r && x.r.n >= 3).sort((a, b) => asc ? a.r.avg - b.r.avg : b.r.avg - a.r.avg).slice(0, 5);
   const lista = (k, asc) => `<ol class="rk">${rank(k, asc).map(x => `<li><a href="${urlProv(x.p)}">${esc(x.p.name)}</a><b>${eur(x.r.avg)} €/L</b></li>`).join("")}</ol>`;
   const faqs = [
     r95 && { q: "¿Cuál es el precio medio de la gasolina 95 hoy en España?", a: `Con los datos oficiales del ${fecha.largo}, la gasolina 95 cuesta de media ${eur(r95.avg)} €/L en España, con precios entre ${eur(r95.min)} y ${eur(r95.max)} €/L.` },
-    rd && { q: "¿Cuál es el precio medio del diésel hoy?", a: `El gasóleo A cuesta de media ${eur(rd.avg)} €/L en España según los datos del ${fecha.largo}.` },
+    rd && { q: "¿Cuál es el precio medio del gasoil (diésel) hoy?", a: `El gasóleo A cuesta de media ${eur(rd.avg)} €/L en España según los datos del ${fecha.largo}.` },
     { q: "¿Cómo encuentro la gasolinera más barata de mi zona?", a: "Elige tu provincia o ciudad en AhorraFuel, o usa la opción «Cerca de mí», y ordena las gasolineras por precio o por distancia." }
   ].filter(Boolean);
-  const html = `<div class="sumg">${[["Gasolina 95", r95], ["Gasolina 98", r98], ["Diésel", rd]].map(([n, r]) => r ? `<div class="sumc"><span>${n}</span><b>Media ${eur(r.avg)} €/L</b><small>de ${eur(r.min)} a ${eur(r.max)} €/L · ${r.n} gasolineras</small></div>` : "").join("")}</div>
+  const html = `<div class="sumg">${[["Gasolina 95", r95], ["Gasolina 98", r98], ["Diésel (gasoil)", rd]].map(([n, r]) => r ? `<div class="sumc"><span>${n}</span><b>Media ${eur(r.avg)} €/L</b><small>de ${eur(r.min)} a ${eur(r.max)} €/L · ${r.n} gasolineras</small></div>` : "").join("")}</div>
 <h2>Provincias con la gasolina 95 más barata</h2>${lista("95", true)}
-<h2>Provincias con el diésel más barato</h2>${lista("diesel", true)}
+<h2>Provincias con el gasoil (diésel) más barato</h2>${lista("diesel", true)}
 <h2>Provincias con la gasolina 95 más cara</h2>${lista("95", false)}
-${COMB.map(c => tabla(todas, c, `${c.nombre}: las gasolineras más baratas de España`)).join("\n")}
+${COMB.map(c => tabla(peninsula, c, `${c.nombre} ${c.k === "diesel" ? "más barato" : "más barata"} en la península y Baleares`)).join("\n")}
+<p class="nota">Canarias, Ceuta y Melilla tienen una fiscalidad distinta y sus precios son mucho más bajos, así que el siguiente ranking las incluye por separado.</p>
+${COMB.map(c => tabla(todas, c, `${c.nombre} ${c.k === "diesel" ? "más barato" : "más barata"} en toda España (incluye Canarias, Ceuta y Melilla)`)).join("\n")}
 ${faqHtml(faqs)}
 <div class="chips"><a href="/gasolineras-baratas.html">Ver todas las provincias →</a><a href="/#buscar">Abrir el buscador →</a></div>`;
   return pagina({
-    title: "Precio de la gasolina y el diésel hoy en España | AhorraFuel",
-    desc: `Precio medio hoy de la gasolina 95 (${r95 ? eur(r95.avg) : "–"} €/L) y el diésel (${rd ? eur(rd.avg) : "–"} €/L) en España, con las provincias más baratas. Datos oficiales del ${fecha.largo}.`,
-    path: "/precio-gasolina-hoy.html", h1: "Precio de la gasolina y el diésel hoy en España",
+    title: "Precio de la gasolina y el gasoil hoy en España | AhorraFuel",
+    desc: `Precio medio hoy de la gasolina 95 (${r95 ? eur(r95.avg) : "–"} €/L) y el gasoil (${rd ? eur(rd.avg) : "–"} €/L) en España, con las provincias más baratas. Datos oficiales del ${fecha.largo}.`,
+    path: "/precio-gasolina-hoy.html", h1: "Precio de la gasolina y el gasoil hoy en España",
     lead: "Precio medio de los combustibles, provincias más baratas y gasolineras con el precio más bajo del país, con datos oficiales actualizados.",
     upd: fecha.largo, body: { crumbs: mg.html, html }, ld: [mg.ld, faqLd(faqs)]
   });
