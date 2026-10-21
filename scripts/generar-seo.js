@@ -191,25 +191,24 @@ function faqsZona(nombre, l, fecha, et) {
 const NAC = {};
 const pct = (a, b) => ((a - b) / b) * 100;
 function analisis(l, ref, refNombre, et) {
-  const r95 = resumen(l, "95"), rd = resumen(l, "diesel"), t95 = top(l, "95", 1)[0];
-  if (!r95) return "";
+  const r95 = resumen(l, "95"), rd = resumen(l, "diesel");
+  if (!r95) return [];
   const h24 = l.filter(e => /24\s*H/i.test(e.horario)).length;
-  const p = [];
-  let a = `Hoy la gasolina 95 ${et} cuesta de media ${eur(r95.avg)} €/L, con precios entre ${eur(r95.min)} y ${eur(r95.max)} €/L.`;
+  const f = [];
+  f.push(["💶", `Gasolina 95: media de ${eur(r95.avg)} €/L (de ${eur(r95.min)} a ${eur(r95.max)})`]);
   const dif = r95.max - r95.min;
-  if (r95.n >= 2 && dif >= 0.005) a += ` Repostar en la gasolinera más barata en lugar de la más cara supone ahorrar unos ${eur(dif * 50, 2)} € en un depósito de 50 litros.`;
-  p.push(a);
+  if (r95.n >= 2 && dif >= 0.005) f.push(["💰", `Eligiendo la más barata ahorras unos ${eur(dif * 50, 2)} € en un depósito de 50 L`]);
   if (ref && ref.avg) {
     const d = pct(r95.avg, ref.avg);
-    p.push(Math.abs(d) >= 0.3
-      ? `El precio medio de la gasolina 95 ${et} está un ${eur(Math.abs(d), 1)} % ${d < 0 ? "por debajo" : "por encima"} de la media de ${refNombre} (${eur(ref.avg)} €/L).`
-      : `El precio medio de la gasolina 95 ${et} está en línea con la media de ${refNombre} (${eur(ref.avg)} €/L).`);
+    f.push(Math.abs(d) >= 0.3
+      ? [d < 0 ? "📉" : "📈", `${eur(Math.abs(d), 1)} % ${d < 0 ? "por debajo" : "por encima"} de la media de ${refNombre} (${eur(ref.avg)} €/L)`]
+      : ["⚖️", `En línea con la media de ${refNombre} (${eur(ref.avg)} €/L)`]);
   }
-  if (rd) p.push(`El gasoil (diésel) cuesta de media ${eur(rd.avg)} €/L y el más barato está a ${eur(rd.min)} €/L.`);
-  if (t95) p.push(`La gasolina 95 más barata ${et} es la de ${t95.nombre} (${t95.dir}), a ${eur(t95.p["95"])} €/L.`);
-  if (h24) p.push(h24 === l.length ? `Todas las gasolineras ${et} abren las 24 horas.` : `${h24} de las ${l.length} gasolineras ${et} abren las 24 horas.`);
-  return `<p class="ana">${esc(p.join(" "))}</p>`;
+  if (rd) f.push(["⛽", `Gasoil (diésel): media de ${eur(rd.avg)} €/L, desde ${eur(rd.min)} €/L`]);
+  if (h24) f.push(["🕐", h24 === l.length ? "Todas las gasolineras abren 24 horas" : `${h24} de ${l.length} gasolineras abren 24 horas`]);
+  return f;
 }
+
 const kmEntre = (a, b) => { const dy = (a.lat - b.lat) * 111, dx = (a.lon - b.lon) * 111 * Math.cos((a.lat + b.lat) / 2 * Math.PI / 180); return Math.sqrt(dx * dx + dy * dy); };
 const MARCAS = ["REPSOL","CEPSA","MOEVE","BP","SHELL","GALP","DISA","PLENERGY","BALLENOIL","PETROPRIX","AVIA","ESCLATOIL","Q8","TAMOIL","PETRONOR","ALCAMPO","CARREFOUR","EROSKI","LECLERC","COSTCO","BONAREA","GASEXPRESS","NEXTGAS","ANDAMUR","VALCARCE","MEROIL","CAMPSA","PCAN","HAM"];
 const MARCAS_RE = MARCAS.map(m => [m, new RegExp(`(^|[^a-z0-9])${m.toLowerCase()}([^a-z0-9]|$)`)]);
@@ -256,20 +255,30 @@ ${v.map(({ x, d, r }) => { const dif = r.min - mio.min; return `<tr><td><a href=
 }
 function parrafo2(c, v, et) {
   const l = c.est, mio = resumen(l, "95");
-  if (!mio) return "";
-  const p = [];
+  if (!mio) return [];
+  const f = [];
   const mk = porMarca(l);
-  if (mk.length >= 2) { const a = mk[0], b = mk[mk.length - 1]; p.push(`Por marcas, la gasolina 95 sale más barata de media en ${a.m} (${eur(a.avg)} €/L, ${a.n} gasolineras) y más cara en ${b.m} (${eur(b.avg)} €/L).`); }
+  if (mk.length >= 2) { const a = mk[0], b = mk[mk.length - 1]; f.push(["🏷️", `Marca más barata de media: ${a.m} (${eur(a.avg)} €/L). La más cara: ${b.m} (${eur(b.avg)} €/L)`]); }
   const t95 = top(l, "95", 1)[0];
   const t24 = top(l.filter(e => /24\s*H/i.test(e.horario)), "95", 1)[0];
-  if (t24 && t95 && t24 !== t95) p.push(`Entre las gasolineras que abren 24 horas, la más barata es ${t24.nombre} (${t24.dir}), a ${eur(t24.p["95"])} €/L.`);
+  if (t24 && t95 && t24 !== t95) f.push(["🌙", `24 h más barata: ${t24.nombre} (${t24.dir}), a ${eur(t24.p["95"])} €/L`]);
   if (v.length) {
     const mejor = v.filter(({ d, r }) => d <= 20 && r.min < mio.min - 0.015).sort((a, b) => a.r.min - b.r.min)[0];
-    if (mejor) { const dif = mio.min - mejor.r.min; p.push(`Si te desplazas a ${mejor.x.nombre}, a ${Math.max(1, Math.round(mejor.d))} km, la gasolina 95 más barata sale a ${eur(mejor.r.min)} €/L: ${eur(dif)} €/L menos, unos ${eur(dif * 50, 2)} € por depósito de 50 litros.`); }
-    else if (v.every(({ r }) => r.min >= mio.min - 0.015)) p.push(`${c.nombre} tiene la gasolina 95 más barata de su entorno: entre las ${v.length} ciudades más cercanas ninguna compensa el desplazamiento.`);
+    if (mejor) { const dif = mio.min - mejor.r.min; f.push(["🚗", `En ${mejor.x.nombre}, a ${Math.max(1, Math.round(mejor.d))} km, la 95 más barata sale a ${eur(mejor.r.min)} €/L: ${eur(dif)} €/L menos (unos ${eur(dif * 50, 2)} € por depósito)`]); }
+    else if (v.every(({ r }) => r.min >= mio.min - 0.015)) f.push(["✅", `${c.nombre} tiene la gasolina 95 más barata de su entorno: no compensa desplazarse`]);
   }
-  return p.length ? `<p class="ana">${esc(p.join(" "))}</p>` : "";
+  return f;
 }
+
+/* Datos clave en lista corta (más fácil de leer en el móvil que un párrafo largo) */
+function bloqueResumen(f, et) {
+  if (!f.length) return "";
+  return `<h2>Resumen de hoy ${esc(et)}</h2>
+<ul class="facts">
+${f.map(([i, t]) => `<li><span class="fi" aria-hidden="true">${i}</span><span>${esc(t)}</span></li>`).join("\n")}
+</ul>`;
+}
+
 function rankCiudades(p, cs) {
   const l = cs.map(c => ({ c, r: resumen(c.est, "95") })).filter(x => x.r && x.r.n >= 3).sort((a, b) => a.r.avg - b.r.avg);
   if (l.length < 6) return "";
@@ -330,7 +339,7 @@ function paginaProvincia(p, cs, fecha) {
   const lista = cs.length ? `<h2>Gasolineras por ciudad en ${esc(p.name)}</h2><ul class="cities">${cs.slice(0, 60).map(c => { const r = resumen(c.est, "95"); return `<li><a href="${c.url}"><span>${esc(c.nombre)}</span><small>${c.est.length} gasolineras${r ? ` · 95 desde ${eur(r.min)}` : ""}</small></a></li>`; }).join("")}</ul>` : "";
   const pop = POPULARES.filter(c => c !== p.code).slice(0, 8).map(c => PROV[c]).map(q => `<a href="${urlProv(q)}">${esc(q.name)}</a>`).join("");
   const html = `${cards(p.est)}
-${analisis(p.est, NAC["95"], "España", et)}
+${bloqueResumen(analisis(p.est, NAC["95"], "España", et), et)}
 ${COMB.map(c => tabla(p.est, c, `${c.nombre} ${c.k === "diesel" ? "más barato" : "más barata"} ${et}`)).join("\n")}
 ${rankCiudades(p, cs)}
 ${tablaMarcas(p.est, et)}
@@ -359,8 +368,7 @@ function paginaCiudad(p, c, cs, fecha) {
   const rProv = resumen(p.est, "95");
   const v = vecinas(c, cs);
   const html = `${cards(c.est)}
-${analisis(c.est, rProv, `la provincia de ${p.name}`, et)}
-${parrafo2(c, v, et)}
+${bloqueResumen([...analisis(c.est, rProv, `la provincia de ${p.name}`, et), ...parrafo2(c, v, et)], et)}
 ${COMB.map(k => tabla(c.est, k, `${k.nombre} ${k.k === "diesel" ? "más barato" : "más barata"} ${et}`)).join("\n")}
 ${tablaMarcas(c.est, et)}
 ${tablaCP(c)}
