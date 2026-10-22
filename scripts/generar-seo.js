@@ -138,7 +138,7 @@ ${body.crumbs}
 <p class="upd">Datos oficiales actualizados el ${esc(upd)}</p>
 ${body.html}
 </main>
-<footer><div class="wrap"><div><a class="logo" href="/" style="padding:0"><span class="wm">Ahorra<span>Fuel</span></span></a><p>Compara los precios de la gasolina y el gasoil en toda España.</p></div><div><h4>Explorar</h4><a href="/gasolineras-baratas.html">Gasolineras por provincia</a><a href="/precio-gasolina-hoy.html">Precio de la gasolina hoy</a></div><div><h4>Legal</h4><a href="/privacidad.html">Privacidad</a><a href="/cookies.html">Cookies</a><a href="/informacion-legal.html">Información legal</a><a href="/condiciones-de-uso.html">Condiciones de uso</a></div><div class="cp">© ${new Date().getFullYear()} AhorraFuel. Los precios pueden variar en la gasolinera; confírmalos antes de repostar.</div></div></footer>
+<footer><div class="wrap"><div><a class="logo" href="/" style="padding:0"><span class="wm">Ahorra<span>Fuel</span></span></a><p>Compara los precios de la gasolina y el gasoil en toda España.</p></div><div><h4>Explorar</h4><a href="/gasolineras-baratas.html">Gasolineras por provincia</a><a href="/precio-gasolina-hoy.html">Precio de la gasolina hoy</a><a href="/ahorrar-combustible.html">Cómo ahorrar combustible</a></div><div><h4>Legal</h4><a href="/privacidad.html">Privacidad</a><a href="/cookies.html">Cookies</a><a href="/informacion-legal.html">Información legal</a><a href="/condiciones-de-uso.html">Condiciones de uso</a></div><div class="cp">© ${new Date().getFullYear()} AhorraFuel. Los precios pueden variar en la gasolinera; confírmalos antes de repostar.</div></div></footer>
 </body>
 </html>
 `;
@@ -449,7 +449,7 @@ const TODAS = provs.flatMap(p => p.est);
 for (const c of COMB) NAC[c.k] = resumen(TODAS, c.k);
 
 const escribir = async (ruta, txt) => { const f = join(OUT, ruta.replace(/^\//, "")); await mkdir(dirname(f), { recursive: true }); await writeFile(f, txt, "utf8"); };
-const urls = ["/", "/gasolineras-baratas.html", "/precio-gasolina-hoy.html"];
+const urls = ["/", "/gasolineras-baratas.html", "/precio-gasolina-hoy.html", "/ahorrar-combustible.html"];
 let nCiudades = 0;
 for (const p of provs) {
   if (!p.est.length) continue;
