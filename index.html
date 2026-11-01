@@ -339,37 +339,94 @@
 </script>
 <script>
 /* Decoración navideña: se activa sola del 1 de diciembre al 6 de enero.
-   Para probarla ahora: ahorrafuel.es/?navidad=1  ·  para desactivarla: ?navidad=0 */
+   Probarla ahora: ahorrafuel.es/?navidad=1  ·  Desactivarla: ?navidad=0 */
 (function(){
-  var q=location.search, d=new Date(), m=d.getMonth(), dia=d.getDate();
+  var q=location.search, d=new Date(), y=d.getFullYear(), m=d.getMonth(), dia=d.getDate();
   var on=(m===11)||(m===0&&dia<=6);
   if(/[?&]navidad=1/.test(q)) on=true;
   if(/[?&]navidad=0/.test(q)) on=false;
   if(!on) return;
+  var reducir=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function ls(k,v){ try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k,v); }catch(e){} return null; }
+  function ss(k,v){ try{ if(v===undefined) return sessionStorage.getItem(k); sessionStorage.setItem(k,v); }catch(e){} return null; }
+
+  /* ---- estilos ---- */
+  var wire="data:image/svg+xml,"+encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='60' height='16'><path d='M0 2 Q30 16 60 2' fill='none' stroke='#3b3b3b' stroke-width='1.6'/></svg>");
   var css=document.createElement("style");
   css.textContent=
    "header{border-bottom:3px solid transparent!important;border-image:repeating-linear-gradient(90deg,#d62828 0 14px,#f2c14e 14px 28px,#2a9d3f 28px 42px,#f2c14e 42px 56px) 1}"+
-   "#afNav{background:linear-gradient(90deg,#9d1111,#d62828 50%,#9d1111);color:#fff;text-align:center;font-weight:700;font-size:.92rem;line-height:1.35;padding:9px 40px 9px 14px;position:relative}"+
-   "#afNav b{color:#ffe08a}"+
+   "#afLights{position:relative;height:30px;overflow:hidden;background:url('"+wire+"') repeat-x 0 0;pointer-events:none}"+
+   "#afLights i{position:absolute;top:11px;width:9px;height:13px;border-radius:50% 50% 50% 50%/40% 40% 60% 60%;animation:afTw 2.4s ease-in-out infinite}"+
+   "@keyframes afTw{0%,100%{opacity:1;filter:brightness(1.15)}50%{opacity:.35;filter:brightness(.7)}}"+
+   "#afNav{background:linear-gradient(90deg,#8f1010,#d62828 50%,#8f1010);color:#fff;text-align:center;font-weight:700;font-size:.92rem;line-height:1.35;padding:9px 40px 9px 14px;position:relative}"+
+   "#afNav b{color:#ffe08a}#afNav small{display:block;font-weight:600;opacity:.92;font-size:.8rem}"+
    "#afNavX{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:0;color:#fff;font-size:1.3rem;line-height:1;padding:6px 10px;cursor:pointer}"+
-   "#afSnow{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}";
+   "#afSnow{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}"+
+   "#afSnowBtn{position:fixed;left:12px;bottom:14px;z-index:30;width:44px;height:44px;border-radius:50%;border:1px solid rgba(0,0,0,.12);background:#fff;font-size:1.25rem;line-height:1;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25)}"+
+   "#afSnowBtn[aria-pressed=false]{opacity:.65;filter:grayscale(1)}"+
+   "#navidad .card{border-top:3px solid #d62828}#navidad .card:nth-child(even){border-top-color:#2a9d3f}"+
+   "#navidad .em{font-size:1.7rem;line-height:1;margin-bottom:10px}"+
+   "#navidad .nv-cta{text-align:center;margin-top:22px}"+
+   (reducir?"#afLights i{animation:none}":"");
   document.head.appendChild(css);
-  var cerrada=false; try{ cerrada=sessionStorage.getItem("afNavX")==="1"; }catch(e){}
+
+  /* ---- mensaje según la fecha ---- */
+  var hoy=new Date(y,m,dia);
+  function dias(f){ return Math.round((f-hoy)/864e5); }
+  function plural(n,s,p){ return n+" "+(n===1?s:p); }
+  var titulo,sub="";
+  if(m===11&&dia===24){ titulo="🌟 <b>¡Feliz Nochebuena!</b>"; sub="Si hoy viajas, compara antes de repostar"; }
+  else if(m===11&&dia===25){ titulo="🎄 <b>¡Feliz Navidad!</b>"; sub="Gracias por ahorrar con AhorraFuel"; }
+  else if(m===11&&dia===31){ titulo="🥂 <b>¡Feliz Año Nuevo!</b>"; sub="Empieza "+(y+1)+" ahorrando en cada repostaje"; }
+  else if(m===11&&dia>25){ titulo="🎁 <b>¡Felices fiestas!</b>"; sub="Antes de la operación retorno, busca la gasolina más barata"; }
+  else if(m===0&&dia===6){ titulo="👑 <b>¡Feliz día de Reyes!</b>"; sub="Que te traigan siempre el depósito lleno"; }
+  else if(m===0){ var r=dias(new Date(y,0,6)); titulo="🎉 <b>¡Feliz "+y+"!</b>"; sub="Faltan "+plural(r,"día","días")+" para los Reyes Magos"; }
+  else { var n=dias(new Date(y,11,25)); titulo="🎄 <b>¡Felices fiestas!</b>"; sub="Faltan "+plural(n,"día","días")+" para Navidad · reposta en la gasolinera más barata"; }
+
   var main=document.querySelector("main");
-  if(main&&!cerrada){
-    var bar=document.createElement("div"); bar.id="afNav"; bar.setAttribute("role","note");
-    bar.innerHTML='🎄 <b>¡Felices fiestas!</b> Viajes y comidas de Navidad: reposta en la gasolinera más barata 🎁<button id="afNavX" type="button" aria-label="Cerrar">×</button>';
-    main.parentNode.insertBefore(bar,main);
-    bar.querySelector("#afNavX").onclick=function(){ bar.remove(); try{ sessionStorage.setItem("afNavX","1"); }catch(e){} };
+  if(!main) return;
+
+  /* ---- guirnalda de luces ---- */
+  var lu=document.createElement("div"); lu.id="afLights"; lu.setAttribute("aria-hidden","true");
+  var col=["#e63946","#ffd166","#2fbf71","#4cc9f0"];
+  for(var i=0;i<42;i++){
+    var b=document.createElement("i"); b.style.left=(i*60+26)+"px";
+    b.style.background=col[i%4]; b.style.boxShadow="0 0 10px 2px "+col[i%4]+"88";
+    b.style.animationDelay=((i%7)*.35)+"s"; lu.appendChild(b);
   }
-  if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  main.parentNode.insertBefore(lu,main);
+
+  /* ---- banda con mensaje ---- */
+  if(ss("afNavX")!=="1"){
+    var bar=document.createElement("div"); bar.id="afNav"; bar.setAttribute("role","note");
+    bar.innerHTML=titulo+(sub?"<small>"+sub+"</small>":"")+'<button id="afNavX" type="button" aria-label="Cerrar">×</button>';
+    main.parentNode.insertBefore(bar,main);
+    bar.querySelector("#afNavX").onclick=function(){ bar.remove(); ss("afNavX","1"); };
+  }
+
+  /* ---- sección de consejos ---- */
+  var ref=document.querySelector("section.stats");
+  if(ref){
+    var sec=document.createElement("section"); sec.className="wrap sec web-only"; sec.id="navidad";
+    sec.innerHTML='<div class="sh"><span class="eye">Navidad</span><h2>Ahorra en tus viajes de estas fiestas</h2><p>Cuatro ideas sencillas para que el viaje a casa de la familia salga más barato.</p></div>'+
+     '<div class="grid">'+
+     '<div class="card"><div class="em" aria-hidden="true">🗺️</div><h3>Planifica antes de salir</h3><p>Busca las gasolineras de tu ruta y elige dónde repostar antes de ponerte en marcha.</p></div>'+
+     '<div class="card"><div class="em" aria-hidden="true">⛽</div><h3>Reposta antes del puente</h3><p>Llena el depósito en tu ciudad, donde puedes comparar, y no a la salida de la autopista.</p></div>'+
+     '<div class="card"><div class="em" aria-hidden="true">🏷️</div><h3>Compara las low cost</h3><p>Entre una gasolinera y otra de la misma zona puede haber varios céntimos por litro de diferencia.</p></div>'+
+     '<div class="card"><div class="em" aria-hidden="true">🛞</div><h3>Revisa los neumáticos</h3><p>Con la presión correcta el coche consume menos y el viaje es más seguro.</p></div>'+
+     '</div><div class="nv-cta"><a class="btn p" href="#buscar">Buscar la gasolinera más barata</a></div>';
+    ref.parentNode.insertBefore(sec,ref);
+  }
+
+  /* ---- nieve con interruptor ---- */
+  if(reducir) return;
   var c=document.createElement("canvas"); c.id="afSnow"; c.setAttribute("aria-hidden","true"); document.body.appendChild(c);
-  var x=c.getContext("2d"), W,H,N=window.innerWidth<720?26:50, f=[], raf=0;
+  var x=c.getContext("2d"), W,H,N=innerWidth<720?26:50, f=[], raf=0, activa=ls("afSnowOff")!=="1";
   function size(){ W=c.width=innerWidth; H=c.height=innerHeight; }
   size(); addEventListener("resize",size);
-  for(var i=0;i<N;i++) f.push({x:Math.random()*W,y:Math.random()*H,r:1+Math.random()*2.4,v:.35+Math.random()*.8,o:Math.random()*6});
+  for(var k=0;k<N;k++) f.push({x:Math.random()*W,y:Math.random()*H,r:1+Math.random()*2.4,v:.35+Math.random()*.8,o:Math.random()*6});
   function paint(t){
-    x.clearRect(0,0,W,H); x.fillStyle="rgba(255,255,255,.85)";
+    x.clearRect(0,0,W,H); x.fillStyle="rgba(255,255,255,.88)";
     for(var i=0;i<f.length;i++){
       var p=f[i]; p.y+=p.v; p.x+=Math.sin(t/1500+p.o)*.35;
       if(p.y>H+4){ p.y=-4; p.x=Math.random()*W; }
@@ -377,8 +434,13 @@
     }
     raf=requestAnimationFrame(paint);
   }
-  raf=requestAnimationFrame(paint);
-  document.addEventListener("visibilitychange",function(){ if(document.hidden) cancelAnimationFrame(raf); else raf=requestAnimationFrame(paint); });
+  function marcha(){ cancelAnimationFrame(raf); if(activa&&!document.hidden){ c.style.display="block"; raf=requestAnimationFrame(paint); } else { c.style.display=activa?"block":"none"; x.clearRect(0,0,W,H); } }
+  var bt=document.createElement("button"); bt.id="afSnowBtn"; bt.type="button"; bt.textContent="❄️";
+  bt.setAttribute("aria-label","Activar o desactivar la nieve");
+  function pinta(){ bt.setAttribute("aria-pressed",activa?"true":"false"); bt.title=activa?"Quitar la nieve":"Poner nieve"; }
+  bt.onclick=function(){ activa=!activa; ls("afSnowOff",activa?"0":"1"); pinta(); marcha(); };
+  document.body.appendChild(bt); pinta(); marcha();
+  document.addEventListener("visibilitychange",marcha);
 })();
 </script>
 <script src="/app.js?v=20261018" defer></script>
