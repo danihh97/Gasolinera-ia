@@ -338,39 +338,92 @@
 })();
 </script>
 <script>
-/* Decoración navideña: se activa sola del 1 de diciembre al 6 de enero.
-   Probarla ahora: ahorrafuel.es/?navidad=1  ·  Desactivarla: ?navidad=0 */
+/* TEMA NAVIDEÑO: se activa solo del 1 de diciembre al 6 de enero.
+   Probarlo ahora: ahorrafuel.es/?navidad=1  ·  Desactivarlo: ?navidad=0
+   Ajustar el gorro de la mascota: variables --hx (izq.), --hy (alto), --hw (ancho) en .afHat */
 (function(){
   var q=location.search, d=new Date(), y=d.getFullYear(), m=d.getMonth(), dia=d.getDate();
   var on=(m===11)||(m===0&&dia<=6);
   if(/[?&]navidad=1/.test(q)) on=true;
   if(/[?&]navidad=0/.test(q)) on=false;
   if(!on) return;
+  var main=document.querySelector("main"); if(!main) return;
   var reducir=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
   function ls(k,v){ try{ if(v===undefined) return localStorage.getItem(k); localStorage.setItem(k,v); }catch(e){} return null; }
   function ss(k,v){ try{ if(v===undefined) return sessionStorage.getItem(k); sessionStorage.setItem(k,v); }catch(e){} return null; }
+  function uri(svg){ return "data:image/svg+xml,"+encodeURIComponent(svg); }
 
-  /* ---- estilos ---- */
-  var wire="data:image/svg+xml,"+encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' width='60' height='16'><path d='M0 2 Q30 16 60 2' fill='none' stroke='#3b3b3b' stroke-width='1.6'/></svg>");
+  /* ---------- dibujos ---------- */
+  var HAT='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 80"><path d="M10 60 Q16 14 56 8 Q80 5 92 34 Q76 20 60 30 Q50 40 90 60 Z" fill="#d62828"/><path d="M10 60 Q16 14 56 8 Q70 6 80 14 Q50 18 34 60 Z" fill="#ef4444" opacity=".55"/><rect x="2" y="54" width="92" height="20" rx="10" fill="#fff"/><circle cx="91" cy="34" r="9.5" fill="#fff"/></svg>';
+  var WIRE='<svg xmlns="http://www.w3.org/2000/svg" width="60" height="16"><path d="M0 2 Q30 16 60 2" fill="none" stroke="#3b3b3b" stroke-width="1.6"/></svg>';
+  var DRIFT='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 24" preserveAspectRatio="none"><path d="M0 24 V12 Q25 -2 50 12 T100 12 T150 12 T200 12 T250 12 T300 12 T350 12 T400 12 V24 Z" fill="#fff" opacity=".92"/></svg>';
+  var DEFS='<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><symbol id="afRd" viewBox="0 -14 130 104">'+
+   '<path d="M99 8 Q93 -4 99 -12 M96 0 L89 -4 M98 -6 L105 -10" stroke="#e2bd85" stroke-width="2.6" fill="none" stroke-linecap="round"/>'+
+   '<path d="M104 8 Q108 -3 114 -7 M108 0 L115 1" stroke="#e2bd85" stroke-width="2.6" fill="none" stroke-linecap="round"/>'+
+   '<g stroke="#6e4726" stroke-width="5" stroke-linecap="round" fill="none"><path d="M78 54 L102 64"/><path d="M70 56 L90 74"/><path d="M30 54 L8 62"/><path d="M38 56 L18 74"/></g>'+
+   '<path d="M18 44 Q16 28 36 27 L76 27 Q94 28 92 44 Q90 60 70 60 L38 60 Q20 60 18 44 Z" fill="#a8743f"/>'+
+   '<path d="M30 52 Q55 64 84 52 Q80 60 70 60 L38 60 Q30 60 30 52 Z" fill="#c99863"/>'+
+   '<path d="M76 30 L94 10 L108 16 L90 46 Z" fill="#a8743f"/><ellipse cx="104" cy="19" rx="12" ry="9.5" fill="#a8743f"/><ellipse cx="114" cy="23" rx="8" ry="6" fill="#c99863"/>'+
+   '<path d="M96 12 L88 2 L102 9 Z" fill="#8a5a2d"/><circle cx="106" cy="16" r="1.8" fill="#1b1209"/>'+
+   '<circle cx="121" cy="23" r="4" fill="currentColor"/><circle cx="121" cy="23" r="7" fill="currentColor" opacity=".25"/>'+
+   '<circle cx="16" cy="40" r="5" fill="#fff"/><path d="M62 27 L62 60" stroke="#d62828" stroke-width="4"/>'+
+   '<path d="M80 36 L92 40" stroke="#d62828" stroke-width="3"/><circle cx="86" cy="40" r="3.4" fill="#f2c14e"/></symbol></defs></svg>';
+  var SLEIGH='<svg viewBox="-14 -14 514 130" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'+
+   '<use href="#afRd" x="372" y="-6" width="124" height="100" color="#ff3b30"/><use href="#afRd" x="262" y="-12" width="112" height="90" color="#5b3a1d"/>'+
+   '<path d="M180 56 L276 30" stroke="#f2c14e" stroke-width="1.6" fill="none"/>'+
+   '<g transform="translate(20,6)"><path d="M6 94 Q-2 94 2 84 M6 94 L150 94 Q158 94 160 86" stroke="#f2c14e" stroke-width="4.5" fill="none" stroke-linecap="round"/>'+
+   '<path d="M30 94 L30 80 M120 94 L120 80" stroke="#f2c14e" stroke-width="3.5"/>'+
+   '<ellipse cx="108" cy="40" rx="24" ry="26" fill="#7a4e2a"/><path d="M92 26 Q108 18 124 26" stroke="#f2c14e" stroke-width="3" fill="none"/>'+
+   '<rect x="62" y="56" width="26" height="22" rx="3" fill="#2a9d3f"/><path d="M75 56 V78 M62 67 H88" stroke="#ffd166" stroke-width="3"/>'+
+   '<path d="M14 78 L18 54 Q20 46 30 46 L130 46 Q158 46 164 64 Q158 84 138 86 L28 86 Q16 86 14 78 Z" fill="#c1121f"/><path d="M20 66 H156" stroke="#f2c14e" stroke-width="3"/>'+
+   '<ellipse cx="62" cy="40" rx="17" ry="20" fill="#e63946"/><rect x="45" y="42" width="34" height="6" rx="3" fill="#2b2b2b"/><rect x="58" y="41" width="8" height="8" rx="1.5" fill="#f2c14e"/>'+
+   '<circle cx="62" cy="16" r="10" fill="#ffd7b5"/><path d="M52 17 Q62 40 72 17 Q62 24 52 17 Z" fill="#fff"/>'+
+   '<path d="M51 11 Q62 -14 78 8 Q86 6 88 12 Q70 2 54 12 Z" fill="#e63946"/><path d="M50 12 Q62 5 74 12" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round"/><circle cx="86" cy="12" r="5" fill="#fff"/>'+
+   '<circle cx="58" cy="14" r="1.3" fill="#222"/><circle cx="67" cy="14" r="1.3" fill="#222"/></g>'+
+   '<g fill="#fff" opacity=".85"><circle cx="8" cy="70" r="2.5"/><circle cx="-6" cy="80" r="1.8"/><circle cx="14" cy="50" r="1.6"/></g></svg>';
+
+  /* ---------- estilos del tema ---------- */
   var css=document.createElement("style");
   css.textContent=
+   /* fondo con resplandores navideños */
+   "body::before{content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(900px 520px at 8% -4%,rgba(214,40,40,.30),transparent 62%),radial-gradient(800px 520px at 100% 28%,rgba(242,193,78,.14),transparent 60%),radial-gradient(700px 500px at 0% 85%,rgba(42,157,63,.20),transparent 60%)}"+
+   /* cabecera, botones y titulares */
    "header{border-bottom:3px solid transparent!important;border-image:repeating-linear-gradient(90deg,#d62828 0 14px,#f2c14e 14px 28px,#2a9d3f 28px 42px,#f2c14e 42px 56px) 1}"+
-   "#afLights{position:relative;height:30px;overflow:hidden;background:url('"+wire+"') repeat-x 0 0;pointer-events:none}"+
+   ".btn.p{background:linear-gradient(135deg,#e63946,#b3121f)!important;color:#fff!important;box-shadow:0 8px 22px rgba(214,40,40,.45)!important;border-color:rgba(255,224,138,.6)!important}"+
+   ".hero h1 em{background:linear-gradient(90deg,#ffe08a,#f2c14e 45%,#ffe9a8);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}"+
+   ".hero .eye{color:#ffe08a!important;border-color:rgba(255,224,138,.45)!important;background:rgba(214,40,40,.22)!important}"+
+   ".stats b{color:#ffd166!important}"+
+   ".cta{background:linear-gradient(135deg,#7f0d0d,#c1121f 55%,#7a0c0c)!important;border:1px solid rgba(255,224,138,.35)!important;position:relative;overflow:hidden}"+
+   ".cta .btn.w{background:#fff!important;color:#b3121f!important}"+
+   "footer{position:relative;border-top:4px solid #d62828!important;margin-top:26px}"+
+   "footer::before{content:'';position:absolute;left:0;right:0;top:-28px;height:24px;background:url('"+uri(DRIFT)+"') center bottom/100% 100% no-repeat;pointer-events:none}"+
+   /* luces, banda, consejos */
+   "#afLights{position:relative;height:30px;overflow:hidden;background:url('"+uri(WIRE)+"') repeat-x 0 0;pointer-events:none}"+
    "#afLights i{position:absolute;top:11px;width:9px;height:13px;border-radius:50% 50% 50% 50%/40% 40% 60% 60%;animation:afTw 2.4s ease-in-out infinite}"+
    "@keyframes afTw{0%,100%{opacity:1;filter:brightness(1.15)}50%{opacity:.35;filter:brightness(.7)}}"+
    "#afNav{background:linear-gradient(90deg,#8f1010,#d62828 50%,#8f1010);color:#fff;text-align:center;font-weight:700;font-size:.92rem;line-height:1.35;padding:9px 40px 9px 14px;position:relative}"+
    "#afNav b{color:#ffe08a}#afNav small{display:block;font-weight:600;opacity:.92;font-size:.8rem}"+
    "#afNavX{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:0;color:#fff;font-size:1.3rem;line-height:1;padding:6px 10px;cursor:pointer}"+
+   "#navidad .card{border-top:3px solid #d62828}#navidad .card:nth-child(even){border-top-color:#2a9d3f}"+
+   "#navidad .em{font-size:1.7rem;line-height:1;margin-bottom:10px}#navidad .nv-cta{text-align:center;margin-top:22px}"+
+   "#navidad .rdi{display:block;width:92px;height:74px;margin:0 auto 6px;color:#ff3b30}"+
+   /* gorro de Papá Noel para la mascota */
+   ".afHatWrap{position:relative;display:inline-block;line-height:0}"+
+   ".afHat{position:absolute;left:var(--hx,17%);top:var(--hy,-12%);width:var(--hw,45%);aspect-ratio:100/80;background:url('"+uri(HAT)+"') center/contain no-repeat;transform:rotate(-12deg);transform-origin:50% 100%;pointer-events:none;z-index:2}"+
+   /* trineo de Papá Noel */
+   "#afSleigh{position:fixed;top:92px;left:0;width:300px;z-index:4;pointer-events:none;transform:translateX(-340px);animation:afFly 48s linear 4s infinite backwards}"+
+   "#afSleigh svg{display:block;width:100%;height:auto;filter:drop-shadow(0 6px 10px rgba(0,0,0,.35));animation:afBob 2.6s ease-in-out infinite}"+
+   "@keyframes afFly{0%{transform:translateX(-340px)}17%{transform:translateX(calc(100vw + 40px))}100%{transform:translateX(calc(100vw + 40px))}}"+
+   "@keyframes afBob{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-8px) rotate(1.5deg)}}"+
+   "@media(max-width:720px){#afSleigh{width:210px;top:80px}#navidad .rdi{width:78px;height:62px}}"+
+   /* nieve */
    "#afSnow{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:3}"+
    "#afSnowBtn{position:fixed;left:12px;bottom:14px;z-index:30;width:44px;height:44px;border-radius:50%;border:1px solid rgba(0,0,0,.12);background:#fff;font-size:1.25rem;line-height:1;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25)}"+
    "#afSnowBtn[aria-pressed=false]{opacity:.65;filter:grayscale(1)}"+
-   "#navidad .card{border-top:3px solid #d62828}#navidad .card:nth-child(even){border-top-color:#2a9d3f}"+
-   "#navidad .em{font-size:1.7rem;line-height:1;margin-bottom:10px}"+
-   "#navidad .nv-cta{text-align:center;margin-top:22px}"+
-   (reducir?"#afLights i{animation:none}":"");
+   (reducir?"#afLights i,#afSleigh,#afSleigh svg{animation:none!important}#afSleigh{display:none}":"");
   document.head.appendChild(css);
 
-  /* ---- mensaje según la fecha ---- */
+  /* ---------- mensaje según la fecha ---------- */
   var hoy=new Date(y,m,dia);
   function dias(f){ return Math.round((f-hoy)/864e5); }
   function plural(n,s,p){ return n+" "+(n===1?s:p); }
@@ -383,20 +436,17 @@
   else if(m===0){ var r=dias(new Date(y,0,6)); titulo="🎉 <b>¡Feliz "+y+"!</b>"; sub="Faltan "+plural(r,"día","días")+" para los Reyes Magos"; }
   else { var n=dias(new Date(y,11,25)); titulo="🎄 <b>¡Felices fiestas!</b>"; sub="Faltan "+plural(n,"día","días")+" para Navidad · reposta en la gasolinera más barata"; }
 
-  var main=document.querySelector("main");
-  if(!main) return;
+  /* ---------- estructura ---------- */
+  document.body.insertAdjacentHTML("afterbegin",DEFS);
 
-  /* ---- guirnalda de luces ---- */
   var lu=document.createElement("div"); lu.id="afLights"; lu.setAttribute("aria-hidden","true");
   var col=["#e63946","#ffd166","#2fbf71","#4cc9f0"];
   for(var i=0;i<42;i++){
-    var b=document.createElement("i"); b.style.left=(i*60+26)+"px";
-    b.style.background=col[i%4]; b.style.boxShadow="0 0 10px 2px "+col[i%4]+"88";
-    b.style.animationDelay=((i%7)*.35)+"s"; lu.appendChild(b);
+    var bl=document.createElement("i"); bl.style.left=(i*60+26)+"px"; bl.style.background=col[i%4];
+    bl.style.boxShadow="0 0 10px 2px "+col[i%4]+"88"; bl.style.animationDelay=((i%7)*.35)+"s"; lu.appendChild(bl);
   }
   main.parentNode.insertBefore(lu,main);
 
-  /* ---- banda con mensaje ---- */
   if(ss("afNavX")!=="1"){
     var bar=document.createElement("div"); bar.id="afNav"; bar.setAttribute("role","note");
     bar.innerHTML=titulo+(sub?"<small>"+sub+"</small>":"")+'<button id="afNavX" type="button" aria-label="Cerrar">×</button>';
@@ -404,11 +454,10 @@
     bar.querySelector("#afNavX").onclick=function(){ bar.remove(); ss("afNavX","1"); };
   }
 
-  /* ---- sección de consejos ---- */
   var ref=document.querySelector("section.stats");
   if(ref){
     var sec=document.createElement("section"); sec.className="wrap sec web-only"; sec.id="navidad";
-    sec.innerHTML='<div class="sh"><span class="eye">Navidad</span><h2>Ahorra en tus viajes de estas fiestas</h2><p>Cuatro ideas sencillas para que el viaje a casa de la familia salga más barato.</p></div>'+
+    sec.innerHTML='<div class="sh"><svg class="rdi" viewBox="0 -14 130 104" aria-hidden="true"><use href="#afRd"/></svg><span class="eye">Navidad</span><h2>Ahorra en tus viajes de estas fiestas</h2><p>Cuatro ideas sencillas para que el viaje a casa de la familia salga más barato.</p></div>'+
      '<div class="grid">'+
      '<div class="card"><div class="em" aria-hidden="true">🗺️</div><h3>Planifica antes de salir</h3><p>Busca las gasolineras de tu ruta y elige dónde repostar antes de ponerte en marcha.</p></div>'+
      '<div class="card"><div class="em" aria-hidden="true">⛽</div><h3>Reposta antes del puente</h3><p>Llena el depósito en tu ciudad, donde puedes comparar, y no a la salida de la autopista.</p></div>'+
@@ -418,8 +467,25 @@
     ref.parentNode.insertBefore(sec,ref);
   }
 
-  /* ---- nieve con interruptor ---- */
+  /* mascota con gorro de Papá Noel (la imagen original no se modifica) */
+  var logoImg=document.querySelector("header img.lg");
+  if(logoImg&&logoImg.parentNode){
+    var w=document.createElement("span"); w.className="afHatWrap";
+    logoImg.parentNode.insertBefore(w,logoImg); w.appendChild(logoImg);
+    var h=document.createElement("span"); h.className="afHat"; h.setAttribute("aria-hidden","true"); w.appendChild(h);
+  }
+  var mas=document.querySelectorAll(".mas");
+  for(var j=0;j<mas.length;j++){
+    if(getComputedStyle(mas[j]).position==="static") mas[j].style.position="relative";
+    var h2=document.createElement("span"); h2.className="afHat"; h2.setAttribute("aria-hidden","true"); mas[j].appendChild(h2);
+  }
+
   if(reducir) return;
+
+  /* trineo de Papá Noel cruzando la pantalla */
+  var tr=document.createElement("div"); tr.id="afSleigh"; tr.innerHTML=SLEIGH; document.body.appendChild(tr);
+
+  /* nieve con interruptor */
   var c=document.createElement("canvas"); c.id="afSnow"; c.setAttribute("aria-hidden","true"); document.body.appendChild(c);
   var x=c.getContext("2d"), W,H,N=innerWidth<720?26:50, f=[], raf=0, activa=ls("afSnowOff")!=="1";
   function size(){ W=c.width=innerWidth; H=c.height=innerHeight; }
