@@ -64,6 +64,11 @@
     .ciudades-seo a{display:inline-block;background:#e8f5e9;color:#1b7a2e;font-weight:700;font-size:.92rem;line-height:1.2;text-decoration:none;padding:10px 14px;border-radius:999px}
     .ciudades-seo a:hover,.ciudades-seo a:focus-visible{background:#d3efd8}
     #results{scroll-margin-top:76px}
+    @media(max-width:720px){
+      #results{margin:0!important;padding:0!important;min-height:0!important}
+      #results>*{margin-left:0!important;margin-right:0!important;width:100%!important;max-width:100%!important;box-sizing:border-box}
+      html.af-has-results .art{display:none!important}
+    }
     html.af-has-results #afPwaInstallCard{display:none!important}
   </style>
 </head>
