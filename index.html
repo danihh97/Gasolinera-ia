@@ -63,6 +63,8 @@
     .ciudades-seo{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 22px}
     .ciudades-seo a{display:inline-block;background:#e8f5e9;color:#1b7a2e;font-weight:700;font-size:.92rem;line-height:1.2;text-decoration:none;padding:10px 14px;border-radius:999px}
     .ciudades-seo a:hover,.ciudades-seo a:focus-visible{background:#d3efd8}
+    #results{scroll-margin-top:76px}
+    html.af-has-results #afPwaInstallCard{display:none!important}
   </style>
 </head>
 
@@ -195,7 +197,8 @@
 <div class="pvs"><span>Ahorro en 50 L</span><span class="g">3,00 €</span></div></div>
 </div>
 </div></section>
-<div class="wrap"><div id="afPwaInstallCard" aria-live="polite">
+<div class="wrap"><div id="results" class="results" aria-live="polite"></div>
+<div id="afPwaInstallCard" aria-live="polite">
   <div class="af-pwa-layout">
     <div>
       <h2 class="af-pwa-title">Instala <span>AhorraFuel</span>,<br>tu app de gasolineras gratis</h2>
@@ -252,10 +255,7 @@
 </div>
 
 
-  <div
-    id="results"
-    class="results"
-   aria-live="polite"></div></div>
+</div>
 <section class="stats web-only"><div class="wrap"><div><b>52</b><span>provincias y ciudades autónomas</span></div><div><b>3</b><span>combustibles</span></div><div><b>30 km</b><span>de radio en «Cerca de mí»</span></div><div><b>0 €</b><span>gratis, sin cuenta</span></div></div></section><section class="wrap sec web-only" id="ventajas"><div class="sh"><span class="eye">Ventajas</span><h2>Todo para repostar más barato</h2><p>Menos vueltas, más ahorro: precios claros y rutas a un toque.</p></div>
 <div class="grid">
 <div class="card"><div class="ic"><svg class="i"><use href="#bars"/></svg></div><h3>Comparador por provincia</h3><p>Ordena las gasolineras por precio y detecta la más barata de un vistazo.</p></div>
@@ -319,6 +319,19 @@
   </section></section>
 <section class="wrap sec web-only"><div class="cta"><div class="mas" aria-hidden="true"></div><h2>Empieza a ahorrar en tu próximo repostaje</h2><p>Compara precios en segundos y elige la gasolinera más barata.</p><a class="btn w" href="#buscar">Buscar gasolineras</a></div></section></main>
 <footer><div class="wrap"><div class="web-only"><a class="logo" href="/" style="padding:0"><span class="wm">Ahorra<span>Fuel</span></span></a><p>Compara los precios de la gasolina y el diésel en toda España.</p></div><div class="web-only"><h4>Explorar</h4><a href="#ventajas">Ventajas</a><a href="#como">Cómo funciona</a><a href="#provincias">Provincias</a><a href="/gasolineras-baratas.html">Gasolineras por provincia</a><a href="/precio-gasolina-hoy.html">Precio de la gasolina hoy</a></div><div><h4>Legal</h4><a href="/privacidad.html">Privacidad</a><a href="/cookies.html">Cookies</a><a href="/informacion-legal.html">Información legal</a><a href="/condiciones-de-uso.html">Condiciones de uso</a></div><div class="cp">© 2026 AhorraFuel. Los precios pueden variar en la gasolinera.</div></div></footer>
+<script>
+(function(){
+  var r=document.getElementById("results"); if(!r||!window.MutationObserver) return;
+  var had=false;
+  function check(){
+    var has=r.children.length>0||r.textContent.trim().length>0;
+    document.documentElement.classList.toggle("af-has-results",has);
+    if(has&&!had){ try{ r.scrollIntoView({behavior:"smooth",block:"start"}); }catch(e){ r.scrollIntoView(); } }
+    had=has;
+  }
+  new MutationObserver(check).observe(r,{childList:true,subtree:true,characterData:true});
+})();
+</script>
 <script src="/app.js?v=20261018" defer></script>
 </body>
 </html>
